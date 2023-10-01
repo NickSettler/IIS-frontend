@@ -30,20 +30,56 @@ module.exports = {
     'no-use-before-define': 'off',
     '@typescript-eslint/no-use-before-define': ['error'],
     'react/jsx-filename-extension': ['warn', { extensions: ['.tsx'] }],
-    'import/extensions': ['error', 'ignorePackages', { ts: 'never', tsx: 'never' }],
+    'import/extensions': [
+      'error',
+      'ignorePackages',
+      { ts: 'never', tsx: 'never' },
+    ],
     'no-shadow': 'off',
     '@typescript-eslint/no-shadow': ['error'],
-    '@typescript-eslint/explicit-function-return-type': ['error', { allowExpressions: true }],
+    '@typescript-eslint/no-unused-vars': 'off',
+    '@typescript-eslint/explicit-function-return-type': [
+      'error',
+      { allowExpressions: true },
+    ],
     'max-len': ['warn', { code: 100, ignoreComments: true, ignoreUrls: true }],
     'react-hooks/rules-of-hooks': 'error',
     'react-hooks/exhaustive-deps': 'warn',
     'import/prefer-default-export': 'off',
     'react/prop-types': 'off',
-    'prettier/prettier': ['error', { endOfLine: 'auto' }],
+    'lines-between-class-members': ['error', 'always'],
+    'no-unused-vars': 'off',
+    '@typescript-eslint/naming-convention': [
+      'error',
+      {
+        selector: 'enum',
+        format: ['UPPER_CASE'],
+        prefix: ['E_'],
+      },
+      {
+        selector: 'enumMember',
+        format: ['UPPER_CASE'],
+      },
+      {
+        selector: 'typeAlias',
+        format: ['PascalCase'],
+        prefix: ['T'],
+      },
+      {
+        selector: 'interface',
+        format: ['PascalCase'],
+        prefix: ['I'],
+      },
+      {
+        selector: 'variable',
+        format: ['camelCase', 'UPPER_CASE', 'PascalCase'],
+        leadingUnderscore: 'allow',
+      },
+    ],
   },
   settings: {
     'import/resolver': {
       typescript: {},
     },
   },
-}
+};
