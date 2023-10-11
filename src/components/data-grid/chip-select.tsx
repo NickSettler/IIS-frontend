@@ -17,7 +17,7 @@ export const ChipSelectCell = <
 >(
   params: TChipSelectCellProps<E, K, V>,
 ) => {
-  const { value, prop, cellMode } = params;
+  const { value, prop } = params;
 
   if (value == null || prop == null) return null;
 
