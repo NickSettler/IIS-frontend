@@ -1,24 +1,71 @@
-import React, { JSX } from 'react';
-import logo from './logo.svg';
+import React, { ReactElement } from 'react';
 import './App.css';
+import { Link, Route, Routes } from 'react-router-dom';
+import Box from '@mui/material/Box';
+import List from '@mui/material/List';
+import ListItemButton from '@mui/material/ListItemButton';
+import ListItemText from '@mui/material/ListItemText';
 
-const App = (): JSX.Element => {
+import LogInPage from './pages/login';
+import HomePage from './pages/home';
+
+const routes = [
+  {
+    path: '/',
+    element: <HomePage />,
+  },
+  {
+    path: '/login',
+    element: <LogInPage />,
+  },
+];
+
+const SideBarMenu = (): ReactElement => {
   return (
-    <div className='App'>
-      <header className='App-header'>
-        <img src={logo} className='App-logo' alt='logo' />
-        <p>
-          Edit <code>src/App.tsx</code> and save to reload.
-        </p>
-        <a
-          className='App-link'
-          href='https://reactjs.org'
-          target='_blank'
-          rel='noopener noreferrer'
-        >
-          Learn React
-        </a>
-      </header>
+    <Box
+      component='nav'
+      sx={{
+        width: '200px',
+        height: '100vh',
+        backgroundColor: '#f5f5f5',
+      }}
+    >
+      <List>
+        <Link to='/'>
+          <ListItemButton>
+            <ListItemText primary='Home' />
+          </ListItemButton>
+        </Link>
+        <Link to='/login'>
+          <ListItemButton>
+            <ListItemText primary='Login' />
+          </ListItemButton>
+        </Link>
+      </List>
+    </Box>
+  );
+};
+
+const App = (): ReactElement | null => {
+  return (
+    <div
+      className='page'
+      style={{
+        display: 'flex',
+        flexDirection: 'row',
+      }}
+    >
+      <Routes>
+        {routes.map(({ path }) => (
+          <Route key={path} path={path} element={<SideBarMenu />} />
+        ))}
+      </Routes>
+
+      <Routes>
+        {routes.map(({ path, element }) => (
+          <Route key={path} path={path} element={element} />
+        ))}
+      </Routes>
     </div>
   );
 };
