@@ -1,72 +1,77 @@
 import React, { ReactElement } from 'react';
-import './App.css';
-import { Link, Route, Routes } from 'react-router-dom';
+import { Route, Routes } from 'react-router-dom';
 import Box from '@mui/material/Box';
 import List from '@mui/material/List';
 import ListItemButton from '@mui/material/ListItemButton';
 import ListItemText from '@mui/material/ListItemText';
+import './App.css';
+import { appRoutes } from './utils/router/routes';
+import {
+  AppBar,
+  CssBaseline,
+  Drawer,
+  ListItem,
+  Toolbar,
+  Typography,
+} from '@mui/material';
+import { Link } from './utils/router/link';
 
-import LogInPage from './pages/login';
-import HomePage from './pages/home';
-
-const routes = [
-  {
-    path: '/',
-    element: <HomePage />,
-  },
-  {
-    path: '/login',
-    element: <LogInPage />,
-  },
-];
-
-const SideBarMenu = (): ReactElement => {
+const App = (): ReactElement => {
   return (
-    <Box
-      component='nav'
-      sx={{
-        width: '200px',
-        height: '100vh',
-        backgroundColor: '#f5f5f5',
-      }}
-    >
-      <List>
-        <Link to='/'>
-          <ListItemButton>
-            <ListItemText primary='Home' />
-          </ListItemButton>
-        </Link>
-        <Link to='/login'>
-          <ListItemButton>
-            <ListItemText primary='Login' />
-          </ListItemButton>
-        </Link>
-      </List>
+    <Box sx={{ display: 'flex' }}>
+      <CssBaseline />
+      <AppBar
+        position='fixed'
+        sx={{ zIndex: (theme) => theme.zIndex.drawer + 1 }}
+      >
+        <Toolbar>
+          <Typography variant='h6' noWrap={true} component='div'>
+            Schedule Planner
+          </Typography>
+        </Toolbar>
+      </AppBar>
+      <Drawer
+        variant='permanent'
+        sx={{
+          width: 240,
+          flexShrink: 0,
+          ['& .MuiDrawer-paper']: {
+            width: 240,
+            boxSizing: 'border-box',
+          },
+        }}
+      >
+        <Toolbar />
+        <Box sx={{ overflow: 'auto' }}>
+          <List>
+            {appRoutes.map(({ path, label }) => (
+              <ListItem
+                key={path}
+                disablePadding={true}
+                component={Link}
+                button={true}
+                to={path}
+              >
+                <ListItemButton>
+                  <ListItemText primary={label} />
+                </ListItemButton>
+              </ListItem>
+            ))}
+          </List>
+        </Box>
+      </Drawer>
+
+      <Box component='main' sx={{ flexGrow: 1, px: 3 }}>
+        <Toolbar />
+        <Box sx={{ flexGrow: 1, py: 1 }}>
+          <Routes>
+            {appRoutes.map(({ path, Component }) => (
+              <Route key={path} path={path} Component={Component} />
+            ))}
+          </Routes>
+        </Box>
+      </Box>
     </Box>
-  );
-};
-
-const App = (): ReactElement | null => {
-  return (
-    <div
-      className='page'
-      style={{
-        display: 'flex',
-        flexDirection: 'row',
-      }}
-    >
-      <Routes>
-        {routes.map(({ path }) => (
-          <Route key={path} path={path} element={<SideBarMenu />} />
-        ))}
-      </Routes>
-
-      <Routes>
-        {routes.map(({ path, element }) => (
-          <Route key={path} path={path} element={element} />
-        ))}
-      </Routes>
-    </div>
   );
 };
 
