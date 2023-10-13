@@ -4,33 +4,8 @@ import Box from '@mui/material/Box';
 import List from '@mui/material/List';
 import ListItemButton from '@mui/material/ListItemButton';
 import ListItemText from '@mui/material/ListItemText';
-
-import LogInPage from './pages/login';
-import HomePage from './pages/home';
-
 import './App.css';
-
-const routes = [
-  {
-    path: '/',
-    element: <HomePage />,
-  },
-  {
-    path: '/login',
-    element: <LogInPage />,
-  },
-];
-
-const sideBarMenuItems = [
-  {
-    path: '/',
-    label: 'Home',
-  },
-  {
-    path: '/login',
-    label: 'Login',
-  },
-];
+import { appRoutes } from './utils/router/routes';
 
 const SideBarMenu = (): ReactElement => {
   return (
@@ -43,7 +18,7 @@ const SideBarMenu = (): ReactElement => {
       }}
     >
       <List>
-        {sideBarMenuItems.map(({ path, label }) => (
+        {appRoutes.map(({ path, label }) => (
           <Link to={path || '/'} key={label}>
             <ListItemButton>
               <ListItemText primary={label} />
@@ -67,8 +42,8 @@ const App = (): ReactElement => {
       <SideBarMenu />
 
       <Routes>
-        {routes.map(({ path, element }) => (
-          <Route key={path} path={path} element={element} />
+        {appRoutes.map(({ path, Component }) => (
+          <Route key={path} path={path} Component={Component} />
         ))}
       </Routes>
     </div>
