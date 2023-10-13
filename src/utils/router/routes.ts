@@ -2,11 +2,12 @@ import { RouteObject } from 'react-router-dom';
 import HomePage from '../../pages/home';
 import LogInPage from '../../pages/login';
 
-export type AppRoute = RouteObject & {
+export type TAppRoute = RouteObject & {
+  path: string;
   label: string;
 };
 
-export const appRoutes: Array<AppRoute> = [
+export const appRoutes: Array<TAppRoute> = [
   {
     path: '/',
     label: 'Home',
