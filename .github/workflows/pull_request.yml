@@ -45,7 +45,7 @@ jobs:
         run: yarn build
 
       - name: Archive production artifacts
-        if: githmkdiub.event.pull_request.merged == true
+        if: github.event.pull_request.merged == true
         uses: actions/upload-artifact@v3
         with:
           name: build
