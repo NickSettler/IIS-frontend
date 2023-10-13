@@ -1,4 +1,6 @@
 import axios, { AxiosInstance, AxiosResponse } from 'axios';
+import LocalStorage, { E_LOCAL_STORAGE_KEYS } from '../../utils/local-storage';
+import { parseJWT } from '../../utils/jwt';
 
 /**
  * API class (Singleton)
@@ -23,8 +25,31 @@ export default class Api {
     });
 
     this._axiosInstance.interceptors.request.use((config) => {
-      console.log(config);
+      const accessToken = LocalStorage.getItem<string>(
+        E_LOCAL_STORAGE_KEYS.ACCESS_TOKEN,
+      );
+
+      if (!accessToken) return config;
+
+      try {
+        const jwtToken = parseJWT(accessToken);
+        if (jwtToken.exp * 1000 < Date.now()) throw new Error('Token expired');
+      } catch (e) {
+        // TODO: Refresh token
+      }
+
+      config.headers.Authorization = `Bearer ${accessToken}`;
+
       return config;
+    });
+
+    this._axiosInstance.interceptors.response.use(async (response) => {
+      if (response.status === 401) {
+        // TODO: Refresh token
+        return this._axiosInstance.request(response.config);
+      }
+
+      return response;
     });
   }
 
