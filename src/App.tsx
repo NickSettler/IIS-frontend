@@ -16,29 +16,6 @@ import {
 } from '@mui/material';
 import { Link } from './utils/router/link';
 
-const SideBarMenu = (): ReactElement => {
-  return (
-    <Box
-      component='nav'
-      sx={{
-        width: '200px',
-        height: '100vh',
-        backgroundColor: '#f5f5f5',
-      }}
-    >
-      <List>
-        {appRoutes.map(({ path, label }) => (
-          <Link to={path || '/'} key={label}>
-            <ListItemButton>
-              <ListItemText primary={label} />
-            </ListItemButton>
-          </Link>
-        ))}
-      </List>
-    </Box>
-  );
-};
-
 const App = (): ReactElement => {
   return (
     <Box sx={{ display: 'flex' }}>
