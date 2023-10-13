@@ -1,5 +1,4 @@
 import React, { ReactElement } from 'react';
-import './App.css';
 import { Link, Route, Routes } from 'react-router-dom';
 import Box from '@mui/material/Box';
 import List from '@mui/material/List';
@@ -9,6 +8,8 @@ import ListItemText from '@mui/material/ListItemText';
 import LogInPage from './pages/login';
 import HomePage from './pages/home';
 
+import './App.css';
+
 const routes = [
   {
     path: '/',
@@ -17,6 +18,17 @@ const routes = [
   {
     path: '/login',
     element: <LogInPage />,
+  },
+];
+
+const sideBarMenuItems = [
+  {
+    path: '/',
+    label: 'Home',
+  },
+  {
+    path: '/login',
+    label: 'Login',
   },
 ];
 
@@ -31,22 +43,19 @@ const SideBarMenu = (): ReactElement => {
       }}
     >
       <List>
-        <Link to='/'>
-          <ListItemButton>
-            <ListItemText primary='Home' />
-          </ListItemButton>
-        </Link>
-        <Link to='/login'>
-          <ListItemButton>
-            <ListItemText primary='Login' />
-          </ListItemButton>
-        </Link>
+        {sideBarMenuItems.map(({ path, label }) => (
+          <Link to={path || '/'} key={label}>
+            <ListItemButton>
+              <ListItemText primary={label} />
+            </ListItemButton>
+          </Link>
+        ))}
       </List>
     </Box>
   );
 };
 
-const App = (): ReactElement | null => {
+const App = (): ReactElement => {
   return (
     <div
       className='page'
@@ -55,11 +64,7 @@ const App = (): ReactElement | null => {
         flexDirection: 'row',
       }}
     >
-      <Routes>
-        {routes.map(({ path }) => (
-          <Route key={path} path={path} element={<SideBarMenu />} />
-        ))}
-      </Routes>
+      <SideBarMenu />
 
       <Routes>
         {routes.map(({ path, element }) => (
