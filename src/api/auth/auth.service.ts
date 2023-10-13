@@ -3,15 +3,13 @@ import { E_USER_ENTITY_KEYS, TUser } from '../user/types';
 import Api from '../base/api';
 
 export type TAuthLoginMutationVariables = {
-  [E_USER_ENTITY_KEYS.USERNAME]: string;
+  [E_USER_ENTITY_KEYS.USERNAME]: TUser[E_USER_ENTITY_KEYS.USERNAME];
   password: string;
 };
 
-export type TAuthRegisterMutationVariables = {
-  [E_USER_ENTITY_KEYS.USERNAME]: string;
-  password: string;
-  [E_USER_ENTITY_KEYS.FIRST_NAME]: string;
-  [E_USER_ENTITY_KEYS.LAST_NAME]: string;
+export type TAuthRegisterMutationVariables = TAuthLoginMutationVariables & {
+  [E_USER_ENTITY_KEYS.FIRST_NAME]: TUser[E_USER_ENTITY_KEYS.FIRST_NAME];
+  [E_USER_ENTITY_KEYS.LAST_NAME]: TUser[E_USER_ENTITY_KEYS.LAST_NAME];
 };
 
 export type TAuthLoginResponse = {
@@ -30,7 +28,10 @@ export default class AuthService extends BaseService {
     return await Api.instance.post<
       TAuthLoginMutationVariables,
       TAuthLoginResponse
-    >(`${this.endpoint}/sign-in`, { username, password });
+    >(`${this.endpoint}/sign-in`, {
+      [E_USER_ENTITY_KEYS.USERNAME]: username,
+      password,
+    });
   }
 
   public static async signUp(
