@@ -2,20 +2,55 @@ import * as React from 'react';
 import Button from '@mui/material/Button';
 import CssBaseline from '@mui/material/CssBaseline';
 import TextField from '@mui/material/TextField';
-import FormControlLabel from '@mui/material/FormControlLabel';
-import Checkbox from '@mui/material/Checkbox';
 import Link from '@mui/material/Link';
 import Box from '@mui/material/Box';
 import Typography from '@mui/material/Typography';
 import Container from '@mui/material/Container';
+import { useMutation, useQuery } from '@tanstack/react-query';
+import { E_USER_ENTITY_KEYS, TUserWithRoles } from '../../../api/user/types';
+import AuthService, {
+  TAuthLoginMutationVariables,
+  TAuthLoginResponse,
+} from '../../../api/auth/auth.service';
+import LocalStorage, {
+  E_LOCAL_STORAGE_KEYS,
+} from '../../../utils/local-storage';
 
 const SignIn = () => {
+  const [isEmailError, setIsEmailError] = React.useState(false);
+  const [isPasswordError, setIsPasswordError] = React.useState(false);
+
+  const signInMutation = useMutation({
+    mutationFn: async ({
+      [E_USER_ENTITY_KEYS.USERNAME]: username,
+      password: password,
+    }: TAuthLoginMutationVariables) => AuthService.signIn(username, password),
+    onSuccess: ({
+      accessToken,
+      refreshToken,
+      expiresIn,
+    }: TAuthLoginResponse) => {
+      LocalStorage.setItem(E_LOCAL_STORAGE_KEYS.ACCESS_TOKEN, accessToken);
+      LocalStorage.setItem(E_LOCAL_STORAGE_KEYS.REFRESH_TOKEN, refreshToken);
+      LocalStorage.setItem(E_LOCAL_STORAGE_KEYS.EXPIRES_IN, expiresIn);
+    },
+  });
+
   const handleSubmit = (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault();
     const data = new FormData(event.currentTarget);
-    console.log({
-      email: data.get('email'),
-      password: data.get('password'),
+
+    // remove error after filling the form
+    setIsEmailError(!data.get('username'));
+    setIsPasswordError(!data.get('password'));
+
+    if (!data.get('username') || !data.get('password')) {
+      return;
+    }
+
+    signInMutation.mutate({
+      [E_USER_ENTITY_KEYS.USERNAME]: data.get('username') as string,
+      password: data.get('password') as string,
     });
   };
 
@@ -40,14 +75,15 @@ const SignIn = () => {
           sx={{ mt: 1 }}
         >
           <TextField
-            margin='normal'
             required={true}
             fullWidth={true}
-            id='email'
-            label='Email Address'
-            name='email'
-            autoComplete='email'
+            id='username'
+            label='Username'
+            name='username'
+            autoComplete='username'
             autoFocus={true}
+            error={isEmailError}
+            onClick={() => setIsEmailError(false)}
           />
           <TextField
             margin='normal'
@@ -58,10 +94,8 @@ const SignIn = () => {
             type='password'
             id='password'
             autoComplete='current-password'
-          />
-          <FormControlLabel
-            control={<Checkbox value='remember' color='primary' />}
-            label='Remember me'
+            error={isPasswordError}
+            onClick={() => setIsPasswordError(false)}
           />
           <Button
             type='submit'
@@ -71,7 +105,7 @@ const SignIn = () => {
           >
             Sign In
           </Button>
-          <Link href='/' variant='body2'>
+          <Link href='/register' variant='body2'>
             Don&apos;t have an account? Sign Up
           </Link>
         </Box>

@@ -1,11 +1,8 @@
 import { ReactElement } from 'react';
+import SignIn from '../../components/authorization/sign-in';
 
 const LogInPage = (): ReactElement => {
-  return (
-    <div>
-      <h1>Login Page</h1>
-    </div>
-  );
+  return <SignIn />;
 };
 
 export default LogInPage;
