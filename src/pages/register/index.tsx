@@ -1,4 +1,4 @@
-import * as React from 'react';
+import React, { useState } from 'react';
 import Button from '@mui/material/Button';
 import CssBaseline from '@mui/material/CssBaseline';
 import TextField from '@mui/material/TextField';
@@ -14,12 +14,28 @@ import AuthService, {
   TAuthRegisterMutationVariables,
 } from '../../api/auth/auth.service';
 import LocalStorage, { E_LOCAL_STORAGE_KEYS } from '../../utils/local-storage';
+import UserService from '../../api/user/user.service';
 
 const SignUpPage = () => {
-  const [isFirstNameError, setIsFirstNameError] = React.useState(false);
-  const [isLastNameError, setIsLastNameError] = React.useState(false);
-  const [isUsernameError, setIsUsernameError] = React.useState(false);
-  const [isPasswordError, setIsPasswordError] = React.useState(false);
+  const [firstNameInput, setFirstNameInput] = useState('');
+  const [lastNameInput, setLastNameInput] = useState('');
+  const [usernameInput, setUsernameInput] = useState('');
+  const [passwordInput, setPasswordInput] = useState('');
+
+  const getUserInfoMutation = useMutation({
+    mutationFn: async () => UserService.getMe(),
+    onSuccess: ({
+      [E_LOCAL_STORAGE_KEYS.ID]: id,
+      [E_LOCAL_STORAGE_KEYS.USERNAME]: username,
+      [E_LOCAL_STORAGE_KEYS.FIRST_NAME]: firstName,
+      [E_LOCAL_STORAGE_KEYS.LAST_NAME]: lastName,
+    }) => {
+      LocalStorage.setItem(E_LOCAL_STORAGE_KEYS.ID, id);
+      LocalStorage.setItem(E_LOCAL_STORAGE_KEYS.USERNAME, username);
+      LocalStorage.setItem(E_LOCAL_STORAGE_KEYS.FIRST_NAME, firstName);
+      LocalStorage.setItem(E_LOCAL_STORAGE_KEYS.LAST_NAME, lastName);
+    },
+  });
 
   const signUpMutation = useMutation({
     mutationFn: async ({
@@ -37,34 +53,19 @@ const SignUpPage = () => {
       LocalStorage.setItem(E_LOCAL_STORAGE_KEYS.ACCESS_TOKEN, accessToken);
       LocalStorage.setItem(E_LOCAL_STORAGE_KEYS.REFRESH_TOKEN, refreshToken);
       LocalStorage.setItem(E_LOCAL_STORAGE_KEYS.EXPIRES_IN, expiresIn);
+
+      getUserInfoMutation.mutate();
     },
   });
 
-  const handleSubmit = (event: React.FormEvent<HTMLFormElement>) => {
+  const handleSubmit = (event: React.ChangeEvent<HTMLFormElement>) => {
     event.preventDefault();
 
-    const data = new FormData(event.currentTarget);
-
-    // remove error after filling the form
-    setIsUsernameError(!data.get('username'));
-    setIsPasswordError(!data.get('password'));
-    setIsFirstNameError(!data.get('firstName'));
-    setIsLastNameError(!data.get('lastName'));
-
-    if (
-      !data.get('username') ||
-      !data.get('password') ||
-      !data.get('firstName') ||
-      !data.get('lastName')
-    ) {
-      return;
-    }
-
     signUpMutation.mutate({
-      [E_USER_ENTITY_KEYS.FIRST_NAME]: data.get('firstName') as string,
-      [E_USER_ENTITY_KEYS.LAST_NAME]: data.get('lastName') as string,
-      [E_USER_ENTITY_KEYS.USERNAME]: data.get('username') as string,
-      password: data.get('password') as string,
+      [E_USER_ENTITY_KEYS.FIRST_NAME]: firstNameInput,
+      [E_USER_ENTITY_KEYS.LAST_NAME]: lastNameInput,
+      [E_USER_ENTITY_KEYS.USERNAME]: usernameInput,
+      password: passwordInput,
     });
   };
 
@@ -82,57 +83,44 @@ const SignUpPage = () => {
         <Typography component='h1' variant='h5'>
           Sign up
         </Typography>
-        <Box
-          component='form'
-          noValidate={true}
-          onSubmit={handleSubmit}
-          sx={{ mt: 3 }}
-        >
+        <Box component='form' onSubmit={handleSubmit} sx={{ mt: 3 }}>
           <Grid container={true} spacing={2}>
             <Grid item={true} xs={12} sm={6}>
               <TextField
                 autoComplete='given-name'
-                name='firstName'
                 required={true}
                 fullWidth={true}
-                id='firstName'
                 label='First Name'
                 autoFocus={true}
-                error={isFirstNameError}
+                onChange={(event) => setFirstNameInput(event.target.value)}
               />
             </Grid>
             <Grid item={true} xs={12} sm={6}>
               <TextField
                 required={true}
                 fullWidth={true}
-                id='lastName'
                 label='Last Name'
-                name='lastName'
                 autoComplete='family-name'
-                error={isLastNameError}
+                onChange={(event) => setLastNameInput(event.target.value)}
               />
             </Grid>
             <Grid item={true} xs={12}>
               <TextField
                 required={true}
                 fullWidth={true}
-                id='username'
                 label='Username'
-                name='username'
                 autoComplete='username'
-                error={isUsernameError}
+                onChange={(event) => setUsernameInput(event.target.value)}
               />
             </Grid>
             <Grid item={true} xs={12}>
               <TextField
                 required={true}
                 fullWidth={true}
-                name='password'
                 label='Password'
                 type='password'
-                id='password'
                 autoComplete='new-password'
-                error={isPasswordError}
+                onChange={(event) => setPasswordInput(event.target.value)}
               />
             </Grid>
           </Grid>
