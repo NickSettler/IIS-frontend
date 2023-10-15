@@ -4,10 +4,7 @@ export enum E_LOCAL_STORAGE_KEYS {
   ACCESS_TOKEN = 'access_token',
   REFRESH_TOKEN = 'refresh_token',
   EXPIRES_IN = 'expires_in',
-  ID = 'id',
-  USERNAME = 'username',
-  FIRST_NAME = 'first_name',
-  LAST_NAME = 'last_name',
+  USER_INFO = 'user_info',
 }
 
 /**

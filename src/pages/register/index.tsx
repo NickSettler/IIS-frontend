@@ -24,16 +24,11 @@ const SignUpPage = () => {
 
   const getUserInfoMutation = useMutation({
     mutationFn: async () => UserService.getMe(),
-    onSuccess: ({
-      [E_LOCAL_STORAGE_KEYS.ID]: id,
-      [E_LOCAL_STORAGE_KEYS.USERNAME]: username,
-      [E_LOCAL_STORAGE_KEYS.FIRST_NAME]: firstName,
-      [E_LOCAL_STORAGE_KEYS.LAST_NAME]: lastName,
-    }) => {
-      LocalStorage.setItem(E_LOCAL_STORAGE_KEYS.ID, id);
-      LocalStorage.setItem(E_LOCAL_STORAGE_KEYS.USERNAME, username);
-      LocalStorage.setItem(E_LOCAL_STORAGE_KEYS.FIRST_NAME, firstName);
-      LocalStorage.setItem(E_LOCAL_STORAGE_KEYS.LAST_NAME, lastName);
+    onSuccess: (data) => {
+      LocalStorage.setItem(
+        E_LOCAL_STORAGE_KEYS.USER_INFO,
+        JSON.stringify(data),
+      );
     },
   });
 
