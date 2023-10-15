@@ -58,7 +58,7 @@ const SignUpPage = () => {
     },
   });
 
-  const handleSubmit = (event: React.ChangeEvent<HTMLFormElement>) => {
+  const handleSubmit = (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault();
 
     signUpMutation.mutate({

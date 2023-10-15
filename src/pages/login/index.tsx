@@ -13,10 +13,26 @@ import AuthService, {
   TAuthLoginResponse,
 } from '../../api/auth/auth.service';
 import LocalStorage, { E_LOCAL_STORAGE_KEYS } from '../../utils/local-storage';
+import UserService from '../../api/user/user.service';
 
 const LogInPage = () => {
-  const [isEmailError, setIsEmailError] = React.useState(false);
-  const [isPasswordError, setIsPasswordError] = React.useState(false);
+  const [usernameInput, setUsernameInput] = React.useState('');
+  const [passwordInput, setPasswordInput] = React.useState('');
+
+  const getUserInfoMutation = useMutation({
+    mutationFn: async () => UserService.getMe(),
+    onSuccess: ({
+      [E_LOCAL_STORAGE_KEYS.ID]: id,
+      [E_LOCAL_STORAGE_KEYS.USERNAME]: username,
+      [E_LOCAL_STORAGE_KEYS.FIRST_NAME]: firstName,
+      [E_LOCAL_STORAGE_KEYS.LAST_NAME]: lastName,
+    }) => {
+      LocalStorage.setItem(E_LOCAL_STORAGE_KEYS.ID, id);
+      LocalStorage.setItem(E_LOCAL_STORAGE_KEYS.USERNAME, username);
+      LocalStorage.setItem(E_LOCAL_STORAGE_KEYS.FIRST_NAME, firstName);
+      LocalStorage.setItem(E_LOCAL_STORAGE_KEYS.LAST_NAME, lastName);
+    },
+  });
 
   const signInMutation = useMutation({
     mutationFn: async ({
@@ -31,24 +47,17 @@ const LogInPage = () => {
       LocalStorage.setItem(E_LOCAL_STORAGE_KEYS.ACCESS_TOKEN, accessToken);
       LocalStorage.setItem(E_LOCAL_STORAGE_KEYS.REFRESH_TOKEN, refreshToken);
       LocalStorage.setItem(E_LOCAL_STORAGE_KEYS.EXPIRES_IN, expiresIn);
+
+      getUserInfoMutation.mutate();
     },
   });
 
   const handleSubmit = (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault();
-    const data = new FormData(event.currentTarget);
-
-    // remove error after filling the form
-    setIsEmailError(!data.get('username'));
-    setIsPasswordError(!data.get('password'));
-
-    if (!data.get('username') || !data.get('password')) {
-      return;
-    }
 
     signInMutation.mutate({
-      [E_USER_ENTITY_KEYS.USERNAME]: data.get('username') as string,
-      password: data.get('password') as string,
+      [E_USER_ENTITY_KEYS.USERNAME]: usernameInput,
+      password: passwordInput,
     });
   };
 
@@ -66,34 +75,23 @@ const LogInPage = () => {
         <Typography component='h1' variant='h5'>
           Sign in
         </Typography>
-        <Box
-          component='form'
-          onSubmit={handleSubmit}
-          noValidate={true}
-          sx={{ mt: 1 }}
-        >
+        <Box component='form' onSubmit={handleSubmit} sx={{ mt: 1 }}>
           <TextField
             required={true}
             fullWidth={true}
-            id='username'
             label='Username'
-            name='username'
             autoComplete='username'
             autoFocus={true}
-            error={isEmailError}
-            onClick={() => setIsEmailError(false)}
+            onChange={(event) => setUsernameInput(event.target.value)}
           />
           <TextField
             margin='normal'
             required={true}
             fullWidth={true}
-            name='password'
             label='Password'
             type='password'
-            id='password'
             autoComplete='current-password'
-            error={isPasswordError}
-            onClick={() => setIsPasswordError(false)}
+            onChange={(event) => setPasswordInput(event.target.value)}
           />
           <Button
             type='submit'
