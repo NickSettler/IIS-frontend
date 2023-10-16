@@ -1,6 +1,11 @@
 import { JSX, useCallback, useEffect, useMemo, useState } from 'react';
 import { DataGrid, GridActionsCellItem, GridColDef } from '@mui/x-data-grid';
-import { E_ROLE, E_ROLE_ENTITY_KEYS, E_USER_ENTITY_KEYS, TUserWithRoles, } from '../../../api/user/types';
+import {
+  E_ROLE,
+  E_ROLE_ENTITY_KEYS,
+  E_USER_ENTITY_KEYS,
+  TUserWithRoles,
+} from '../../../api/user/types';
 import UserService, {
   TUserAssignRoleMutationVariables,
   TUserUpdateMutationVariables,
@@ -8,8 +13,8 @@ import UserService, {
 import { useMutation, useQuery } from '@tanstack/react-query';
 import { Card, CardContent, LinearProgress } from '@mui/material';
 import { TApiError } from '../../../api/base/types';
-import { differenceWith, isEqual, omit, unionBy } from 'lodash';
-import { ChipSelectCell, chipSelectColDef } from '../../data-grid/chip-select';
+import { differenceWith, isEqual, omit, unionBy, values } from 'lodash';
+import { chipSelectColDef } from '../../data-grid/chip-select';
 import { AssignRoleModal } from '../assign-role-modal';
 
 export const UsersDataTable = (): JSX.Element => {
@@ -98,37 +103,30 @@ export const UsersDataTable = (): JSX.Element => {
       {
         field: E_USER_ENTITY_KEYS.ID,
         headerName: 'ID',
-        resizable: true,
       },
       {
         field: E_USER_ENTITY_KEYS.USERNAME,
         headerName: 'Username',
         editable: true,
-        resizable: true,
         flex: 1,
       },
       {
         field: E_USER_ENTITY_KEYS.FIRST_NAME,
         headerName: 'First name',
         editable: true,
-        resizable: true,
         flex: 1,
       },
       {
         field: E_USER_ENTITY_KEYS.LAST_NAME,
         headerName: 'Last name',
         editable: true,
-        resizable: true,
         flex: 1,
       },
       {
-        ...chipSelectColDef,
+        ...chipSelectColDef(E_ROLE_ENTITY_KEYS.NAME, values(E_ROLE)),
         field: E_USER_ENTITY_KEYS.ROLES,
         headerName: 'Roles',
         width: 200,
-        renderCell: (params) => (
-          <ChipSelectCell {...params} prop={E_ROLE_ENTITY_KEYS.NAME} />
-        ),
       },
       {
         field: 'actions',
