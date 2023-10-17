@@ -58,18 +58,27 @@ const AddNewUserModal = ({ onClose, onSuccess }: TAddNewUserModalProps) => {
     onClose();
   };
 
-  const handleSave = () => {
+  const handleSave = (event: FormEvent) => {
+    event.preventDefault();
+
     if (isSaveDisabled) return;
+
+    console.log('here');
 
     onSuccess(data);
   };
 
   const footer = (): JSX.Element => (
     <Box sx={{ display: 'flex', justifyContent: 'flex-end' }}>
-      <Button color={'muted'} onClick={handleClose}>
+      <Button type={'button'} color={'muted'} onClick={handleClose}>
         Cancel
       </Button>
-      <Button color={'primary'} disabled={isSaveDisabled} onClick={handleSave}>
+      <Button
+        type={'submit'}
+        color={'primary'}
+        disabled={isSaveDisabled}
+        onClick={handleSave}
+      >
         Save
       </Button>
     </Box>
@@ -80,6 +89,7 @@ const AddNewUserModal = ({ onClose, onSuccess }: TAddNewUserModalProps) => {
       show={true}
       title={'Add new user'}
       onClose={handleClose}
+      onSubmit={handleSave}
       footer={footer()}
     >
       <FormGroup sx={{ pt: 1, gap: 2 }} onChange={handleFieldChange}>

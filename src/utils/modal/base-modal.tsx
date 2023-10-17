@@ -1,4 +1,4 @@
-import { memo, ReactNode } from 'react';
+import { FormEvent, memo, ReactNode } from 'react';
 import { createPortal } from 'react-dom';
 import {
   Dialog,
@@ -18,17 +18,23 @@ export type TBaseModalProps = {
   children: ReactNode | string;
   footer?: ReactNode | string;
   onClose?(): void;
+  onSubmit?(event: FormEvent): void;
 };
 
 export const BaseModal = memo((props: TBaseModalProps) => {
-  const { title, footer, onClose, children } = props;
+  const { title, footer, onClose, onSubmit, children } = props;
 
   const root = document.getElementById('root');
 
   if (!root) throw new Error('Root node not found. Cannot render modal.');
 
   return createPortal(
-    <Dialog fullWidth={true} open={props.show} onClose={onClose}>
+    <Dialog
+      fullWidth={true}
+      open={props.show}
+      onClose={onClose}
+      {...(onSubmit ? { component: 'form', onSubmit } : {})}
+    >
       <DialogTitle>{title}</DialogTitle>
       <DialogContent>{children}</DialogContent>
       {footer && <DialogActions>{footer}</DialogActions>}
