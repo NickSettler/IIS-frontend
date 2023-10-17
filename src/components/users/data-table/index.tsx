@@ -1,11 +1,10 @@
-import { JSX, useCallback, useEffect, useMemo, useState } from 'react';
+import { JSX, useEffect, useState } from 'react';
 import { DataGrid, GridActionsCellItem, GridColDef } from '@mui/x-data-grid';
 import {
   E_ROLE,
   E_ROLE_ENTITY_KEYS,
   E_USER_ENTITY_KEYS,
   TApiUserWithRoles,
-  TUserWithRoles,
 } from '../../../api/user/types';
 import UserService, {
   TUserAssignRoleMutationVariables,
@@ -18,7 +17,6 @@ import { Button, Card, CardContent, LinearProgress } from '@mui/material';
 import { TApiError } from '../../../api/base/types';
 import { differenceWith, isEqual, omit, unionBy, values } from 'lodash';
 import { chipSelectColDef } from '../../data-grid/chip-select';
-import { AssignRoleModal } from '../assign-role-modal';
 import { DataGridToolbar } from '../../data-grid/toolbar';
 import { Add } from '@mui/icons-material';
 import { useModal } from '../../../utils/hooks/useModal';
@@ -28,6 +26,8 @@ export const UsersDataTable = (): JSX.Element => {
   const { onOpen: openAddUserModal, onClose: closeAddUserModal } = useModal(
     E_MODALS.ADD_NEW_USER,
   );
+  const { onOpen: openAssignRoleModal, onClose: closeAssignRoleModal } =
+    useModal(E_MODALS.ASSIGN_ROLE);
 
   const { data, isLoading, error, refetch } = useQuery<
     Array<TApiUserWithRoles>,
@@ -71,14 +71,13 @@ export const UsersDataTable = (): JSX.Element => {
       [E_USER_ENTITY_KEYS.ID]: id,
       role,
     }: TUserAssignRoleMutationVariables) => UserService.assignRole(id, role),
-    onSuccess: async () => refetch(),
+    onSuccess: async () => {
+      await refetch();
+      closeAssignRoleModal();
+    },
   });
 
   const [rows, setRows] = useState<Array<TApiUserWithRoles>>([]);
-  const [assignRoleModalOpen, setAssignRoleModalOpen] = useState(false);
-  const [assignRoleModalUserId, setAssignRoleModalUserId] = useState<
-    TUserWithRoles[E_USER_ENTITY_KEYS.ID] | null
-  >(null);
 
   useEffect(() => {
     if (data) setRows(data);
@@ -102,77 +101,63 @@ export const UsersDataTable = (): JSX.Element => {
     return newRow;
   };
 
-  const handleAssignRoleClick = useCallback(
-    (userId: TUserWithRoles[E_USER_ENTITY_KEYS.ID]) => () => {
-      setAssignRoleModalUserId(userId);
-      setAssignRoleModalOpen(true);
-    },
-    [],
-  );
-
-  const handleAssignRoleModalClose = () => {
-    setAssignRoleModalOpen(false);
-    setAssignRoleModalUserId(null);
-  };
-
   const handleAssignRoleModalSuccess = (id: string, role: E_ROLE) => {
     assignRoleMutation.mutate({
       [E_USER_ENTITY_KEYS.ID]: id,
       role,
     });
-
-    setAssignRoleModalOpen(false);
-    setAssignRoleModalUserId(null);
   };
 
-  const gridColumns = useMemo<Array<GridColDef<TApiUserWithRoles>>>(
-    () => [
-      {
-        field: E_USER_ENTITY_KEYS.ID,
-        headerName: 'ID',
-        hideable: false,
-      },
-      {
-        field: E_USER_ENTITY_KEYS.USERNAME,
-        headerName: 'Username',
-        editable: true,
-        flex: 1,
-        hideable: false,
-      },
-      {
-        field: E_USER_ENTITY_KEYS.FIRST_NAME,
-        headerName: 'First name',
-        editable: true,
-        flex: 1,
-      },
-      {
-        field: E_USER_ENTITY_KEYS.LAST_NAME,
-        headerName: 'Last name',
-        editable: true,
-        flex: 1,
-      },
-      {
-        ...chipSelectColDef(E_ROLE_ENTITY_KEYS.NAME, values(E_ROLE)),
-        field: E_USER_ENTITY_KEYS.ROLES,
-        headerName: 'Roles',
-        width: 200,
-      },
-      {
-        field: 'actions',
-        type: 'actions',
-        hideable: false,
-        getActions: (params) => [
-          <GridActionsCellItem
-            key={'assign-role'}
-            label={'Assign role'}
-            showInMenu={true}
-            onClick={handleAssignRoleClick(params.row[E_USER_ENTITY_KEYS.ID])}
-          />,
-        ],
-      },
-    ],
-    [handleAssignRoleClick],
-  );
+  const gridColumns: Array<GridColDef<TApiUserWithRoles>> = [
+    {
+      field: E_USER_ENTITY_KEYS.ID,
+      headerName: 'ID',
+      hideable: false,
+    },
+    {
+      field: E_USER_ENTITY_KEYS.USERNAME,
+      headerName: 'Username',
+      editable: true,
+      flex: 1,
+      hideable: false,
+    },
+    {
+      field: E_USER_ENTITY_KEYS.FIRST_NAME,
+      headerName: 'First name',
+      editable: true,
+      flex: 1,
+    },
+    {
+      field: E_USER_ENTITY_KEYS.LAST_NAME,
+      headerName: 'Last name',
+      editable: true,
+      flex: 1,
+    },
+    {
+      ...chipSelectColDef(E_ROLE_ENTITY_KEYS.NAME, values(E_ROLE)),
+      field: E_USER_ENTITY_KEYS.ROLES,
+      headerName: 'Roles',
+      width: 200,
+    },
+    {
+      field: 'actions',
+      type: 'actions',
+      hideable: false,
+      getActions: (params) => [
+        <GridActionsCellItem
+          key={'assign-role'}
+          label={'Assign role'}
+          showInMenu={true}
+          onClick={() =>
+            openAssignRoleModal({
+              userID: params.row[E_USER_ENTITY_KEYS.ID],
+              onSuccess: handleAssignRoleModalSuccess,
+            })
+          }
+        />,
+      ],
+    },
+  ];
 
   const handleAddUserSuccess = (createData: TUserCreateData) => {
     createMutation.mutate({
@@ -222,12 +207,6 @@ export const UsersDataTable = (): JSX.Element => {
           loadingOverlay: LinearProgress,
           toolbar,
         }}
-      ></DataGrid>
-      <AssignRoleModal
-        isOpen={assignRoleModalOpen}
-        userId={assignRoleModalUserId}
-        onSuccess={handleAssignRoleModalSuccess}
-        onClose={handleAssignRoleModalClose}
       />
     </>
   );

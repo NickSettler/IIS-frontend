@@ -2,8 +2,10 @@ import { createReducer } from '@reduxjs/toolkit';
 import { closeModal, openModal } from './actions';
 import { findLastIndex } from 'lodash';
 import { TUserCreateData } from '../../api/user/user.service';
+import { E_ROLE } from '../../api/user/types';
 
 export enum E_MODALS {
+  ASSIGN_ROLE = 'assign-role.modal',
   ADD_NEW_USER = 'add-new-user.modal',
 }
 
@@ -16,6 +18,10 @@ export type TModalMapItem = {
 export type TModalMetaMap = {
   [E_MODALS.ADD_NEW_USER]: {
     onSuccess(data: TUserCreateData): void;
+  };
+  [E_MODALS.ASSIGN_ROLE]: {
+    userID: string;
+    onSuccess(userID: string, role: E_ROLE): void;
   };
 };
 

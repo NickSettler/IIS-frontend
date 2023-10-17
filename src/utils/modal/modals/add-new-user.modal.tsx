@@ -12,11 +12,10 @@ import { FormEvent, JSX, SyntheticEvent, useMemo, useState } from 'react';
 import { map, startCase, values } from 'lodash';
 import { BaseModal, TCommonModalProps } from '../base-modal';
 import Box from '@mui/material/Box';
-import { TUserCreateData } from '../../../api/user/user.service';
+import { E_MODALS, TDynModalMeta } from '../../../store/modals';
 
-export type TAddNewUserModalProps = TCommonModalProps & {
-  onSuccess(data: TUserCreateData): void;
-};
+export type TAddNewUserModalProps = TCommonModalProps &
+  TDynModalMeta<E_MODALS.ADD_NEW_USER>;
 
 const AddNewUserModal = ({ onClose, onSuccess }: TAddNewUserModalProps) => {
   const [data, setData] = useState<Omit<TUser, E_USER_ENTITY_KEYS.ID>>({
@@ -141,7 +140,5 @@ const AddNewUserModal = ({ onClose, onSuccess }: TAddNewUserModalProps) => {
     </BaseModal>
   );
 };
-
-AddNewUserModal.displayName = 'AddNewUserModal';
 
 export default AddNewUserModal;
