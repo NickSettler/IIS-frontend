@@ -25,6 +25,10 @@ import { useModal } from '../../../utils/hooks/useModal';
 import { E_MODALS } from '../../../store/modals';
 
 export const UsersDataTable = (): JSX.Element => {
+  const { onOpen: openAddUserModal, onClose: closeAddUserModal } = useModal(
+    E_MODALS.ADD_NEW_USER,
+  );
+
   const { data, isLoading, error, refetch } = useQuery<
     Array<TApiUserWithRoles>,
     TApiError
@@ -40,7 +44,10 @@ export const UsersDataTable = (): JSX.Element => {
   >({
     mutationFn: async ({ data: createData }: TUserCreateMutationVariables) =>
       UserService.createUser(createData),
-    onSuccess: async () => refetch(),
+    onSuccess: async () => {
+      await refetch();
+      closeAddUserModal();
+    },
   });
 
   const updateMutation = useMutation<
@@ -166,8 +173,6 @@ export const UsersDataTable = (): JSX.Element => {
     ],
     [handleAssignRoleClick],
   );
-
-  const { onOpen: openAddUserModal } = useModal(E_MODALS.ADD_NEW_USER);
 
   const handleAddUserSuccess = (createData: TUserCreateData) => {
     createMutation.mutate({
