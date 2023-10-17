@@ -4,30 +4,47 @@ import {
   E_ROLE,
   E_ROLE_ENTITY_KEYS,
   E_USER_ENTITY_KEYS,
+  TApiUserWithRoles,
   TUserWithRoles,
 } from '../../../api/user/types';
 import UserService, {
   TUserAssignRoleMutationVariables,
+  TUserCreateData,
+  TUserCreateMutationVariables,
   TUserUpdateMutationVariables,
 } from '../../../api/user/user.service';
 import { useMutation, useQuery } from '@tanstack/react-query';
-import { Card, CardContent, LinearProgress } from '@mui/material';
+import { Button, Card, CardContent, LinearProgress } from '@mui/material';
 import { TApiError } from '../../../api/base/types';
 import { differenceWith, isEqual, omit, unionBy, values } from 'lodash';
 import { chipSelectColDef } from '../../data-grid/chip-select';
 import { AssignRoleModal } from '../assign-role-modal';
+import { DataGridToolbar } from '../../data-grid/toolbar';
+import { Add } from '@mui/icons-material';
+import { useModal } from '../../../utils/hooks/useModal';
+import { E_MODALS } from '../../../store/modals';
 
 export const UsersDataTable = (): JSX.Element => {
   const { data, isLoading, error, refetch } = useQuery<
-    Array<TUserWithRoles>,
+    Array<TApiUserWithRoles>,
     TApiError
   >({
     queryKey: ['getUsers'],
     queryFn: UserService.getUsers.bind(UserService),
   });
 
+  const createMutation = useMutation<
+    TApiUserWithRoles,
+    TApiError,
+    TUserCreateMutationVariables
+  >({
+    mutationFn: async ({ data: createData }: TUserCreateMutationVariables) =>
+      UserService.createUser(createData),
+    onSuccess: async () => refetch(),
+  });
+
   const updateMutation = useMutation<
-    TUserWithRoles,
+    TApiUserWithRoles,
     TApiError,
     TUserUpdateMutationVariables
   >({
@@ -39,7 +56,7 @@ export const UsersDataTable = (): JSX.Element => {
   });
 
   const assignRoleMutation = useMutation<
-    TUserWithRoles,
+    TApiUserWithRoles,
     TApiError,
     TUserAssignRoleMutationVariables
   >({
@@ -50,7 +67,7 @@ export const UsersDataTable = (): JSX.Element => {
     onSuccess: async () => refetch(),
   });
 
-  const [rows, setRows] = useState<Array<TUserWithRoles>>([]);
+  const [rows, setRows] = useState<Array<TApiUserWithRoles>>([]);
   const [assignRoleModalOpen, setAssignRoleModalOpen] = useState(false);
   const [assignRoleModalUserId, setAssignRoleModalUserId] = useState<
     TUserWithRoles[E_USER_ENTITY_KEYS.ID] | null
@@ -60,7 +77,10 @@ export const UsersDataTable = (): JSX.Element => {
     if (data) setRows(data);
   }, [data]);
 
-  const handleRowUpdate = (newRow: TUserWithRoles, oldRow: TUserWithRoles) => {
+  const handleRowUpdate = (
+    newRow: TApiUserWithRoles,
+    oldRow: TApiUserWithRoles,
+  ) => {
     const diff = differenceWith([oldRow], [newRow], isEqual);
 
     if (diff.length === 0) return oldRow;
@@ -98,17 +118,19 @@ export const UsersDataTable = (): JSX.Element => {
     setAssignRoleModalUserId(null);
   };
 
-  const gridColumns = useMemo<Array<GridColDef<TUserWithRoles>>>(
+  const gridColumns = useMemo<Array<GridColDef<TApiUserWithRoles>>>(
     () => [
       {
         field: E_USER_ENTITY_KEYS.ID,
         headerName: 'ID',
+        hideable: false,
       },
       {
         field: E_USER_ENTITY_KEYS.USERNAME,
         headerName: 'Username',
         editable: true,
         flex: 1,
+        hideable: false,
       },
       {
         field: E_USER_ENTITY_KEYS.FIRST_NAME,
@@ -131,6 +153,7 @@ export const UsersDataTable = (): JSX.Element => {
       {
         field: 'actions',
         type: 'actions',
+        hideable: false,
         getActions: (params) => [
           <GridActionsCellItem
             key={'assign-role'}
@@ -144,6 +167,14 @@ export const UsersDataTable = (): JSX.Element => {
     [handleAssignRoleClick],
   );
 
+  const { onOpen: openAddUserModal } = useModal(E_MODALS.ADD_NEW_USER);
+
+  const handleAddUserSuccess = (createData: TUserCreateData) => {
+    createMutation.mutate({
+      data: createData,
+    });
+  };
+
   if (error) {
     return (
       <Card>
@@ -151,6 +182,21 @@ export const UsersDataTable = (): JSX.Element => {
       </Card>
     );
   }
+
+  const toolbar = () => (
+    <DataGridToolbar
+      prependButtons={[
+        <Button
+          key={E_MODALS.ADD_NEW_USER}
+          size={'small'}
+          startIcon={<Add />}
+          onClick={() => openAddUserModal({ onSuccess: handleAddUserSuccess })}
+        >
+          Add new user
+        </Button>,
+      ]}
+    />
+  );
 
   return (
     <>
@@ -169,6 +215,7 @@ export const UsersDataTable = (): JSX.Element => {
         processRowUpdate={handleRowUpdate}
         slots={{
           loadingOverlay: LinearProgress,
+          toolbar,
         }}
       ></DataGrid>
       <AssignRoleModal
