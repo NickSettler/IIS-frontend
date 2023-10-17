@@ -26,6 +26,10 @@ export type TUserUpdateMutationVariables = {
   data: TUserUpdateData;
 };
 
+export type TUserDeleteMutationVariables = {
+  [E_USER_ENTITY_KEYS.ID]: TUser[E_USER_ENTITY_KEYS.ID];
+};
+
 export default class UserService extends BaseService {
   protected static readonly endpoint = '/users';
 
@@ -60,6 +64,12 @@ export default class UserService extends BaseService {
       `${this.endpoint}/${id}`,
       data,
     );
+  }
+
+  public static async deleteUser(
+    id: TUser[E_USER_ENTITY_KEYS.ID],
+  ): Promise<void> {
+    await Api.instance.delete(`${this.endpoint}/${id}`);
   }
 
   public static async assignRole(

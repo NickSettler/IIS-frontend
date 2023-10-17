@@ -1,5 +1,10 @@
 import { JSX, useEffect, useState } from 'react';
-import { DataGrid, GridActionsCellItem, GridColDef } from '@mui/x-data-grid';
+import {
+  DataGrid,
+  GridActionsCellItem,
+  GridColDef,
+  GridRowId,
+} from '@mui/x-data-grid';
 import {
   E_ROLE,
   E_ROLE_ENTITY_KEYS,
@@ -10,15 +15,24 @@ import UserService, {
   TUserAssignRoleMutationVariables,
   TUserCreateData,
   TUserCreateMutationVariables,
+  TUserDeleteMutationVariables,
   TUserUpdateMutationVariables,
 } from '../../../api/user/user.service';
 import { useMutation, useQuery } from '@tanstack/react-query';
 import { Button, Card, CardContent, LinearProgress } from '@mui/material';
 import { TApiError } from '../../../api/base/types';
-import { differenceWith, isEqual, omit, unionBy, values } from 'lodash';
+import {
+  differenceWith,
+  forEach,
+  isEqual,
+  omit,
+  unionBy,
+  values,
+  toString,
+} from 'lodash';
 import { chipSelectColDef } from '../../data-grid/chip-select';
 import { DataGridToolbar } from '../../data-grid/toolbar';
-import { Add } from '@mui/icons-material';
+import { Add, Delete } from '@mui/icons-material';
 import { useModal } from '../../../utils/hooks/useModal';
 import { E_MODALS } from '../../../store/modals';
 
@@ -62,6 +76,17 @@ export const UsersDataTable = (): JSX.Element => {
     onSuccess: async () => refetch(),
   });
 
+  const deleteMutation = useMutation<
+    void,
+    TApiError,
+    TUserDeleteMutationVariables
+  >({
+    mutationFn: async ({
+      [E_USER_ENTITY_KEYS.ID]: id,
+    }: TUserDeleteMutationVariables) => UserService.deleteUser(id),
+    onSuccess: async () => refetch(),
+  });
+
   const assignRoleMutation = useMutation<
     TApiUserWithRoles,
     TApiError,
@@ -78,6 +103,7 @@ export const UsersDataTable = (): JSX.Element => {
   });
 
   const [rows, setRows] = useState<Array<TApiUserWithRoles>>([]);
+  const [rowSelection, setRowSelection] = useState<Array<GridRowId>>([]);
 
   useEffect(() => {
     if (data) setRows(data);
@@ -99,6 +125,18 @@ export const UsersDataTable = (): JSX.Element => {
     });
 
     return newRow;
+  };
+
+  const handleRowSelection = (newSelection: Array<GridRowId>) => {
+    setRowSelection(newSelection);
+  };
+
+  const handleDeleteSelected = () => {
+    forEach(rowSelection, (id) => {
+      deleteMutation.mutate({
+        [E_USER_ENTITY_KEYS.ID]: toString(id),
+      });
+    });
   };
 
   const handleAssignRoleModalSuccess = (id: string, role: E_ROLE) => {
@@ -155,6 +193,16 @@ export const UsersDataTable = (): JSX.Element => {
             })
           }
         />,
+        <GridActionsCellItem
+          key={'delete'}
+          label={'Delete'}
+          showInMenu={true}
+          onClick={() =>
+            deleteMutation.mutate({
+              [E_USER_ENTITY_KEYS.ID]: params.row[E_USER_ENTITY_KEYS.ID],
+            })
+          }
+        />,
       ],
     },
   ];
@@ -175,6 +223,7 @@ export const UsersDataTable = (): JSX.Element => {
 
   const toolbar = () => (
     <DataGridToolbar
+      selection={rowSelection}
       prependButtons={[
         <Button
           key={E_MODALS.ADD_NEW_USER}
@@ -183,6 +232,16 @@ export const UsersDataTable = (): JSX.Element => {
           onClick={() => openAddUserModal({ onSuccess: handleAddUserSuccess })}
         >
           Add new user
+        </Button>,
+      ]}
+      endButtons={[
+        <Button
+          key={'delete-selected'}
+          size={'small'}
+          startIcon={<Delete />}
+          onClick={handleDeleteSelected}
+        >
+          Delete selected
         </Button>,
       ]}
     />
@@ -196,6 +255,8 @@ export const UsersDataTable = (): JSX.Element => {
         editMode={'row'}
         loading={isLoading}
         checkboxSelection={true}
+        rowSelectionModel={rowSelection}
+        onRowSelectionModelChange={handleRowSelection}
         sortModel={[
           {
             field: E_USER_ENTITY_KEYS.ID,

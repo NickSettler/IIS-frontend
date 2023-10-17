@@ -1,4 +1,5 @@
 import {
+  GridRowId,
   GridToolbarColumnsButton,
   GridToolbarContainer,
 } from '@mui/x-data-grid';
@@ -6,12 +7,14 @@ import { JSX } from 'react';
 import Box from '@mui/material/Box';
 
 type TDataGridToolbarProps = {
+  selection: Array<GridRowId>;
   prependButtons?: Array<JSX.Element>;
   appendButtons?: Array<JSX.Element>;
   endButtons?: Array<JSX.Element>;
 };
 
 export const DataGridToolbar = ({
+  selection,
   prependButtons,
   appendButtons,
   endButtons,
@@ -22,7 +25,7 @@ export const DataGridToolbar = ({
       <GridToolbarColumnsButton />
       {appendButtons}
       <Box sx={{ flexGrow: 1 }} />
-      {endButtons}
+      {!!selection.length && endButtons}
     </GridToolbarContainer>
   );
 };
