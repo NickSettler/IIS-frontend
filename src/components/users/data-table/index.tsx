@@ -259,7 +259,7 @@ export const UsersDataTable = (): JSX.Element => {
         onRowSelectionModelChange={handleRowSelection}
         sortModel={[
           {
-            field: E_USER_ENTITY_KEYS.ID,
+            field: E_USER_ENTITY_KEYS.USERNAME,
             sort: 'asc',
           },
         ]}
