@@ -7,18 +7,25 @@ import { client } from './utils/react-query/client';
 import { ThemeProvider } from '@mui/material';
 import { theme } from './utils/theme/theme';
 import { BrowserRouter } from 'react-router-dom';
+import { ModalProvider } from './utils/modal/modal-provider';
+import { Provider } from 'react-redux';
+import store from './store';
 
 const root = ReactDOM.createRoot(
   document.getElementById('root') as HTMLElement,
 );
 root.render(
   <React.StrictMode>
-    <QueryClientProvider client={client}>
+    <Provider store={store}>
       <BrowserRouter>
         <ThemeProvider theme={theme}>
-          <App />
-      </ThemeProvider>
+          <QueryClientProvider client={client}>
+            <ModalProvider>
+              <App />
+            </ModalProvider>
+          </QueryClientProvider>
+        </ThemeProvider>
       </BrowserRouter>
-    </QueryClientProvider>
+    </Provider>
   </React.StrictMode>,
 );
