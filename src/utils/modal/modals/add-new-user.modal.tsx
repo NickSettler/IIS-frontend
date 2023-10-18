@@ -86,7 +86,7 @@ const AddNewUserModal = ({ onClose, onSuccess }: TAddNewUserModalProps) => {
 
   return (
     <BaseModal
-      show={true}
+      show
       title={'Add new user'}
       onClose={handleClose}
       onSubmit={handleSave}
@@ -95,14 +95,14 @@ const AddNewUserModal = ({ onClose, onSuccess }: TAddNewUserModalProps) => {
       <FormGroup sx={{ pt: 1, gap: 2 }} onChange={handleFieldChange}>
         <Stack direction={'row'} gap={2}>
           <TextField
-            fullWidth={true}
+            fullWidth
             label={'Username'}
             name={E_USER_ENTITY_KEYS.USERNAME}
             value={data[E_USER_ENTITY_KEYS.USERNAME]}
             autoComplete={'username'}
           />
           <TextField
-            fullWidth={true}
+            fullWidth
             type={'password'}
             label={'Password'}
             name={E_USER_ENTITY_KEYS.PASSWORD}
@@ -112,14 +112,14 @@ const AddNewUserModal = ({ onClose, onSuccess }: TAddNewUserModalProps) => {
         </Stack>
         <Stack direction={'row'} gap={2}>
           <TextField
-            fullWidth={true}
+            fullWidth
             label={'First name'}
             name={E_USER_ENTITY_KEYS.FIRST_NAME}
             value={data[E_USER_ENTITY_KEYS.FIRST_NAME]}
             autoComplete={'given-name'}
           />
           <TextField
-            fullWidth={true}
+            fullWidth
             label={'Last name'}
             name={E_USER_ENTITY_KEYS.LAST_NAME}
             value={data[E_USER_ENTITY_KEYS.LAST_NAME]}
@@ -127,8 +127,8 @@ const AddNewUserModal = ({ onClose, onSuccess }: TAddNewUserModalProps) => {
           />
         </Stack>
         <Autocomplete
-          fullWidth={true}
-          multiple={true}
+          fullWidth
+          multiple
           value={roles}
           renderInput={(params) => (
             <TextField {...params} label={'Roles'}></TextField>

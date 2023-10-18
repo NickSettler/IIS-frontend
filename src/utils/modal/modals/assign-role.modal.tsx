@@ -69,7 +69,7 @@ export const AssignRoleModal = ({
 
   return (
     <BaseModal
-      show={true}
+      show
       title={'Assign role'}
       onClose={handleClose}
       footer={footer()}
@@ -80,7 +80,7 @@ export const AssignRoleModal = ({
         {error && <Typography>Error: {error.message}</Typography>}
 
         {possibleRoles && (
-          <FormControl fullWidth={true}>
+          <FormControl fullWidth>
             <InputLabel id='roles-label'>Roles</InputLabel>
             <Select
               labelId={'roles-label'}

@@ -69,17 +69,17 @@ const LogInPage = () => {
         </Typography>
         <Box component='form' onSubmit={handleSubmit} sx={{ mt: 1 }}>
           <TextField
-            required={true}
-            fullWidth={true}
+            required
+            fullWidth
             label='Username'
             autoComplete='username'
-            autoFocus={true}
+            autoFocus
             onChange={(event) => setUsernameInput(event.target.value)}
           />
           <TextField
             margin='normal'
-            required={true}
-            fullWidth={true}
+            required
+            fullWidth
             label='Password'
             type='password'
             autoComplete='current-password'
@@ -87,7 +87,7 @@ const LogInPage = () => {
           />
           <Button
             type='submit'
-            fullWidth={true}
+            fullWidth
             variant='contained'
             sx={{ mt: 3, mb: 2 }}
           >

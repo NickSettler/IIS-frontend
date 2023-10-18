@@ -67,7 +67,7 @@ module.exports = {
       },
     ],
     'react/hook-use-state': ['error', { allowDestructuredState: true }],
-    'react/jsx-boolean-value': ['error', 'always'],
+    'react/jsx-boolean-value': ['error', 'never'],
 
     // TypeScript rules
     '@typescript-eslint/array-type': ['error', { default: 'generic' }],

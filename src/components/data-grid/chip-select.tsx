@@ -44,7 +44,7 @@ const ChipSelectFilterInput = <T extends string>({
     <FormControl variant='standard'>
       <InputLabel>Value</InputLabel>
       <Select
-        multiple={true}
+        multiple
         value={item.value || []}
         onChange={handleFilterChange}
         renderValue={(selected: Array<T>) => (

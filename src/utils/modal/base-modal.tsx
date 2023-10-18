@@ -30,7 +30,7 @@ export const BaseModal = memo((props: TBaseModalProps) => {
 
   return createPortal(
     <Dialog
-      fullWidth={true}
+      fullWidth
       open={props.show}
       onClose={onClose}
       {...(onSubmit ? { component: 'form', onSubmit } : {})}

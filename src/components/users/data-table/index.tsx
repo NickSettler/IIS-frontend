@@ -185,7 +185,7 @@ export const UsersDataTable = (): JSX.Element => {
         <GridActionsCellItem
           key={'assign-role'}
           label={'Assign role'}
-          showInMenu={true}
+          showInMenu
           onClick={() =>
             openAssignRoleModal({
               userID: params.row[E_USER_ENTITY_KEYS.ID],
@@ -196,7 +196,7 @@ export const UsersDataTable = (): JSX.Element => {
         <GridActionsCellItem
           key={'delete'}
           label={'Delete'}
-          showInMenu={true}
+          showInMenu
           onClick={() =>
             deleteMutation.mutate({
               [E_USER_ENTITY_KEYS.ID]: params.row[E_USER_ENTITY_KEYS.ID],
@@ -254,7 +254,7 @@ export const UsersDataTable = (): JSX.Element => {
         rows={rows}
         editMode={'row'}
         loading={isLoading}
-        checkboxSelection={true}
+        checkboxSelection
         rowSelectionModel={rowSelection}
         onRowSelectionModelChange={handleRowSelection}
         sortModel={[
