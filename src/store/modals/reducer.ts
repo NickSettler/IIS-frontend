@@ -5,7 +5,7 @@ import { TUserCreateData } from '../../api/user/user.service';
 import { E_ROLE } from '../../api/user/types';
 
 export enum E_MODALS {
-  ASSIGN_ROLE = 'assign-role.modal',
+  MANAGE_ROLES = 'manage-roles.modal',
   ADD_NEW_USER = 'add-new-user.modal',
 }
 
@@ -19,9 +19,9 @@ export type TModalMetaMap = {
   [E_MODALS.ADD_NEW_USER]: {
     onSuccess(data: TUserCreateData): void;
   };
-  [E_MODALS.ASSIGN_ROLE]: {
+  [E_MODALS.MANAGE_ROLES]: {
     userID: string;
-    onSuccess(userID: string, role: E_ROLE): void;
+    onSuccess(userID: string, roles: Array<E_ROLE>): void;
   };
 };
 

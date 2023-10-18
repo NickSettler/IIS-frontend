@@ -40,8 +40,8 @@ export const UsersDataTable = (): JSX.Element => {
   const { onOpen: openAddUserModal, onClose: closeAddUserModal } = useModal(
     E_MODALS.ADD_NEW_USER,
   );
-  const { onOpen: openAssignRoleModal, onClose: closeAssignRoleModal } =
-    useModal(E_MODALS.ASSIGN_ROLE);
+  const { onOpen: openManageRolesModal, onClose: closeManageRolesModal } =
+    useModal(E_MODALS.MANAGE_ROLES);
 
   const { data, isLoading, error, refetch } = useQuery<
     Array<TApiUserWithRoles>,
@@ -98,7 +98,7 @@ export const UsersDataTable = (): JSX.Element => {
     }: TUserAssignRoleMutationVariables) => UserService.assignRole(id, role),
     onSuccess: async () => {
       await refetch();
-      closeAssignRoleModal();
+      closeManageRolesModal();
     },
   });
 
@@ -139,11 +139,22 @@ export const UsersDataTable = (): JSX.Element => {
     });
   };
 
-  const handleAssignRoleModalSuccess = (id: string, role: E_ROLE) => {
-    assignRoleMutation.mutate({
-      [E_USER_ENTITY_KEYS.ID]: id,
-      role,
-    });
+  const handleManageRolesModalSuccess = (id: string, roles: Array<E_ROLE>) => {
+    updateMutation.mutate(
+      {
+        [E_USER_ENTITY_KEYS.ID]: id,
+        data: {
+          [E_USER_ENTITY_KEYS.ROLES]: roles,
+        },
+      },
+      {
+        onSuccess: async () => {
+          await refetch();
+
+          closeManageRolesModal();
+        },
+      },
+    );
   };
 
   const gridColumns: Array<GridColDef<TApiUserWithRoles>> = [
@@ -183,13 +194,13 @@ export const UsersDataTable = (): JSX.Element => {
       hideable: false,
       getActions: (params) => [
         <GridActionsCellItem
-          key={'assign-role'}
-          label={'Assign role'}
+          key={'manage-roles'}
+          label={'Manage roles'}
           showInMenu
           onClick={() =>
-            openAssignRoleModal({
+            openManageRolesModal({
               userID: params.row[E_USER_ENTITY_KEYS.ID],
-              onSuccess: handleAssignRoleModalSuccess,
+              onSuccess: handleManageRolesModalSuccess,
             })
           }
         />,

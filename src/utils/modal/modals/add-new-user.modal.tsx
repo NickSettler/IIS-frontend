@@ -25,7 +25,7 @@ const AddNewUserModal = ({ onClose, onSuccess }: TAddNewUserModalProps) => {
     [E_USER_ENTITY_KEYS.LAST_NAME]: '',
   });
 
-  const [roles, setRoles] = useState<Array<string>>([]);
+  const [roles, setRoles] = useState<Array<E_ROLE>>([]);
 
   const isSaveDisabled = useMemo(() => {
     const {
@@ -49,9 +49,18 @@ const AddNewUserModal = ({ onClose, onSuccess }: TAddNewUserModalProps) => {
 
   const handleRolesChange = (
     _: SyntheticEvent,
-    value: AutocompleteValue<string, true, true, false>,
+    value: AutocompleteValue<E_ROLE, true, true, false>,
   ) => {
     setRoles(value);
+  };
+
+  const handleModalClose = (
+    event: Record<string, never>,
+    reason: 'backdropClick' | 'escapeKeyDown',
+  ) => {
+    if (reason === 'backdropClick') return;
+
+    onClose();
   };
 
   const handleClose = () => {
@@ -63,9 +72,10 @@ const AddNewUserModal = ({ onClose, onSuccess }: TAddNewUserModalProps) => {
 
     if (isSaveDisabled) return;
 
-    console.log('here');
-
-    onSuccess(data);
+    onSuccess({
+      ...data,
+      [E_USER_ENTITY_KEYS.ROLES]: roles,
+    });
   };
 
   const footer = (): JSX.Element => (
@@ -88,7 +98,7 @@ const AddNewUserModal = ({ onClose, onSuccess }: TAddNewUserModalProps) => {
     <BaseModal
       show
       title={'Add new user'}
-      onClose={handleClose}
+      onClose={handleModalClose}
       onSubmit={handleSave}
       footer={footer()}
     >
@@ -133,8 +143,8 @@ const AddNewUserModal = ({ onClose, onSuccess }: TAddNewUserModalProps) => {
           renderInput={(params) => (
             <TextField {...params} label={'Roles'}></TextField>
           )}
-          renderTags={(value, getTagProps) =>
-            value.map((option, index) => (
+          renderTags={(value: Array<E_ROLE>, getTagProps) =>
+            value.map((option: E_ROLE, index) => (
               // eslint-disable-next-line react/jsx-key
               <Chip
                 label={option}
@@ -144,7 +154,7 @@ const AddNewUserModal = ({ onClose, onSuccess }: TAddNewUserModalProps) => {
             ))
           }
           onChange={handleRolesChange}
-          options={map(values(E_ROLE), startCase)}
+          options={map(values(E_ROLE), startCase) as Array<E_ROLE>}
         />
       </FormGroup>
     </BaseModal>

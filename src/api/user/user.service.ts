@@ -8,7 +8,9 @@ import {
 } from './types';
 import Api from '../base/api';
 
-export type TUserCreateData = Omit<TUser, E_USER_ENTITY_KEYS.ID>;
+export type TUserCreateData = Omit<TUser, E_USER_ENTITY_KEYS.ID> & {
+  [E_USER_ENTITY_KEYS.ROLES]: Array<E_ROLE>;
+};
 
 export type TUserUpdateData = Partial<TUserCreateData>;
 

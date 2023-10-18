@@ -17,7 +17,10 @@ export type TBaseModalProps = {
   title: string;
   children: ReactNode | string;
   footer?: ReactNode | string;
-  onClose?(): void;
+  onClose?(
+    event: Record<string, never>,
+    reason: 'backdropClick' | 'escapeKeyDown',
+  ): void;
   onSubmit?(event: FormEvent): void;
 };
 
