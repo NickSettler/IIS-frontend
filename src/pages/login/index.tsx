@@ -22,12 +22,7 @@ const LogInPage = () => {
   const getUserInfoMutation = useMutation({
     mutationFn: async () => UserService.getMe(),
     onSuccess: (data) => {
-      console.log(JSON.stringify(data));
-
-      LocalStorage.setItem(
-        E_LOCAL_STORAGE_KEYS.USER_INFO,
-        JSON.stringify(data),
-      );
+      LocalStorage.setItem(E_LOCAL_STORAGE_KEYS.USER_INFO, data);
     },
   });
 
