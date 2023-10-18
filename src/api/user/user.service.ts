@@ -45,8 +45,8 @@ export default class UserService extends BaseService {
     return await Api.instance.get<TApiUserWithRoles>(`${this.endpoint}/${id}`);
   }
 
-  public static async getMe(): Promise<TApiUser> {
-    return await Api.instance.get<TApiUser>(`${this.endpoint}/me`);
+  public static async getMe(): Promise<TApiUserWithRoles> {
+    return await Api.instance.get<TApiUserWithRoles>(`${this.endpoint}/me`);
   }
 
   public static async createUser(
