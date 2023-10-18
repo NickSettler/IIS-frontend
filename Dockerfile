@@ -8,7 +8,7 @@ COPY tsconfig.json .
 
 ARG REACT_APP_API_URL
 
-RUN yarn install
+RUN yarn install --freeze-lockfile --network-timeout 3600000
 
 COPY . .
 
