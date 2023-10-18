@@ -9,8 +9,8 @@ env:
   REACT_APP_API_URL: ${{ secrets.REACT_APP_API_URL }}
 
 jobs:
-  build_backend:
-    name: Build backend
+  build_frontend:
+    name: Build frontend
     runs-on: ubuntu-latest
     steps:
       - name: Set up QEMU
