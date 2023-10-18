@@ -12,7 +12,6 @@ import {
   TApiUserWithRoles,
 } from '../../../api/user/types';
 import UserService, {
-  TUserAssignRoleMutationVariables,
   TUserCreateData,
   TUserCreateMutationVariables,
   TUserDeleteMutationVariables,
@@ -85,21 +84,6 @@ export const UsersDataTable = (): JSX.Element => {
       [E_USER_ENTITY_KEYS.ID]: id,
     }: TUserDeleteMutationVariables) => UserService.deleteUser(id),
     onSuccess: async () => refetch(),
-  });
-
-  const assignRoleMutation = useMutation<
-    TApiUserWithRoles,
-    TApiError,
-    TUserAssignRoleMutationVariables
-  >({
-    mutationFn: async ({
-      [E_USER_ENTITY_KEYS.ID]: id,
-      role,
-    }: TUserAssignRoleMutationVariables) => UserService.assignRole(id, role),
-    onSuccess: async () => {
-      await refetch();
-      closeManageRolesModal();
-    },
   });
 
   const [rows, setRows] = useState<Array<TApiUserWithRoles>>([]);
