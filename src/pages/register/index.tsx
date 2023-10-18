@@ -76,39 +76,39 @@ const SignUpPage = () => {
           Sign up
         </Typography>
         <Box component='form' onSubmit={handleSubmit} sx={{ mt: 3 }}>
-          <Grid container={true} spacing={2}>
-            <Grid item={true} xs={12} sm={6}>
+          <Grid container spacing={2}>
+            <Grid item xs={12} sm={6}>
               <TextField
                 autoComplete='given-name'
-                required={true}
-                fullWidth={true}
+                required
+                fullWidth
                 label='First Name'
-                autoFocus={true}
+                autoFocus
                 onChange={(event) => setFirstNameInput(event.target.value)}
               />
             </Grid>
-            <Grid item={true} xs={12} sm={6}>
+            <Grid item xs={12} sm={6}>
               <TextField
-                required={true}
-                fullWidth={true}
+                required
+                fullWidth
                 label='Last Name'
                 autoComplete='family-name'
                 onChange={(event) => setLastNameInput(event.target.value)}
               />
             </Grid>
-            <Grid item={true} xs={12}>
+            <Grid item xs={12}>
               <TextField
-                required={true}
-                fullWidth={true}
+                required
+                fullWidth
                 label='Username'
                 autoComplete='username'
                 onChange={(event) => setUsernameInput(event.target.value)}
               />
             </Grid>
-            <Grid item={true} xs={12}>
+            <Grid item xs={12}>
               <TextField
-                required={true}
-                fullWidth={true}
+                required
+                fullWidth
                 label='Password'
                 type='password'
                 autoComplete='new-password'
@@ -118,14 +118,14 @@ const SignUpPage = () => {
           </Grid>
           <Button
             type='submit'
-            fullWidth={true}
+            fullWidth
             variant='contained'
             sx={{ mt: 3, mb: 2 }}
           >
             Sign Up
           </Button>
-          <Grid container={true} justifyContent='flex-end'>
-            <Grid item={true}>
+          <Grid container justifyContent='flex-end'>
+            <Grid item>
               <Link href='/login' variant='body2'>
                 Already have an account? Sign in
               </Link>

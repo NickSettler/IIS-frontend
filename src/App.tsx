@@ -30,7 +30,7 @@ const App = (): ReactElement => {
         sx={{ zIndex: (theme) => theme.zIndex.drawer + 1 }}
       >
         <Toolbar>
-          <Typography variant='h6' noWrap={true} component='div'>
+          <Typography variant='h6' noWrap component='div'>
             Schedule Planner
           </Typography>
         </Toolbar>
@@ -53,9 +53,9 @@ const App = (): ReactElement => {
               {appRoutes.map(({ path, label }) => (
                 <ListItem
                   key={path}
-                  disablePadding={true}
+                  disablePadding
                   component={Link}
-                  button={true}
+                  button
                   to={path}
                 >
                   <ListItemButton>
@@ -63,7 +63,7 @@ const App = (): ReactElement => {
                   </ListItemButton>
                 </ListItem>
               ))}
-              <ListItem disablePadding={true}>
+              <ListItem disablePadding>
                 <ListItemButton onClick={handleLogout}>
                   <ListItemText primary='Logout' />
                 </ListItemButton>
