@@ -2,21 +2,35 @@ import React, { useState } from 'react';
 import Button from '@mui/material/Button';
 import CssBaseline from '@mui/material/CssBaseline';
 import TextField from '@mui/material/TextField';
-import Link from '@mui/material/Link';
 import Grid from '@mui/material/Grid';
 import Box from '@mui/material/Box';
 import Typography from '@mui/material/Typography';
 import Container from '@mui/material/Container';
 import { useMutation } from '@tanstack/react-query';
-import { E_USER_ENTITY_KEYS } from '../../api/user/types';
+import { E_USER_ENTITY_KEYS, TApiUserWithRoles } from '../../api/user/types';
 import AuthService, {
   TAuthLoginResponse,
   TAuthRegisterMutationVariables,
 } from '../../api/auth/auth.service';
-import LocalStorage, { E_LOCAL_STORAGE_KEYS } from '../../utils/local-storage';
+import { E_LOCAL_STORAGE_KEYS } from '../../utils/local-storage';
 import UserService from '../../api/user/user.service';
+import { Link, Navigate } from 'react-router-dom';
+import { useLocalStorage } from 'usehooks-ts';
 
 const SignUpPage = () => {
+  const [, setAccessToken] = useLocalStorage<string | null>(
+    E_LOCAL_STORAGE_KEYS.ACCESS_TOKEN,
+    null,
+  );
+  const [, setRefreshToken] = useLocalStorage<string | null>(
+    E_LOCAL_STORAGE_KEYS.REFRESH_TOKEN,
+    null,
+  );
+  const [user, setUser] = useLocalStorage<TApiUserWithRoles | null>(
+    E_LOCAL_STORAGE_KEYS.USER_INFO,
+    null,
+  );
+
   const [firstNameInput, setFirstNameInput] = useState('');
   const [lastNameInput, setLastNameInput] = useState('');
   const [usernameInput, setUsernameInput] = useState('');
@@ -25,7 +39,7 @@ const SignUpPage = () => {
   const getUserInfoMutation = useMutation({
     mutationFn: async () => UserService.getMe(),
     onSuccess: (data) => {
-      LocalStorage.setItem(E_LOCAL_STORAGE_KEYS.USER_INFO, data);
+      setUser(data);
     },
   });
 
@@ -37,14 +51,9 @@ const SignUpPage = () => {
       password: password,
     }: TAuthRegisterMutationVariables) =>
       AuthService.signUp(firstName, lastName, username, password),
-    onSuccess: ({
-      accessToken,
-      refreshToken,
-      expiresIn,
-    }: TAuthLoginResponse) => {
-      LocalStorage.setItem(E_LOCAL_STORAGE_KEYS.ACCESS_TOKEN, accessToken);
-      LocalStorage.setItem(E_LOCAL_STORAGE_KEYS.REFRESH_TOKEN, refreshToken);
-      LocalStorage.setItem(E_LOCAL_STORAGE_KEYS.EXPIRES_IN, expiresIn);
+    onSuccess: ({ accessToken, refreshToken }: TAuthLoginResponse) => {
+      setAccessToken(accessToken);
+      setRefreshToken(refreshToken);
 
       getUserInfoMutation.mutate();
     },
@@ -60,6 +69,10 @@ const SignUpPage = () => {
       password: passwordInput,
     });
   };
+
+  if (user) {
+    return <Navigate to='/' />;
+  }
 
   return (
     <Container component='main' maxWidth='xs'>
@@ -126,9 +139,9 @@ const SignUpPage = () => {
           </Button>
           <Grid container justifyContent='flex-end'>
             <Grid item>
-              <Link href='/login' variant='body2'>
+              <Button component={Link} to='/login' variant='text'>
                 Already have an account? Sign in
-              </Link>
+              </Button>
             </Grid>
           </Grid>
         </Box>

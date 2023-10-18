@@ -1,11 +1,11 @@
-import React, { ReactElement } from 'react';
+import React, { ReactElement, useMemo } from 'react';
 import { Route, Routes } from 'react-router-dom';
 import Box from '@mui/material/Box';
 import List from '@mui/material/List';
 import ListItemButton from '@mui/material/ListItemButton';
 import ListItemText from '@mui/material/ListItemText';
 import './App.css';
-import { appRoutes } from './utils/router/routes';
+import { appRoutes, TAppRoute } from './utils/router/routes';
 import {
   AppBar,
   CssBaseline,
@@ -15,12 +15,45 @@ import {
   Typography,
 } from '@mui/material';
 import { Link } from './utils/router/link';
-import LocalStorage from './utils/local-storage';
+import LocalStorage, { E_LOCAL_STORAGE_KEYS } from './utils/local-storage';
+import ProtectedRoute from './utils/router/protected-route';
+import { TApiUserWithRoles } from './api/user/types';
+import { useLocalStorage } from 'usehooks-ts';
+import { filter } from 'lodash';
+import { userHasRoles } from './utils/auth/roles';
 
 const App = (): ReactElement => {
+  const [, setAccessToken] = useLocalStorage<string | null>(
+    E_LOCAL_STORAGE_KEYS.ACCESS_TOKEN,
+    null,
+  );
+  const [, setRefreshToken] = useLocalStorage<string | null>(
+    E_LOCAL_STORAGE_KEYS.REFRESH_TOKEN,
+    null,
+  );
+  const [user, setUser] = useLocalStorage<TApiUserWithRoles | null>(
+    E_LOCAL_STORAGE_KEYS.USER_INFO,
+    null,
+  );
+
   const handleLogout = () => {
+    setAccessToken(null);
+    setRefreshToken(null);
+    setUser(null);
     LocalStorage.clear();
   };
+
+  const visibleRoutes = useMemo(
+    (): Array<TAppRoute> =>
+      filter(appRoutes, ({ roles, path }) =>
+        user
+          ? userHasRoles(user, roles ?? null) &&
+            path !== '/login' &&
+            path !== '/register'
+          : path === '/login' || path === '/register',
+      ),
+    [user],
+  );
 
   return (
     <Box sx={{ display: 'flex' }}>
@@ -47,10 +80,12 @@ const App = (): ReactElement => {
         }}
       >
         <Toolbar />
-        <Box sx={{ overflow: 'auto' }}>
-          <List>
+        <Box sx={{ overflow: 'auto', height: '100%' }}>
+          <List
+            sx={{ display: 'flex', flexDirection: 'column', height: '100%' }}
+          >
             <>
-              {appRoutes.map(({ path, label }) => (
+              {visibleRoutes.map(({ path, label }) => (
                 <ListItem
                   key={path}
                   disablePadding
@@ -63,6 +98,7 @@ const App = (): ReactElement => {
                   </ListItemButton>
                 </ListItem>
               ))}
+              <Box flexGrow={1} />
               <ListItem disablePadding>
                 <ListItemButton onClick={handleLogout}>
                   <ListItemText primary='Logout' />
@@ -77,8 +113,20 @@ const App = (): ReactElement => {
         <Toolbar />
         <Box sx={{ flexGrow: 1, py: 1 }}>
           <Routes>
-            {appRoutes.map(({ path, Component }) => (
-              <Route key={path} path={path} Component={Component} />
+            {appRoutes.map(({ path, roles, element }) => (
+              <Route
+                key={path}
+                path={path}
+                element={
+                  roles ? (
+                    <ProtectedRoute user={user} roles={roles}>
+                      {element}
+                    </ProtectedRoute>
+                  ) : (
+                    element
+                  )
+                }
+              />
             ))}
           </Routes>
         </Box>
