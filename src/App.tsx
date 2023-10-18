@@ -15,8 +15,13 @@ import {
   Typography,
 } from '@mui/material';
 import { Link } from './utils/router/link';
+import LocalStorage from './utils/local-storage';
 
 const App = (): ReactElement => {
+  const handleLogout = () => {
+    LocalStorage.clear();
+  };
+
   return (
     <Box sx={{ display: 'flex' }}>
       <CssBaseline />
@@ -44,19 +49,26 @@ const App = (): ReactElement => {
         <Toolbar />
         <Box sx={{ overflow: 'auto' }}>
           <List>
-            {appRoutes.map(({ path, label }) => (
-              <ListItem
-                key={path}
-                disablePadding={true}
-                component={Link}
-                button={true}
-                to={path}
-              >
-                <ListItemButton>
-                  <ListItemText primary={label} />
+            <>
+              {appRoutes.map(({ path, label }) => (
+                <ListItem
+                  key={path}
+                  disablePadding={true}
+                  component={Link}
+                  button={true}
+                  to={path}
+                >
+                  <ListItemButton>
+                    <ListItemText primary={label} />
+                  </ListItemButton>
+                </ListItem>
+              ))}
+              <ListItem disablePadding={true}>
+                <ListItemButton onClick={handleLogout}>
+                  <ListItemText primary='Logout' />
                 </ListItemButton>
               </ListItem>
-            ))}
+            </>
           </List>
         </Box>
       </Drawer>
