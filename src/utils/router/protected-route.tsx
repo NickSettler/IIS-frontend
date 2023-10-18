@@ -1,12 +1,6 @@
-import {
-  E_ROLE,
-  E_ROLE_ENTITY_KEYS,
-  E_USER_ENTITY_KEYS,
-  TApiUserWithRoles,
-} from '../../api/user/types';
+import { E_ROLE, TApiUserWithRoles } from '../../api/user/types';
 import { ReactNode } from 'react';
 import { Navigate } from 'react-router-dom';
-import { map, some } from 'lodash';
 import { userHasRoles } from '../auth/roles';
 
 export type TProtectedRouteProps = {
