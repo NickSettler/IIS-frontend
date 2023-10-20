@@ -17,16 +17,15 @@ export const useUser = (
     UseQueryOptions<
       TApiUserWithRoles | null,
       TApiError,
-      TApiUserWithRoles | null,
-      Array<string | null>
+      TApiUserWithRoles | null
     >,
-    'initialData' | 'queryFn' | 'queryKey'
-  > & { initialData?(): undefined },
+    'queryFn' | 'queryKey'
+  >,
 ): UseQueryResult<TApiUserWithRoles | null, TApiError> => {
-  return useQuery(
-    ['user', userId],
-    async (): Promise<TApiUserWithRoles | null> =>
+  return useQuery({
+    queryKey: ['user', userId],
+    queryFn: async (): Promise<TApiUserWithRoles | null> =>
       userId ? UserService.getUser(userId) : null,
-    options,
-  );
+    ...options,
+  });
 };

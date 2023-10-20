@@ -17,7 +17,7 @@ import UserService, {
   TUserDeleteMutationVariables,
   TUserUpdateMutationVariables,
 } from '../../../api/user/user.service';
-import { useMutation, useQuery } from '@tanstack/react-query';
+import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
 import { Button, Card, CardContent, LinearProgress } from '@mui/material';
 import { TApiError } from '../../../api/base/types';
 import {
@@ -41,6 +41,8 @@ export const UsersDataTable = (): JSX.Element => {
   );
   const { onOpen: openManageRolesModal, onClose: closeManageRolesModal } =
     useModal(E_MODALS.MANAGE_ROLES);
+
+  const queryClient = useQueryClient();
 
   const { data, isLoading, error, refetch } = useQuery<
     Array<TApiUserWithRoles>,
@@ -134,6 +136,10 @@ export const UsersDataTable = (): JSX.Element => {
       {
         onSuccess: async () => {
           await refetch();
+
+          await queryClient.invalidateQueries({
+            predicate: (q) => q.queryKey[0] === 'user',
+          });
 
           closeManageRolesModal();
         },
