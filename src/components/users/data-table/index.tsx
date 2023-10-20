@@ -18,7 +18,15 @@ import UserService, {
   TUserUpdateMutationVariables,
 } from '../../../api/user/user.service';
 import { useMutation, useQuery } from '@tanstack/react-query';
-import { Button, Card, CardContent, LinearProgress } from '@mui/material';
+import {
+  Button,
+  Card,
+  CardContent,
+  CircularProgress,
+  LinearProgress,
+  Stack,
+  Typography,
+} from '@mui/material';
 import { TApiError } from '../../../api/base/types';
 import {
   differenceWith,
@@ -34,6 +42,7 @@ import { DataGridToolbar } from '../../data-grid/toolbar';
 import { Add, Delete } from '@mui/icons-material';
 import { useModal } from '../../../utils/hooks/useModal';
 import { E_MODALS } from '../../../store/modals';
+import { toast } from 'react-hot-toast';
 
 export const UsersDataTable = (): JSX.Element => {
   const { onOpen: openAddUserModal, onClose: closeAddUserModal } = useModal(
@@ -42,13 +51,13 @@ export const UsersDataTable = (): JSX.Element => {
   const { onOpen: openManageRolesModal, onClose: closeManageRolesModal } =
     useModal(E_MODALS.MANAGE_ROLES);
 
-  const { data, isLoading, error, refetch } = useQuery<
-    Array<TApiUserWithRoles>,
-    TApiError
-  >({
+  const getQuery = useQuery<Array<TApiUserWithRoles>, TApiError>({
     queryKey: ['getUsers'],
     queryFn: UserService.getUsers.bind(UserService),
+    staleTime: 0,
   });
+
+  const { data, isLoading, error, refetch, isFetching } = getQuery;
 
   const createMutation = useMutation<
     TApiUserWithRoles,
@@ -60,6 +69,13 @@ export const UsersDataTable = (): JSX.Element => {
     onSuccess: async () => {
       await refetch();
       closeAddUserModal();
+
+      toast.success('User created successfully!');
+    },
+    onError: async () => {
+      await refetch();
+
+      toast.error('Failed to create user');
     },
   });
 
@@ -72,7 +88,16 @@ export const UsersDataTable = (): JSX.Element => {
       [E_USER_ENTITY_KEYS.ID]: id,
       data: updateData,
     }: TUserUpdateMutationVariables) => UserService.updateUser(id, updateData),
-    onSuccess: async () => refetch(),
+    onSuccess: async () => {
+      await refetch();
+
+      toast.success('User updated successfully!');
+    },
+    onError: async () => {
+      await refetch();
+
+      toast.error('Failed to update user');
+    },
   });
 
   const deleteMutation = useMutation<
@@ -83,17 +108,26 @@ export const UsersDataTable = (): JSX.Element => {
     mutationFn: async ({
       [E_USER_ENTITY_KEYS.ID]: id,
     }: TUserDeleteMutationVariables) => UserService.deleteUser(id),
-    onSuccess: async () => refetch(),
+    onSuccess: async () => {
+      await refetch();
+
+      toast.success('User deleted successfully!');
+    },
+    onError: async () => {
+      await refetch();
+
+      toast.error('Failed to delete user');
+    },
   });
 
   const [rows, setRows] = useState<Array<TApiUserWithRoles>>([]);
   const [rowSelection, setRowSelection] = useState<Array<GridRowId>>([]);
 
   useEffect(() => {
-    if (data) setRows(data);
-  }, [data]);
+    if (data && !isFetching) setRows(data);
+  }, [data, isFetching]);
 
-  const handleRowUpdate = (
+  const handleRowUpdate = async (
     newRow: TApiUserWithRoles,
     oldRow: TApiUserWithRoles,
   ) => {
@@ -208,10 +242,28 @@ export const UsersDataTable = (): JSX.Element => {
     });
   };
 
-  if (error) {
+  if (isLoading || error) {
     return (
       <Card>
-        <CardContent>Error: {error?.message ?? 'Unknown error'}</CardContent>
+        <CardContent>
+          <Stack
+            justifyContent={'space-between'}
+            alignItems={'center'}
+            direction={'row'}
+          >
+            {isLoading && <CircularProgress />}
+            {error && (
+              <>
+                <Typography variant={'h6'}>
+                  Error: {error?.message ?? 'Unknown error'}
+                </Typography>
+                <Button size={'small'} onClick={async () => refetch()}>
+                  Retry
+                </Button>
+              </>
+            )}
+          </Stack>
+        </CardContent>
       </Card>
     );
   }
