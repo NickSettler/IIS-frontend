@@ -21,6 +21,7 @@ import { TApiUserWithRoles } from './api/user/types';
 import { useLocalStorage } from 'usehooks-ts';
 import { filter } from 'lodash';
 import { userHasRoles } from './utils/auth/roles';
+import { toast, Toaster } from 'react-hot-toast';
 
 const App = (): ReactElement => {
   const [, setAccessToken] = useLocalStorage<string | null>(
@@ -37,6 +38,7 @@ const App = (): ReactElement => {
   );
 
   const handleLogout = () => {
+    toast.success('Logged out successfully!');
     setAccessToken(null);
     setRefreshToken(null);
     setUser(null);
@@ -130,6 +132,7 @@ const App = (): ReactElement => {
             ))}
           </Routes>
         </Box>
+        <Toaster position='bottom-right' reverseOrder={false} />
       </Box>
     </Box>
   );
