@@ -4,8 +4,8 @@ import { findLastIndex } from 'lodash';
 import { TUserCreateData } from '../../api/user/user.service';
 import { E_ROLE } from '../../api/user/types';
 import { E_MODAL_MODE } from '../../utils/modal/base-modal';
-import { TPureCourse } from '../../api/courses/types';
-import { TCreateCourseData } from '../../api/courses/course.service';
+import { TPureCourse } from '../../api/course/types';
+import { TCreateCourseData } from '../../api/course/course.service';
 
 export enum E_MODALS {
   MANAGE_ROLES = 'manage-roles.modal',

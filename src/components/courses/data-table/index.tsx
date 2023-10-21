@@ -1,7 +1,7 @@
 import { useQuery } from '@tanstack/react-query';
-import CourseService from '../../../api/courses/course.service';
+import CourseService from '../../../api/course/course.service';
 import { JSX, useEffect, useState } from 'react';
-import { E_COURSE_ENTITY_KEYS, TPureCourse } from '../../../api/courses/types';
+import { E_COURSE_ENTITY_KEYS, TPureCourse } from '../../../api/course/types';
 import {
   DataGrid,
   GridActionsCellItem,
