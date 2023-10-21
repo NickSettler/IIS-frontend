@@ -1,8 +1,5 @@
 import { useQuery } from '@tanstack/react-query';
-import CourseService, {
-  TCreateCourseData,
-  TUpdateCourseData,
-} from '../../../api/courses/course.service';
+import CourseService from '../../../api/courses/course.service';
 import { JSX, useEffect, useState } from 'react';
 import { E_COURSE_ENTITY_KEYS, TPureCourse } from '../../../api/courses/types';
 import {
@@ -13,7 +10,7 @@ import {
 } from '@mui/x-data-grid';
 import { E_USER_ENTITY_KEYS } from '../../../api/user/types';
 import { chipSelectColDef } from '../../data-grid/chip-select';
-import { forEach, isEmpty, pick, toString } from 'lodash';
+import { forEach, isEmpty, toString } from 'lodash';
 import {
   GridRenderCellParams,
   GridValueFormatterParams,
@@ -28,6 +25,7 @@ import { useModal } from '../../../utils/hooks/useModal';
 import { E_MODALS } from '../../../store/modals';
 import { E_MODAL_MODE } from '../../../utils/modal/base-modal';
 import { useCourseMutations } from '../../../utils/hooks/useCourseMutations';
+import { useCourseModalHandlers } from '../../../utils/hooks/useCourseModalHandlers';
 
 export const CoursesDataTable = (): JSX.Element => {
   const navigate = useNavigate();
@@ -50,60 +48,17 @@ export const CoursesDataTable = (): JSX.Element => {
     },
   );
 
+  const { handleCreateSuccess, handleUpdateSuccess } = useCourseModalHandlers({
+    createMutation,
+    updateMutation,
+  });
+
   const [rows, setRows] = useState<Array<TPureCourse>>([]);
   const [rowSelection, setRowSelection] = useState<Array<GridRowId>>([]);
 
   useEffect(() => {
     if (data && !isFetching) setRows(data);
   }, [data, isFetching]);
-
-  const handleCreateSuccess = (createData: TCreateCourseData) => {
-    const pureData = pick(createData, [
-      E_COURSE_ENTITY_KEYS.ABBR,
-      E_COURSE_ENTITY_KEYS.NAME,
-      E_COURSE_ENTITY_KEYS.CREDITS,
-      E_COURSE_ENTITY_KEYS.GUARANTOR,
-    ]);
-    createMutation.mutate({
-      data: {
-        ...pureData,
-        ...(createData[E_COURSE_ENTITY_KEYS.ANNOTATION] && {
-          [E_COURSE_ENTITY_KEYS.ANNOTATION]:
-            createData[E_COURSE_ENTITY_KEYS.ANNOTATION],
-        }),
-        ...(createData[E_COURSE_ENTITY_KEYS.TEACHERS] && {
-          [E_COURSE_ENTITY_KEYS.TEACHERS]:
-            createData[E_COURSE_ENTITY_KEYS.TEACHERS],
-        }),
-      },
-    });
-  };
-
-  const handleUpdateSuccess = (
-    abbr: TPureCourse[E_COURSE_ENTITY_KEYS.ABBR],
-    updateData: TUpdateCourseData,
-  ) => {
-    const pureData = pick(updateData, [
-      E_COURSE_ENTITY_KEYS.ABBR,
-      E_COURSE_ENTITY_KEYS.NAME,
-      E_COURSE_ENTITY_KEYS.CREDITS,
-      E_COURSE_ENTITY_KEYS.GUARANTOR,
-    ]);
-    updateMutation.mutate({
-      abbr,
-      data: {
-        ...pureData,
-        ...(updateData[E_COURSE_ENTITY_KEYS.ANNOTATION] && {
-          [E_COURSE_ENTITY_KEYS.ANNOTATION]:
-            updateData[E_COURSE_ENTITY_KEYS.ANNOTATION],
-        }),
-        ...(updateData[E_COURSE_ENTITY_KEYS.TEACHERS] && {
-          [E_COURSE_ENTITY_KEYS.TEACHERS]:
-            updateData[E_COURSE_ENTITY_KEYS.TEACHERS],
-        }),
-      },
-    });
-  };
 
   const handleDeleteSelected = () => {
     forEach(rowSelection, (id) => {

@@ -1,4 +1,4 @@
-import { useMutation } from '@tanstack/react-query';
+import { useMutation, UseMutationResult } from '@tanstack/react-query';
 import { E_COURSE_ENTITY_KEYS, TPureCourse } from '../../api/courses/types';
 import { TApiError } from '../../api/base/types';
 import CourseService, {
@@ -13,10 +13,28 @@ export type TUseCourseMutationsParams = {
   closeCourseFormModal(): void;
 };
 
+export type TUseCourseMutations = {
+  createMutation: UseMutationResult<
+    TPureCourse,
+    TApiError,
+    TCourseCreateMutationVariables
+  >;
+  updateMutation: UseMutationResult<
+    TPureCourse,
+    TApiError,
+    TCourseUpdateMutationVariables
+  >;
+  deleteMutation: UseMutationResult<
+    void,
+    TApiError,
+    TCourseDeleteMutationVariables
+  >;
+};
+
 export const useCourseMutations = ({
   refetch,
   closeCourseFormModal,
-}: TUseCourseMutationsParams) => {
+}: TUseCourseMutationsParams): TUseCourseMutations => {
   const createMutation = useMutation<
     TPureCourse,
     TApiError,
