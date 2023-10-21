@@ -223,6 +223,16 @@ export const UsersDataTable = (): JSX.Element => {
           }
         />,
         <GridActionsCellItem
+          key={'edit'}
+          label={'Edit'}
+          showInMenu
+          onClick={() =>
+            toast('To edit user, double click on the row', {
+              position: 'top-right',
+            })
+          }
+        />,
+        <GridActionsCellItem
           key={'delete'}
           label={'Delete'}
           showInMenu
