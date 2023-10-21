@@ -26,6 +26,7 @@ import { E_MODALS } from '../../../store/modals';
 import { E_MODAL_MODE } from '../../../utils/modal/base-modal';
 import { useCourseMutations } from '../../../utils/hooks/useCourseMutations';
 import { useCourseModalHandlers } from '../../../utils/hooks/useCourseModalHandlers';
+import { useCoursePermissions } from '../../../utils/hooks/useCoursePermissions';
 
 export const CoursesDataTable = (): JSX.Element => {
   const navigate = useNavigate();
@@ -40,6 +41,9 @@ export const CoursesDataTable = (): JSX.Element => {
     queryKey: ['getCourses'],
     queryFn: CourseService.getCourses.bind(CourseService),
   });
+
+  const { canCreateCourse, canUpdateCourse, canDeleteCourse } =
+    useCoursePermissions();
 
   const { createMutation, updateMutation, deleteMutation } = useCourseMutations(
     {
@@ -158,26 +162,38 @@ export const CoursesDataTable = (): JSX.Element => {
             navigate(`/courses/${params.row[E_COURSE_ENTITY_KEYS.ABBR]}`)
           }
         />,
-        <GridActionsCellItem
-          showInMenu
-          key={'duplicate'}
-          label={'Duplicate'}
-          onClick={() => handleDuplicateAction(params.row)}
-        />,
-        <GridActionsCellItem
-          showInMenu
-          key={'edit'}
-          label={'Edit'}
-          onClick={() => handleEditAction(params.row)}
-        />,
-        <GridActionsCellItem
-          showInMenu
-          key={'delete'}
-          label={'Delete'}
-          onClick={() =>
-            handleDeleteAction(params.row[E_COURSE_ENTITY_KEYS.ABBR])
-          }
-        />,
+        ...(canCreateCourse
+          ? [
+              <GridActionsCellItem
+                showInMenu
+                key={'duplicate'}
+                label={'Duplicate'}
+                onClick={() => handleDuplicateAction(params.row)}
+              />,
+            ]
+          : []),
+        ...(canUpdateCourse
+          ? [
+              <GridActionsCellItem
+                showInMenu
+                key={'edit'}
+                label={'Edit'}
+                onClick={() => handleEditAction(params.row)}
+              />,
+            ]
+          : []),
+        ...(canDeleteCourse
+          ? [
+              <GridActionsCellItem
+                showInMenu
+                key={'delete'}
+                label={'Delete'}
+                onClick={() =>
+                  handleDeleteAction(params.row[E_COURSE_ENTITY_KEYS.ABBR])
+                }
+              />,
+            ]
+          : []),
       ],
     },
   ];
@@ -197,9 +213,8 @@ export const CoursesDataTable = (): JSX.Element => {
       <DataGrid
         columns={gridColumns}
         rows={rows}
-        editMode={'row'}
         loading={isLoading}
-        checkboxSelection
+        checkboxSelection={canDeleteCourse}
         getRowId={(row) => row[E_COURSE_ENTITY_KEYS.ABBR]}
         rowSelectionModel={rowSelection}
         onRowSelectionModelChange={handleRowSelection}
