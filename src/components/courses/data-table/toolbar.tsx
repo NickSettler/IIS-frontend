@@ -5,12 +5,12 @@ import { E_MODALS, TDynModalMeta } from '../../../store/modals';
 import { Add, Delete } from '@mui/icons-material';
 import { GridRowId } from '@mui/x-data-grid';
 import { E_MODAL_MODE } from '../../../utils/modal/base-modal';
-import { TCreateCourseData } from '../../../api/course/course.service';
+import { TCourseCreateData } from '../../../api/course/course.service';
 import { useCoursePermissions } from '../../../utils/hooks/useCoursePermissions';
 
 export type TCourseDataTableToolbarProps = {
   rowSelection: Array<GridRowId>;
-  handleCreateSuccess(data: TCreateCourseData): void;
+  handleCreateSuccess(data: TCourseCreateData): void;
   openCreateModal(meta: TDynModalMeta<E_MODALS.COURSE_FORM>): void;
   handleDeleteSelected(): void;
 };

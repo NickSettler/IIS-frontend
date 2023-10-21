@@ -5,7 +5,7 @@ import { TUserCreateData } from '../../api/user/user.service';
 import { E_ROLE } from '../../api/user/types';
 import { E_MODAL_MODE } from '../../utils/modal/base-modal';
 import { TPureCourse } from '../../api/course/types';
-import { TCreateCourseData } from '../../api/course/course.service';
+import { TCourseCreateData } from '../../api/course/course.service';
 
 export enum E_MODALS {
   MANAGE_ROLES = 'manage-roles.modal',
@@ -30,12 +30,12 @@ export type TModalMetaMap = {
   [E_MODALS.COURSE_FORM]: { initialData?: Partial<TPureCourse> } & (
     | {
         mode: E_MODAL_MODE.CREATE;
-        onSuccess(data: TCreateCourseData): void;
+        onSuccess(data: TCourseCreateData): void;
       }
     | {
         mode: E_MODAL_MODE.UPDATE;
         abbr: string;
-        onSuccess(abbr: string, data: TCreateCourseData): void;
+        onSuccess(abbr: string, data: TCourseCreateData): void;
       }
   );
 };
