@@ -1,8 +1,5 @@
-import { useMutation, useQuery } from '@tanstack/react-query';
+import { useQuery } from '@tanstack/react-query';
 import CourseService, {
-  TCourseCreateMutationVariables,
-  TCourseDeleteMutationVariables,
-  TCourseUpdateMutationVariables,
   TCreateCourseData,
   TUpdateCourseData,
 } from '../../../api/courses/course.service';
@@ -16,16 +13,7 @@ import {
 } from '@mui/x-data-grid';
 import { E_USER_ENTITY_KEYS } from '../../../api/user/types';
 import { chipSelectColDef } from '../../data-grid/chip-select';
-import {
-  differenceWith,
-  forEach,
-  isEmpty,
-  isEqual,
-  omit,
-  pick,
-  toString,
-  unionBy,
-} from 'lodash';
+import { forEach, isEmpty, pick, toString } from 'lodash';
 import {
   GridRenderCellParams,
   GridValueFormatterParams,
