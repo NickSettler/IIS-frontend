@@ -3,10 +3,14 @@ import { closeModal, openModal } from './actions';
 import { findLastIndex } from 'lodash';
 import { TUserCreateData } from '../../api/user/user.service';
 import { E_ROLE } from '../../api/user/types';
+import { E_MODAL_MODE } from '../../utils/modal/base-modal';
+import { TPureCourse } from '../../api/courses/types';
+import { TCreateCourseData } from '../../api/courses/course.service';
 
 export enum E_MODALS {
   MANAGE_ROLES = 'manage-roles.modal',
   ADD_NEW_USER = 'add-new-user.modal',
+  COURSE_FORM = 'course-form.modal',
 }
 
 export type TModalMapItem = {
@@ -23,6 +27,17 @@ export type TModalMetaMap = {
     userID: string;
     onSuccess(userID: string, roles: Array<E_ROLE>): void;
   };
+  [E_MODALS.COURSE_FORM]: { initialData?: Partial<TPureCourse> } & (
+    | {
+        mode: E_MODAL_MODE.CREATE;
+        onSuccess(data: TCreateCourseData): void;
+      }
+    | {
+        mode: E_MODAL_MODE.UPDATE;
+        abbr: string;
+        onSuccess(abbr: string, data: TCreateCourseData): void;
+      }
+  );
 };
 
 export type TModalState = {
