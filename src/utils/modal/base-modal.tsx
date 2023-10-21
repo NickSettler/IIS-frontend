@@ -7,6 +7,11 @@ import {
   DialogTitle,
 } from '@mui/material';
 
+export enum E_MODAL_MODE {
+  CREATE = 'create',
+  UPDATE = 'update',
+}
+
 export type TCommonModalProps = {
   isOpen: boolean;
   onClose(): void;

@@ -49,7 +49,6 @@ export const ManageRolesModal = ({
 
   useEffect(() => {
     if (query?.data && userRoles === null) {
-      console.log(query.data);
       const { [E_USER_ENTITY_KEYS.ROLES]: roles } = query.data;
 
       setUserRoles(map(roles, (role) => role[E_ROLE_ENTITY_KEYS.NAME]));
