@@ -5,7 +5,7 @@ import {
   E_USER_ENTITY_KEYS,
 } from '../../api/user/types';
 import { map, some } from 'lodash';
-import { E_COURSE_ENTITY_KEYS, TPureCourse } from '../../api/courses/types';
+import { E_COURSE_ENTITY_KEYS, TPureCourse } from '../../api/course/types';
 
 export const courseManageRoles = [
   E_ROLE.ADMIN,

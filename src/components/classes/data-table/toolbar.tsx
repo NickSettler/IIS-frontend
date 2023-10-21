@@ -5,29 +5,29 @@ import { E_MODALS, TDynModalMeta } from '../../../store/modals';
 import { Add, Delete } from '@mui/icons-material';
 import { GridRowId } from '@mui/x-data-grid';
 import { E_MODAL_MODE } from '../../../utils/modal/base-modal';
-import { TCourseCreateData } from '../../../api/course/course.service';
-import { useCoursePermissions } from '../../../utils/hooks/useCoursePermissions';
+import { TClassCreateData } from '../../../api/class/class.service';
+import { useClassPermissions } from '../../../utils/hooks/useClassPermissions';
 
-export type TCourseDataTableToolbarProps = {
+export type TClassDataTableToolbarProps = {
   rowSelection: Array<GridRowId>;
-  handleCreateSuccess(data: TCourseCreateData): void;
-  openCreateModal(meta: TDynModalMeta<E_MODALS.COURSE_FORM>): void;
+  handleCreateSuccess(data: TClassCreateData): void;
+  openCreateModal(meta: TDynModalMeta<E_MODALS.CLASS_FORM>): void;
   handleDeleteSelected(): void;
 };
 
-export const CourseDataTableToolbar = ({
+export const ClassDataTableToolbar = ({
   rowSelection,
   openCreateModal,
   handleCreateSuccess,
   handleDeleteSelected,
-}: TCourseDataTableToolbarProps): JSX.Element => {
-  const { canCreateCourse, canDeleteCourse } = useCoursePermissions();
+}: TClassDataTableToolbarProps): JSX.Element => {
+  const { canCreateClass, canDeleteClass } = useClassPermissions();
 
   return (
     <DataGridToolbar
       selection={rowSelection}
       prependButtons={[
-        ...(canCreateCourse
+        ...(canCreateClass
           ? [
               <Button
                 key={E_MODALS.ADD_NEW_USER}
@@ -40,13 +40,13 @@ export const CourseDataTableToolbar = ({
                   })
                 }
               >
-                Add new course
+                Add new class
               </Button>,
             ]
           : []),
       ]}
       endButtons={[
-        ...(canDeleteCourse
+        ...(canDeleteClass
           ? [
               <Button
                 key={'delete-selected'}

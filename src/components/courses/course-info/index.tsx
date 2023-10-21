@@ -1,6 +1,6 @@
 import React, { JSX, useMemo } from 'react';
 import { Navigate, useNavigate, useParams } from 'react-router-dom';
-import { E_COURSE_ENTITY_KEYS } from '../../../api/courses/types';
+import { E_COURSE_ENTITY_KEYS } from '../../../api/course/types';
 import { isUndefined } from 'lodash';
 import { useCourse } from '../../../utils/hooks/useCourse';
 import {

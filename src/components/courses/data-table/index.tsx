@@ -1,7 +1,7 @@
 import { useQuery } from '@tanstack/react-query';
-import CourseService from '../../../api/courses/course.service';
+import CourseService from '../../../api/course/course.service';
 import { JSX, useEffect, useState } from 'react';
-import { E_COURSE_ENTITY_KEYS, TPureCourse } from '../../../api/courses/types';
+import { E_COURSE_ENTITY_KEYS, TPureCourse } from '../../../api/course/types';
 import {
   DataGrid,
   GridActionsCellItem,
@@ -17,7 +17,7 @@ import {
 } from '@mui/x-data-grid/models/params/gridCellParams';
 import { LinearProgress } from '@mui/material';
 import { TApiError } from '../../../api/base/types';
-import { CourseDataTableError } from './error';
+import { DataTableError } from '../../data-grid/error';
 import { CourseDataTableToolbar } from './toolbar';
 import { OpenInNew } from '@mui/icons-material';
 import { useNavigate } from 'react-router-dom';
@@ -200,11 +200,7 @@ export const CoursesDataTable = (): JSX.Element => {
 
   if (isLoading || error) {
     return (
-      <CourseDataTableError
-        isLoading={isLoading}
-        error={error}
-        refetch={refetch}
-      />
+      <DataTableError isLoading={isLoading} error={error} refetch={refetch} />
     );
   }
 

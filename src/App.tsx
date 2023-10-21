@@ -114,7 +114,10 @@ const App = (): ReactElement => {
         </Box>
       </Drawer>
 
-      <Box component='main' sx={{ flexGrow: 1, px: 3, height: '100vh' }}>
+      <Box
+        component='main'
+        sx={{ flexGrow: 1, px: 3, height: '100vh', overflowX: 'hidden' }}
+      >
         <Toolbar />
         <Box sx={{ flexGrow: 1, py: 2, height: 'calc(100% - 64px)' }}>
           <Routes>

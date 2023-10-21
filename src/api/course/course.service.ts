@@ -2,7 +2,7 @@ import { BaseService } from '../base/service';
 import Api from '../base/api';
 import { E_COURSE_ENTITY_KEYS, TPureCourse } from './types';
 
-export type TCreateCourseData = Omit<
+export type TCourseCreateData = Omit<
   TPureCourse,
   | E_COURSE_ENTITY_KEYS.ANNOTATION
   | E_COURSE_ENTITY_KEYS.CREDITS
@@ -15,15 +15,15 @@ export type TCreateCourseData = Omit<
   [E_COURSE_ENTITY_KEYS.TEACHERS]?: Array<string>;
 };
 
-export type TUpdateCourseData = Partial<TCreateCourseData>;
+export type TCourseUpdateData = Partial<TCourseCreateData>;
 
 export type TCourseCreateMutationVariables = {
-  data: TCreateCourseData;
+  data: TCourseCreateData;
 };
 
 export type TCourseUpdateMutationVariables = {
   [E_COURSE_ENTITY_KEYS.ABBR]: TPureCourse[E_COURSE_ENTITY_KEYS.ABBR];
-  data: TUpdateCourseData;
+  data: TCourseUpdateData;
 };
 
 export type TCourseDeleteMutationVariables = {
@@ -44,9 +44,9 @@ export default class CourseService extends BaseService {
   }
 
   public static async createCourse(
-    data: TCreateCourseData,
+    data: TCourseCreateData,
   ): Promise<TPureCourse> {
-    return await Api.instance.post<TCreateCourseData, TPureCourse>(
+    return await Api.instance.post<TCourseCreateData, TPureCourse>(
       this.endpoint,
       data,
     );
@@ -54,9 +54,9 @@ export default class CourseService extends BaseService {
 
   public static async updateCourse(
     abbr: TPureCourse[E_COURSE_ENTITY_KEYS.ABBR],
-    data: TUpdateCourseData,
+    data: TCourseUpdateData,
   ): Promise<TPureCourse> {
-    return await Api.instance.put<TUpdateCourseData, TPureCourse>(
+    return await Api.instance.put<TCourseUpdateData, TPureCourse>(
       `${this.endpoint}/${abbr}`,
       data,
     );

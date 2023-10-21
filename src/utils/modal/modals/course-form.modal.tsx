@@ -23,8 +23,8 @@ import { every, filter, map, mapValues, omit, toString } from 'lodash';
 import { BaseModal, E_MODAL_MODE, TCommonModalProps } from '../base-modal';
 import Box from '@mui/material/Box';
 import { E_MODALS, TDynModalMeta } from '../../../store/modals';
-import { E_COURSE_ENTITY_KEYS } from '../../../api/courses/types';
-import { TCreateCourseData } from '../../../api/courses/course.service';
+import { E_COURSE_ENTITY_KEYS } from '../../../api/course/types';
+import { TCourseCreateData } from '../../../api/course/course.service';
 import { useQuery } from '@tanstack/react-query';
 import UserService from '../../../api/user/user.service';
 import { SelectChangeEvent } from '@mui/material/Select/SelectInput';
@@ -34,7 +34,7 @@ export type TCourseFormModalProps = TCommonModalProps &
   TDynModalMeta<E_MODALS.COURSE_FORM>;
 
 export type TCourseFormModalData = Omit<
-  TCreateCourseData,
+  TCourseCreateData,
   E_COURSE_ENTITY_KEYS.CREDITS | E_COURSE_ENTITY_KEYS.TEACHERS
 > & {
   [E_COURSE_ENTITY_KEYS.CREDITS]: string;

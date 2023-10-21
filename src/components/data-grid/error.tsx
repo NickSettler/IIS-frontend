@@ -6,20 +6,20 @@ import {
   Stack,
   Typography,
 } from '@mui/material';
-import { TApiError } from '../../../api/base/types';
+import { TApiError } from '../../api/base/types';
 import { JSX } from 'react';
 
-export type TCourseDataTableErrorProps = {
+export type TDataTableErrorProps = {
   isLoading: boolean;
   error: TApiError | null;
   refetch(): void;
 };
 
-export const CourseDataTableError = ({
+export const DataTableError = ({
   isLoading,
   error,
   refetch,
-}: TCourseDataTableErrorProps): JSX.Element => (
+}: TDataTableErrorProps): JSX.Element => (
   <Card>
     <CardContent>
       <Stack
