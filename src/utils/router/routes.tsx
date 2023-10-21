@@ -7,6 +7,8 @@ import { E_ROLE } from '../../api/user/types';
 import { CoursesDataTable } from '../../components/courses/data-table';
 import { CourseInfo } from '../../components/courses/course-info';
 import { courseManageRoles } from '../hooks/useCoursePermissions';
+import { ClassesDataTable } from '../../components/classes/data-table';
+import { classManageRoles } from '../hooks/useClassPermissions';
 
 export type TAppRoute = RouteObject & {
   path: string;
@@ -49,5 +51,11 @@ export const appRoutes: Array<TAppRoute> = [
     roles: [...courseManageRoles, E_ROLE.SCHEDULER, E_ROLE.STUDENT],
     showInNav: false,
     element: <CourseInfo />,
+  },
+  {
+    path: '/classes',
+    label: 'Classes',
+    roles: [...classManageRoles],
+    element: <ClassesDataTable />,
   },
 ];
