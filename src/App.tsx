@@ -47,12 +47,15 @@ const App = (): ReactElement => {
 
   const visibleRoutes = useMemo(
     (): Array<TAppRoute> =>
-      filter(appRoutes, ({ roles, path }) =>
-        user
-          ? userHasRoles(user, roles ?? null) &&
-            path !== '/login' &&
-            path !== '/register'
-          : path === '/login' || path === '/register',
+      filter(
+        filter(appRoutes, ({ roles, path }) =>
+          user
+            ? userHasRoles(user, roles ?? null) &&
+              path !== '/login' &&
+              path !== '/register'
+            : path === '/login' || path === '/register',
+        ),
+        ({ showInNav }) => showInNav ?? true,
       ),
     [user],
   );

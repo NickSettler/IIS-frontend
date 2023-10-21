@@ -9,6 +9,7 @@ import { CoursesDataTable } from '../../components/courses/data-table';
 export type TAppRoute = RouteObject & {
   path: string;
   label: string;
+  showInNav?: boolean;
   roles?: Array<E_ROLE>;
 };
 
