@@ -2,6 +2,7 @@ import {
   GridRowId,
   GridToolbarColumnsButton,
   GridToolbarContainer,
+  GridToolbarFilterButton,
 } from '@mui/x-data-grid';
 import { JSX } from 'react';
 import Box from '@mui/material/Box';
@@ -23,6 +24,7 @@ export const DataGridToolbar = ({
     <GridToolbarContainer>
       {prependButtons}
       <GridToolbarColumnsButton />
+      <GridToolbarFilterButton />
       {appendButtons}
       <Box sx={{ flexGrow: 1 }} />
       {!!selection.length && endButtons}
