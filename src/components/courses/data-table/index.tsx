@@ -185,27 +185,6 @@ export const CoursesDataTable = (): JSX.Element => {
     setRowSelection(newSelection);
   };
 
-  const handleRowUpdate = async (newRow: TPureCourse, oldRow: TPureCourse) => {
-    const diff = differenceWith([oldRow], [newRow], isEqual);
-
-    if (diff.length === 0) return oldRow;
-
-    setRows((prevRows) =>
-      unionBy([newRow], prevRows, E_COURSE_ENTITY_KEYS.ABBR),
-    );
-
-    updateMutation.mutate({
-      [E_COURSE_ENTITY_KEYS.ABBR]: newRow[E_COURSE_ENTITY_KEYS.ABBR],
-      data: omit(newRow, [
-        E_COURSE_ENTITY_KEYS.ABBR,
-        E_COURSE_ENTITY_KEYS.GUARANTOR,
-        E_COURSE_ENTITY_KEYS.TEACHERS,
-      ]),
-    });
-
-    return newRow;
-  };
-
   const handleDuplicateAction = (duplicateData: TPureCourse) => {
     openCourseFormModal({
       mode: E_MODAL_MODE.CREATE,
@@ -238,14 +217,12 @@ export const CoursesDataTable = (): JSX.Element => {
     {
       field: E_COURSE_ENTITY_KEYS.NAME,
       headerName: 'Name',
-      editable: true,
       flex: 1,
       hideable: false,
     },
     {
       field: E_COURSE_ENTITY_KEYS.ANNOTATION,
       headerName: 'Annotation',
-      editable: true,
       flex: 1,
       renderCell: ({
         value,
@@ -258,7 +235,6 @@ export const CoursesDataTable = (): JSX.Element => {
       field: E_COURSE_ENTITY_KEYS.CREDITS,
       type: 'number',
       headerName: 'Credits',
-      editable: true,
     },
     {
       field: E_COURSE_ENTITY_KEYS.GUARANTOR,
@@ -346,7 +322,6 @@ export const CoursesDataTable = (): JSX.Element => {
             sort: 'asc',
           },
         ]}
-        processRowUpdate={handleRowUpdate}
         slots={{
           loadingOverlay: LinearProgress,
           toolbar: () => (
