@@ -37,6 +37,12 @@ export default class CourseService extends BaseService {
     return await Api.instance.get<Array<TPureCourse>>(this.endpoint);
   }
 
+  public static async getCourse(
+    abbr: TPureCourse[E_COURSE_ENTITY_KEYS.ABBR],
+  ): Promise<TPureCourse> {
+    return await Api.instance.get<TPureCourse>(`${this.endpoint}/${abbr}`);
+  }
+
   public static async createCourse(
     data: TCreateCourseData,
   ): Promise<TPureCourse> {

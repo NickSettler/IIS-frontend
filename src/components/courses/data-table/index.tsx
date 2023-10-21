@@ -1,11 +1,5 @@
-import { useMutation, useQuery } from '@tanstack/react-query';
-import CourseService, {
-  TCourseCreateMutationVariables,
-  TCourseDeleteMutationVariables,
-  TCourseUpdateMutationVariables,
-  TCreateCourseData,
-  TUpdateCourseData,
-} from '../../../api/courses/course.service';
+import { useQuery } from '@tanstack/react-query';
+import CourseService from '../../../api/courses/course.service';
 import { JSX, useEffect, useState } from 'react';
 import { E_COURSE_ENTITY_KEYS, TPureCourse } from '../../../api/courses/types';
 import {
@@ -16,16 +10,7 @@ import {
 } from '@mui/x-data-grid';
 import { E_USER_ENTITY_KEYS } from '../../../api/user/types';
 import { chipSelectColDef } from '../../data-grid/chip-select';
-import {
-  differenceWith,
-  forEach,
-  isEmpty,
-  isEqual,
-  omit,
-  pick,
-  toString,
-  unionBy,
-} from 'lodash';
+import { forEach, isEmpty, toString } from 'lodash';
 import {
   GridRenderCellParams,
   GridValueFormatterParams,
@@ -39,7 +24,9 @@ import { useNavigate } from 'react-router-dom';
 import { useModal } from '../../../utils/hooks/useModal';
 import { E_MODALS } from '../../../store/modals';
 import { E_MODAL_MODE } from '../../../utils/modal/base-modal';
-import { toast } from 'react-hot-toast';
+import { useCourseMutations } from '../../../utils/hooks/useCourseMutations';
+import { useCourseModalHandlers } from '../../../utils/hooks/useCourseModalHandlers';
+import { useCoursePermissions } from '../../../utils/hooks/useCoursePermissions';
 
 export const CoursesDataTable = (): JSX.Element => {
   const navigate = useNavigate();
@@ -55,67 +42,19 @@ export const CoursesDataTable = (): JSX.Element => {
     queryFn: CourseService.getCourses.bind(CourseService),
   });
 
-  const createMutation = useMutation<
-    TPureCourse,
-    TApiError,
-    TCourseCreateMutationVariables
-  >({
-    mutationFn: async ({ data: createData }: TCourseCreateMutationVariables) =>
-      CourseService.createCourse(createData),
-    onSuccess: async () => {
-      await refetch();
-      closeCourseFormModal();
+  const { canCreateCourse, canUpdateCourse, canDeleteCourse } =
+    useCoursePermissions();
 
-      toast.success('Course created successfully');
+  const { createMutation, updateMutation, deleteMutation } = useCourseMutations(
+    {
+      refetch,
+      closeCourseFormModal,
     },
-    onError: async () => {
-      await refetch();
+  );
 
-      toast.error('Failed to create course');
-    },
-  });
-
-  const updateMutation = useMutation<
-    TPureCourse,
-    TApiError,
-    TCourseUpdateMutationVariables
-  >({
-    mutationFn: async ({
-      [E_COURSE_ENTITY_KEYS.ABBR]: abbr,
-      data: updateData,
-    }: TCourseUpdateMutationVariables) =>
-      CourseService.updateCourse(abbr, updateData),
-    onSuccess: async () => {
-      await refetch();
-      closeCourseFormModal();
-
-      toast.success('Course updated successfully!');
-    },
-    onError: async () => {
-      await refetch();
-
-      toast.error('Failed to update course');
-    },
-  });
-
-  const deleteMutation = useMutation<
-    void,
-    TApiError,
-    TCourseDeleteMutationVariables
-  >({
-    mutationFn: async ({
-      [E_COURSE_ENTITY_KEYS.ABBR]: abbr,
-    }: TCourseDeleteMutationVariables) => CourseService.deleteCourse(abbr),
-    onSuccess: async () => {
-      await refetch();
-
-      toast.success('Course deleted successfully');
-    },
-    onError: async () => {
-      await refetch();
-
-      toast.error('Failed to delete course');
-    },
+  const { handleCreateSuccess, handleUpdateSuccess } = useCourseModalHandlers({
+    createMutation,
+    updateMutation,
   });
 
   const [rows, setRows] = useState<Array<TPureCourse>>([]);
@@ -124,54 +63,6 @@ export const CoursesDataTable = (): JSX.Element => {
   useEffect(() => {
     if (data && !isFetching) setRows(data);
   }, [data, isFetching]);
-
-  const handleCreateSuccess = (createData: TCreateCourseData) => {
-    const pureData = pick(createData, [
-      E_COURSE_ENTITY_KEYS.ABBR,
-      E_COURSE_ENTITY_KEYS.NAME,
-      E_COURSE_ENTITY_KEYS.CREDITS,
-      E_COURSE_ENTITY_KEYS.GUARANTOR,
-    ]);
-    createMutation.mutate({
-      data: {
-        ...pureData,
-        ...(createData[E_COURSE_ENTITY_KEYS.ANNOTATION] && {
-          [E_COURSE_ENTITY_KEYS.ANNOTATION]:
-            createData[E_COURSE_ENTITY_KEYS.ANNOTATION],
-        }),
-        ...(createData[E_COURSE_ENTITY_KEYS.TEACHERS] && {
-          [E_COURSE_ENTITY_KEYS.TEACHERS]:
-            createData[E_COURSE_ENTITY_KEYS.TEACHERS],
-        }),
-      },
-    });
-  };
-
-  const handleUpdateSuccess = (
-    abbr: TPureCourse[E_COURSE_ENTITY_KEYS.ABBR],
-    updateData: TUpdateCourseData,
-  ) => {
-    const pureData = pick(updateData, [
-      E_COURSE_ENTITY_KEYS.ABBR,
-      E_COURSE_ENTITY_KEYS.NAME,
-      E_COURSE_ENTITY_KEYS.CREDITS,
-      E_COURSE_ENTITY_KEYS.GUARANTOR,
-    ]);
-    updateMutation.mutate({
-      abbr,
-      data: {
-        ...pureData,
-        ...(updateData[E_COURSE_ENTITY_KEYS.ANNOTATION] && {
-          [E_COURSE_ENTITY_KEYS.ANNOTATION]:
-            updateData[E_COURSE_ENTITY_KEYS.ANNOTATION],
-        }),
-        ...(updateData[E_COURSE_ENTITY_KEYS.TEACHERS] && {
-          [E_COURSE_ENTITY_KEYS.TEACHERS]:
-            updateData[E_COURSE_ENTITY_KEYS.TEACHERS],
-        }),
-      },
-    });
-  };
 
   const handleDeleteSelected = () => {
     forEach(rowSelection, (id) => {
@@ -183,27 +74,6 @@ export const CoursesDataTable = (): JSX.Element => {
 
   const handleRowSelection = (newSelection: Array<GridRowId>) => {
     setRowSelection(newSelection);
-  };
-
-  const handleRowUpdate = async (newRow: TPureCourse, oldRow: TPureCourse) => {
-    const diff = differenceWith([oldRow], [newRow], isEqual);
-
-    if (diff.length === 0) return oldRow;
-
-    setRows((prevRows) =>
-      unionBy([newRow], prevRows, E_COURSE_ENTITY_KEYS.ABBR),
-    );
-
-    updateMutation.mutate({
-      [E_COURSE_ENTITY_KEYS.ABBR]: newRow[E_COURSE_ENTITY_KEYS.ABBR],
-      data: omit(newRow, [
-        E_COURSE_ENTITY_KEYS.ABBR,
-        E_COURSE_ENTITY_KEYS.GUARANTOR,
-        E_COURSE_ENTITY_KEYS.TEACHERS,
-      ]),
-    });
-
-    return newRow;
   };
 
   const handleDuplicateAction = (duplicateData: TPureCourse) => {
@@ -238,14 +108,12 @@ export const CoursesDataTable = (): JSX.Element => {
     {
       field: E_COURSE_ENTITY_KEYS.NAME,
       headerName: 'Name',
-      editable: true,
       flex: 1,
       hideable: false,
     },
     {
       field: E_COURSE_ENTITY_KEYS.ANNOTATION,
       headerName: 'Annotation',
-      editable: true,
       flex: 1,
       renderCell: ({
         value,
@@ -258,7 +126,6 @@ export const CoursesDataTable = (): JSX.Element => {
       field: E_COURSE_ENTITY_KEYS.CREDITS,
       type: 'number',
       headerName: 'Credits',
-      editable: true,
     },
     {
       field: E_COURSE_ENTITY_KEYS.GUARANTOR,
@@ -295,26 +162,38 @@ export const CoursesDataTable = (): JSX.Element => {
             navigate(`/courses/${params.row[E_COURSE_ENTITY_KEYS.ABBR]}`)
           }
         />,
-        <GridActionsCellItem
-          showInMenu
-          key={'duplicate'}
-          label={'Duplicate'}
-          onClick={() => handleDuplicateAction(params.row)}
-        />,
-        <GridActionsCellItem
-          showInMenu
-          key={'edit'}
-          label={'Edit'}
-          onClick={() => handleEditAction(params.row)}
-        />,
-        <GridActionsCellItem
-          showInMenu
-          key={'delete'}
-          label={'Delete'}
-          onClick={() =>
-            handleDeleteAction(params.row[E_COURSE_ENTITY_KEYS.ABBR])
-          }
-        />,
+        ...(canCreateCourse
+          ? [
+              <GridActionsCellItem
+                showInMenu
+                key={'duplicate'}
+                label={'Duplicate'}
+                onClick={() => handleDuplicateAction(params.row)}
+              />,
+            ]
+          : []),
+        ...(canUpdateCourse
+          ? [
+              <GridActionsCellItem
+                showInMenu
+                key={'edit'}
+                label={'Edit'}
+                onClick={() => handleEditAction(params.row)}
+              />,
+            ]
+          : []),
+        ...(canDeleteCourse
+          ? [
+              <GridActionsCellItem
+                showInMenu
+                key={'delete'}
+                label={'Delete'}
+                onClick={() =>
+                  handleDeleteAction(params.row[E_COURSE_ENTITY_KEYS.ABBR])
+                }
+              />,
+            ]
+          : []),
       ],
     },
   ];
@@ -334,9 +213,8 @@ export const CoursesDataTable = (): JSX.Element => {
       <DataGrid
         columns={gridColumns}
         rows={rows}
-        editMode={'row'}
         loading={isLoading}
-        checkboxSelection
+        checkboxSelection={canDeleteCourse}
         getRowId={(row) => row[E_COURSE_ENTITY_KEYS.ABBR]}
         rowSelectionModel={rowSelection}
         onRowSelectionModelChange={handleRowSelection}
@@ -346,7 +224,6 @@ export const CoursesDataTable = (): JSX.Element => {
             sort: 'asc',
           },
         ]}
-        processRowUpdate={handleRowUpdate}
         slots={{
           loadingOverlay: LinearProgress,
           toolbar: () => (
