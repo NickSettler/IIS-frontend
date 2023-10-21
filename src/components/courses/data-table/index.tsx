@@ -39,7 +39,7 @@ import { useNavigate } from 'react-router-dom';
 import { useModal } from '../../../utils/hooks/useModal';
 import { E_MODALS } from '../../../store/modals';
 import { E_MODAL_MODE } from '../../../utils/modal/base-modal';
-import { toast } from 'react-hot-toast';
+import { useCourseMutations } from '../../../utils/hooks/useCourseMutations';
 
 export const CoursesDataTable = (): JSX.Element => {
   const navigate = useNavigate();
@@ -55,68 +55,12 @@ export const CoursesDataTable = (): JSX.Element => {
     queryFn: CourseService.getCourses.bind(CourseService),
   });
 
-  const createMutation = useMutation<
-    TPureCourse,
-    TApiError,
-    TCourseCreateMutationVariables
-  >({
-    mutationFn: async ({ data: createData }: TCourseCreateMutationVariables) =>
-      CourseService.createCourse(createData),
-    onSuccess: async () => {
-      await refetch();
-      closeCourseFormModal();
-
-      toast.success('Course created successfully');
+  const { createMutation, updateMutation, deleteMutation } = useCourseMutations(
+    {
+      refetch,
+      closeCourseFormModal,
     },
-    onError: async () => {
-      await refetch();
-
-      toast.error('Failed to create course');
-    },
-  });
-
-  const updateMutation = useMutation<
-    TPureCourse,
-    TApiError,
-    TCourseUpdateMutationVariables
-  >({
-    mutationFn: async ({
-      [E_COURSE_ENTITY_KEYS.ABBR]: abbr,
-      data: updateData,
-    }: TCourseUpdateMutationVariables) =>
-      CourseService.updateCourse(abbr, updateData),
-    onSuccess: async () => {
-      await refetch();
-      closeCourseFormModal();
-
-      toast.success('Course updated successfully!');
-    },
-    onError: async () => {
-      await refetch();
-
-      toast.error('Failed to update course');
-    },
-  });
-
-  const deleteMutation = useMutation<
-    void,
-    TApiError,
-    TCourseDeleteMutationVariables
-  >({
-    mutationFn: async ({
-      [E_COURSE_ENTITY_KEYS.ABBR]: abbr,
-    }: TCourseDeleteMutationVariables) => CourseService.deleteCourse(abbr),
-    onSuccess: async () => {
-      await refetch();
-
-      toast.success('Course deleted successfully');
-    },
-    onError: async () => {
-      await refetch();
-
-      toast.error('Failed to delete course');
-    },
-  });
+  );
 
   const [rows, setRows] = useState<Array<TPureCourse>>([]);
   const [rowSelection, setRowSelection] = useState<Array<GridRowId>>([]);
