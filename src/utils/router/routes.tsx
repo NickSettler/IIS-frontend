@@ -4,6 +4,7 @@ import LogInPage from '../../pages/login';
 import SignUpPage from '../../pages/register';
 import { UsersDataTable } from '../../components/users/data-table';
 import { E_ROLE } from '../../api/user/types';
+import { CoursesDataTable } from '../../components/courses/data-table';
 
 export type TAppRoute = RouteObject & {
   path: string;
@@ -32,5 +33,11 @@ export const appRoutes: Array<TAppRoute> = [
     label: 'Users',
     roles: [E_ROLE.ADMIN],
     element: <UsersDataTable />,
+  },
+  {
+    path: '/courses',
+    label: 'Courses',
+    roles: [E_ROLE.ADMIN, E_ROLE.GUARANTOR, E_ROLE.TEACHER],
+    element: <CoursesDataTable />,
   },
 ];
