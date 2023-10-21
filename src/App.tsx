@@ -113,7 +113,7 @@ const App = (): ReactElement => {
 
       <Box component='main' sx={{ flexGrow: 1, px: 3, height: '100vh' }}>
         <Toolbar />
-        <Box sx={{ flexGrow: 1, py: 1, height: 'calc(100% - 64px)' }}>
+        <Box sx={{ flexGrow: 1, py: 2, height: 'calc(100% - 64px)' }}>
           <Routes>
             {appRoutes.map(({ path, roles, element }) => (
               <Route
