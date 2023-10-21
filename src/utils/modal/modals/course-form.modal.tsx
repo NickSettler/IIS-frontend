@@ -280,6 +280,7 @@ const CourseFormModal = ({
               />
             ))
           }
+          disableCloseOnSelect
           filterOptions={filterFunc}
           options={usersData ?? []}
           getOptionLabel={(option) =>
