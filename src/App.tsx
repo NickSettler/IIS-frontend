@@ -111,9 +111,9 @@ const App = (): ReactElement => {
         </Box>
       </Drawer>
 
-      <Box component='main' sx={{ flexGrow: 1, px: 3 }}>
+      <Box component='main' sx={{ flexGrow: 1, px: 3, height: '100vh' }}>
         <Toolbar />
-        <Box sx={{ flexGrow: 1, py: 1 }}>
+        <Box sx={{ flexGrow: 1, py: 1, height: 'calc(100% - 64px)' }}>
           <Routes>
             {appRoutes.map(({ path, roles, element }) => (
               <Route
