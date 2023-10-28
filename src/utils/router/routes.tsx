@@ -14,6 +14,8 @@ export type TAppRoute = RouteObject & {
   path: string;
   label: string;
   showInNav?: boolean;
+  bottomNav?: boolean;
+  noPadding?: boolean;
   roles?: Array<E_ROLE>;
 };
 
