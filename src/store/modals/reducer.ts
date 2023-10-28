@@ -6,6 +6,7 @@ import { E_ROLE } from '../../api/user/types';
 import { E_MODAL_MODE } from '../../utils/modal/base-modal';
 import { TPureCourse } from '../../api/course/types';
 import { TCourseCreateData } from '../../api/course/course.service';
+import { TCourseActivityCreateData } from '../../api/course-activities/course-activities.service';
 import {
   TClassCreateData,
   TClassUpdateData,
@@ -17,6 +18,7 @@ export enum E_MODALS {
   ADD_NEW_USER = 'add-new-user.modal',
   COURSE_FORM = 'course-form.modal',
   CLASS_FORM = 'class-form.modal',
+  ADD_NEW_ACTIVITY = 'add-new-activity.modal',
 }
 
 export type TModalMapItem = {
@@ -55,6 +57,10 @@ export type TModalMetaMap = {
         onSuccess(abbr: string, data: TClassUpdateData): void;
       }
   );
+  [E_MODALS.ADD_NEW_ACTIVITY]: {
+    course: string;
+    onSuccess(data: TCourseActivityCreateData): void;
+  };
 };
 
 export type TModalState = {
