@@ -6,10 +6,7 @@ import {
 } from '@tanstack/react-query';
 import { E_COURSE_ENTITY_KEYS, TPureCourse } from '../../api/course/types';
 import CourseActivityService from '../../api/course-activities/course-activities.service';
-import {
-  TApiCourseActivity,
-  TPureCourseActivity,
-} from '../../api/course-activities/types';
+import { TApiCourseActivity } from '../../api/course-activities/types';
 
 export const useCourseActivities = (
   abbr: TPureCourse[E_COURSE_ENTITY_KEYS.ABBR] | undefined,

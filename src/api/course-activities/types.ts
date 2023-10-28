@@ -1,5 +1,4 @@
 import { TApiCourse } from '../course/types';
-import { E_USER_ENTITY_KEYS } from '../user/types';
 
 export enum E_COURSE_ACTIVITY_ENTITY_KEYS {
   ID = 'id',
