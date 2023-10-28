@@ -6,9 +6,9 @@ import { UsersDataTable } from '../../components/users/data-table';
 import { E_ROLE } from '../../api/user/types';
 import { CoursesDataTable } from '../../components/courses/data-table';
 import { CourseInfo } from '../../components/courses/course-info';
-import { courseManageRoles } from '../hooks/useCoursePermissions';
+import { courseManageRoles } from '../hooks/course/useCoursePermissions';
 import { ClassesDataTable } from '../../components/classes/data-table';
-import { classManageRoles } from '../hooks/useClassPermissions';
+import { classManageRoles } from '../hooks/class/useClassPermissions';
 
 export type TAppRoute = RouteObject & {
   path: string;

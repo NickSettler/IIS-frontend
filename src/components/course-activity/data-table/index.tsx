@@ -17,7 +17,7 @@ import {
 import { forEach, isUndefined, omit, toString } from 'lodash';
 import { DataGridToolbar } from '../../data-grid/toolbar';
 import { Add, Delete } from '@mui/icons-material';
-import { useModal } from '../../../utils/hooks/useModal';
+import { useModal } from '../../../utils/hooks/modal/useModal';
 import { E_MODALS } from '../../../store/modals';
 import {
   TCourseActivityCreateData,
@@ -28,8 +28,8 @@ import {
   TApiCourseActivity,
 } from '../../../api/course-activities/types';
 import { useNavigate, useParams } from 'react-router-dom';
-import { useCourseActivities } from '../../../utils/hooks/useCourseActivities';
-import { useCourseActivityMutations } from '../../../utils/hooks/useCourseActivityMutations';
+import { useCourseActivities } from '../../../utils/hooks/course-activities/useCourseActivities';
+import { useCourseActivityMutations } from '../../../utils/hooks/course-activities/useCourseActivityMutations';
 import { E_MODAL_MODE } from '../../../utils/modal/base-modal';
 
 export const CourseActivityTable = (): JSX.Element => {

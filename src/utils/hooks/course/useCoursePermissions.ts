@@ -1,11 +1,11 @@
-import { useCurrentUser } from './useCurrentUser';
+import { useCurrentUser } from '../user/useCurrentUser';
 import {
   E_ROLE,
   E_ROLE_ENTITY_KEYS,
   E_USER_ENTITY_KEYS,
-} from '../../api/user/types';
+} from '../../../api/user/types';
 import { map, some } from 'lodash';
-import { E_COURSE_ENTITY_KEYS, TPureCourse } from '../../api/course/types';
+import { E_COURSE_ENTITY_KEYS, TPureCourse } from '../../../api/course/types';
 
 export const courseManageRoles = [
   E_ROLE.ADMIN,

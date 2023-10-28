@@ -1,12 +1,12 @@
 import { useMutation, UseMutationResult } from '@tanstack/react-query';
-import { TApiError } from '../../api/base/types';
+import { TApiError } from '../../../api/base/types';
 import { toast } from 'react-hot-toast';
-import { E_CLASS_ENTITY_KEYS, TClass } from '../../api/class/types';
+import { E_CLASS_ENTITY_KEYS, TClass } from '../../../api/class/types';
 import ClassService, {
   TClassCreateMutationVariables,
   TClassDeleteMutationVariables,
   TClassUpdateMutationVariables,
-} from '../../api/class/class.service';
+} from '../../../api/class/class.service';
 
 export type TUseClassMutationsParams = {
   refetch(): Promise<unknown>;

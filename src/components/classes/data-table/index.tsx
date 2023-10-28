@@ -1,6 +1,6 @@
 import { JSX, useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { useModal } from '../../../utils/hooks/useModal';
+import { useModal } from '../../../utils/hooks/modal/useModal';
 import { E_MODALS } from '../../../store/modals';
 import {
   DataGrid,
@@ -9,13 +9,13 @@ import {
   GridRowId,
 } from '@mui/x-data-grid';
 import { LinearProgress } from '@mui/material';
-import { useClassPermissions } from '../../../utils/hooks/useClassPermissions';
+import { useClassPermissions } from '../../../utils/hooks/class/useClassPermissions';
 import { useQuery } from '@tanstack/react-query';
 import { TApiError } from '../../../api/base/types';
 import ClassService from '../../../api/class/class.service';
 import { E_CLASS_ENTITY_KEYS, TClass } from '../../../api/class/types';
-import { useClassMutations } from '../../../utils/hooks/useClassMutations';
-import { useClassModalHandlers } from '../../../utils/hooks/useClassModalHandlers';
+import { useClassMutations } from '../../../utils/hooks/class/useClassMutations';
+import { useClassModalHandlers } from '../../../utils/hooks/class/useClassModalHandlers';
 import { forEach, toString } from 'lodash';
 import { ClassDataTableToolbar } from './toolbar';
 import { E_MODAL_MODE } from '../../../utils/modal/base-modal';

@@ -16,7 +16,7 @@ import {
   Typography,
 } from '@mui/material';
 import { map, startCase, values } from 'lodash';
-import { useUser } from '../../hooks/useUser';
+import { useUser } from '../../hooks/user/useUser';
 import { BaseModal, TCommonModalProps } from '../base-modal';
 import { E_MODALS, TDynModalMeta } from '../../../store/modals';
 import List from '@mui/material/List';

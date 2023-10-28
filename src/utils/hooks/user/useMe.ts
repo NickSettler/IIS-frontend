@@ -1,11 +1,11 @@
-import { TApiUserWithRoles } from '../../api/user/types';
-import { TApiError } from '../../api/base/types';
+import { TApiUserWithRoles } from '../../../api/user/types';
+import { TApiError } from '../../../api/base/types';
 import {
   UseQueryResult,
   useQuery,
   UseQueryOptions,
 } from '@tanstack/react-query';
-import UserService from '../../api/user/user.service';
+import UserService from '../../../api/user/user.service';
 
 export const useMe = (
   options?: Omit<

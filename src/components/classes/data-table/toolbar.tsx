@@ -6,7 +6,7 @@ import { Add, Delete } from '@mui/icons-material';
 import { GridRowId } from '@mui/x-data-grid';
 import { E_MODAL_MODE } from '../../../utils/modal/base-modal';
 import { TClassCreateData } from '../../../api/class/class.service';
-import { useClassPermissions } from '../../../utils/hooks/useClassPermissions';
+import { useClassPermissions } from '../../../utils/hooks/class/useClassPermissions';
 
 export type TClassDataTableToolbarProps = {
   rowSelection: Array<GridRowId>;

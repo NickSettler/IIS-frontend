@@ -1,8 +1,8 @@
 import {
   TClassCreateData,
   TClassUpdateData,
-} from '../../api/class/class.service';
-import { E_CLASS_ENTITY_KEYS, TClass } from '../../api/class/types';
+} from '../../../api/class/class.service';
+import { E_CLASS_ENTITY_KEYS, TClass } from '../../../api/class/types';
 import { TUseClassMutations } from './useClassMutations';
 
 export type TUseClassModalHandlersParams = Partial<

@@ -21,12 +21,12 @@ import { DataTableError } from '../../data-grid/error';
 import { CourseDataTableToolbar } from './toolbar';
 import { OpenInNew } from '@mui/icons-material';
 import { useNavigate } from 'react-router-dom';
-import { useModal } from '../../../utils/hooks/useModal';
+import { useModal } from '../../../utils/hooks/modal/useModal';
 import { E_MODALS } from '../../../store/modals';
 import { E_MODAL_MODE } from '../../../utils/modal/base-modal';
-import { useCourseMutations } from '../../../utils/hooks/useCourseMutations';
-import { useCourseModalHandlers } from '../../../utils/hooks/useCourseModalHandlers';
-import { useCoursePermissions } from '../../../utils/hooks/useCoursePermissions';
+import { useCourseMutations } from '../../../utils/hooks/course/useCourseMutations';
+import { useCourseModalHandlers } from '../../../utils/hooks/course/useCourseModalHandlers';
+import { useCoursePermissions } from '../../../utils/hooks/course/useCoursePermissions';
 
 export const CoursesDataTable = (): JSX.Element => {
   const navigate = useNavigate();

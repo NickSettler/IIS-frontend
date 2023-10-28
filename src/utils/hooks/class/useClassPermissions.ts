@@ -1,9 +1,9 @@
-import { useCurrentUser } from './useCurrentUser';
+import { useCurrentUser } from '../user/useCurrentUser';
 import {
   E_ROLE,
   E_ROLE_ENTITY_KEYS,
   E_USER_ENTITY_KEYS,
-} from '../../api/user/types';
+} from '../../../api/user/types';
 import { map } from 'lodash';
 
 export const classManageRoles = [E_ROLE.ADMIN] as const;

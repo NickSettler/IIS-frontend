@@ -1,5 +1,5 @@
 import React, { JSX, useMemo } from 'react';
-import { useMe } from '../../utils/hooks/useMe';
+import { useMe } from '../../utils/hooks/user/useMe';
 import { Navigate } from 'react-router-dom';
 import {
   Icon,
