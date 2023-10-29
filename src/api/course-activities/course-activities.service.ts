@@ -2,17 +2,17 @@ import { BaseService } from '../base/service';
 import Api from '../base/api';
 import {
   E_COURSE_ACTIVITY_ENTITY_KEYS,
+  E_COURSE_ACTIVITY_FORM,
   TApiCourseActivity,
-  TCourseActivity,
 } from './types';
-import { E_COURSE_ENTITY_KEYS, TApiCourse } from '../course/types';
+import { E_COURSE_ENTITY_KEYS, TPureCourse } from '../course/types';
 
 export type TCourseActivityCreateData = Omit<
-  TCourseActivity,
-  E_COURSE_ACTIVITY_ENTITY_KEYS.ID
+  TApiCourseActivity,
+  E_COURSE_ACTIVITY_ENTITY_KEYS.COURSE | E_COURSE_ACTIVITY_ENTITY_KEYS.ID
 > & {
   [E_COURSE_ACTIVITY_ENTITY_KEYS.COURSE]: string;
-  [E_COURSE_ACTIVITY_ENTITY_KEYS.FORM]: string;
+  [E_COURSE_ACTIVITY_ENTITY_KEYS.FORM]: E_COURSE_ACTIVITY_FORM;
 };
 
 export type TCourseActivityUpdateData = Partial<TCourseActivityCreateData>;
@@ -34,18 +34,10 @@ export default class CourseActivityService extends BaseService {
   protected static readonly endpoint = '/courses';
 
   public static async getCourseActivities(
-    abbr: TApiCourse[E_COURSE_ENTITY_KEYS.ABBR],
+    abbr: TPureCourse[E_COURSE_ENTITY_KEYS.ABBR],
   ): Promise<Array<TApiCourseActivity>> {
     return await Api.instance.get<Array<TApiCourseActivity>>(
       `${this.endpoint}/${abbr}/activities`,
-    );
-  }
-
-  public static async getCourseActivity(
-    abbr: TApiCourseActivity[E_COURSE_ACTIVITY_ENTITY_KEYS.COURSE],
-  ): Promise<TApiCourseActivity> {
-    return await Api.instance.get<TApiCourseActivity>(
-      `${this.endpoint}/${abbr}`,
     );
   }
 

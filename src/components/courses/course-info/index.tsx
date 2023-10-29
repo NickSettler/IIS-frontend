@@ -246,8 +246,8 @@ export const CourseInfo = (): JSX.Element => {
               </List>
             </Paper>
           </Grid>
-          <Grid item xs={6}></Grid>
-          <Grid container item direction={'column'} xs={6} rowGap={1}>
+          <Grid item xs={6} />
+          <Grid item xs={6}>
             <CourseActivityTable />
           </Grid>
         </Grid>

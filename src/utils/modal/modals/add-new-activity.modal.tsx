@@ -1,27 +1,54 @@
-import { Button, FormGroup, Stack, TextField } from '@mui/material';
-import { FormEvent, JSX, useMemo, useState } from 'react';
-import { BaseModal, TCommonModalProps } from '../base-modal';
+import {
+  Button,
+  FormControl,
+  FormGroup,
+  InputLabel,
+  MenuItem,
+  Select,
+  SelectChangeEvent,
+  Stack,
+} from '@mui/material';
+import { FormEvent, JSX, useEffect, useMemo, useState } from 'react';
+import { BaseModal, E_MODAL_MODE, TCommonModalProps } from '../base-modal';
 import Box from '@mui/material/Box';
 import { E_MODALS, TDynModalMeta } from '../../../store/modals';
 import {
   E_COURSE_ACTIVITY_ENTITY_KEYS,
-  TCourseActivity,
+  E_COURSE_ACTIVITY_FORM,
 } from '../../../api/course-activities/types';
+import { mapValues, startCase, toString, values } from 'lodash';
+import { TCourseActivityCreateData } from '../../../api/course-activities/course-activities.service';
 
 export type TAddNewActivityModalProps = TCommonModalProps &
   TDynModalMeta<E_MODALS.ADD_NEW_ACTIVITY>;
 
+export type TAddNewActivityModalForm = Omit<
+  TCourseActivityCreateData,
+  E_COURSE_ACTIVITY_ENTITY_KEYS.COURSE
+>;
+
 const AddNewActivityModal = ({
   onClose,
   onSuccess,
+  course,
+  mode,
   ...rest
 }: TAddNewActivityModalProps) => {
-  const [data, setData] = useState<
-    Omit<TCourseActivity, E_COURSE_ACTIVITY_ENTITY_KEYS.ID>
-  >({
-    [E_COURSE_ACTIVITY_ENTITY_KEYS.FORM]: '',
-    [E_COURSE_ACTIVITY_ENTITY_KEYS.COURSE]: rest.course,
+  const [data, setData] = useState<TAddNewActivityModalForm>({
+    [E_COURSE_ACTIVITY_ENTITY_KEYS.FORM]: E_COURSE_ACTIVITY_FORM.LECTURE,
   });
+
+  useEffect(() => {
+    // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+    // @ts-ignore
+    const initialData = rest.data;
+    if (initialData)
+      setData((prev) => ({
+        ...prev,
+        ...mapValues(initialData, toString),
+      }));
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
 
   const isSaveDisabled = useMemo(() => {
     const { [E_COURSE_ACTIVITY_ENTITY_KEYS.FORM]: form } = data;
@@ -29,17 +56,18 @@ const AddNewActivityModal = ({
     return !form;
   }, [data]);
 
-  const handleFieldChange = (event: FormEvent) => {
-    const { name, value } = event.target as HTMLInputElement;
-
+  const handleActivityChange = (
+    event: SelectChangeEvent<E_COURSE_ACTIVITY_FORM>,
+  ) => {
     setData((prev) => ({
       ...prev,
-      [name]: value,
+      [E_COURSE_ACTIVITY_ENTITY_KEYS.FORM]: event.target
+        .value as E_COURSE_ACTIVITY_FORM,
     }));
   };
 
   const handleModalClose = (
-    event: Record<string, never>,
+    _: Record<string, never>,
     reason: 'backdropClick' | 'escapeKeyDown',
   ) => {
     if (reason === 'backdropClick') return;
@@ -54,9 +82,20 @@ const AddNewActivityModal = ({
   const handleSave = (event: FormEvent) => {
     event.preventDefault();
     if (isSaveDisabled) return;
-    onSuccess({
-      ...data,
-    });
+
+    if (mode === E_MODAL_MODE.CREATE) {
+      onSuccess({
+        course,
+        ...data,
+      });
+    } else if (mode === E_MODAL_MODE.UPDATE) {
+      // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+      // @ts-ignore
+      onSuccess(rest.id, {
+        course,
+        ...data,
+      });
+    }
   };
 
   const footer = (): JSX.Element => (
@@ -83,15 +122,24 @@ const AddNewActivityModal = ({
       onSubmit={handleSave}
       footer={footer()}
     >
-      <FormGroup sx={{ pt: 1, gap: 2 }} onChange={handleFieldChange}>
+      <FormGroup sx={{ pt: 1, gap: 2 }}>
         <Stack direction={'row'} gap={2}>
-          <TextField
-            fullWidth
-            label={'Activity'}
-            name={E_COURSE_ACTIVITY_ENTITY_KEYS.FORM}
-            value={data[E_COURSE_ACTIVITY_ENTITY_KEYS.FORM]}
-            autoComplete={'lecture'}
-          />
+          <FormControl fullWidth>
+            <InputLabel>Activity</InputLabel>
+            <Select
+              variant={'outlined'}
+              fullWidth
+              label={'Activity'}
+              onChange={handleActivityChange}
+              value={data[E_COURSE_ACTIVITY_ENTITY_KEYS.FORM]}
+            >
+              {values(E_COURSE_ACTIVITY_FORM).map((form) => (
+                <MenuItem key={form} value={form}>
+                  {startCase(form)}
+                </MenuItem>
+              ))}
+            </Select>
+          </FormControl>
         </Stack>
       </FormGroup>
     </BaseModal>

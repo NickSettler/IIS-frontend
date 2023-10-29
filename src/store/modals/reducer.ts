@@ -6,12 +6,19 @@ import { E_ROLE } from '../../api/user/types';
 import { E_MODAL_MODE } from '../../utils/modal/base-modal';
 import { TPureCourse } from '../../api/course/types';
 import { TCourseCreateData } from '../../api/course/course.service';
-import { TCourseActivityCreateData } from '../../api/course-activities/course-activities.service';
+import {
+  TCourseActivityCreateData,
+  TCourseActivityUpdateData,
+} from '../../api/course-activities/course-activities.service';
 import {
   TClassCreateData,
   TClassUpdateData,
 } from '../../api/class/class.service';
 import { TClass } from '../../api/class/types';
+import {
+  E_COURSE_ACTIVITY_ENTITY_KEYS,
+  TApiCourseActivity,
+} from '../../api/course-activities/types';
 
 export enum E_MODALS {
   MANAGE_ROLES = 'manage-roles.modal',
@@ -59,8 +66,21 @@ export type TModalMetaMap = {
   );
   [E_MODALS.ADD_NEW_ACTIVITY]: {
     course: string;
-    onSuccess(data: TCourseActivityCreateData): void;
-  };
+  } & (
+    | {
+        mode: E_MODAL_MODE.CREATE;
+        onSuccess(data: TCourseActivityCreateData): void;
+      }
+    | {
+        mode: E_MODAL_MODE.UPDATE;
+        data: Partial<TApiCourseActivity>;
+        id: TApiCourseActivity[E_COURSE_ACTIVITY_ENTITY_KEYS.ID];
+        onSuccess(
+          id: TApiCourseActivity[E_COURSE_ACTIVITY_ENTITY_KEYS.ID],
+          data: TCourseActivityUpdateData,
+        ): void;
+      }
+  );
 };
 
 export type TModalState = {

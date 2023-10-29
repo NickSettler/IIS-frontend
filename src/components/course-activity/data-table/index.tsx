@@ -1,6 +1,10 @@
 import { JSX, useEffect, useState } from 'react';
-import { DataGrid, GridColDef, GridRowId } from '@mui/x-data-grid';
-import { useMutation } from '@tanstack/react-query';
+import {
+  DataGrid,
+  GridActionsCellItem,
+  GridColDef,
+  GridRowId,
+} from '@mui/x-data-grid';
 import {
   Button,
   Card,
@@ -10,26 +14,14 @@ import {
   Stack,
   Typography,
 } from '@mui/material';
-import { TApiError } from '../../../api/base/types';
-import {
-  differenceWith,
-  forEach,
-  isEqual,
-  isUndefined,
-  omit,
-  toString,
-  unionBy,
-} from 'lodash';
+import { forEach, isUndefined, omit, toString } from 'lodash';
 import { DataGridToolbar } from '../../data-grid/toolbar';
 import { Add, Delete } from '@mui/icons-material';
 import { useModal } from '../../../utils/hooks/useModal';
 import { E_MODALS } from '../../../store/modals';
-import { toast } from 'react-hot-toast';
-import CourseActivityService, {
+import {
   TCourseActivityCreateData,
-  TCourseActivityCreateMutationVariables,
-  TCourseActivityDeleteMutationVariables,
-  TCourseActivityUpdateMutationVariables,
+  TCourseActivityUpdateData,
 } from '../../../api/course-activities/course-activities.service';
 import {
   E_COURSE_ACTIVITY_ENTITY_KEYS,
@@ -37,6 +29,8 @@ import {
 } from '../../../api/course-activities/types';
 import { useNavigate, useParams } from 'react-router-dom';
 import { useCourseActivities } from '../../../utils/hooks/useCourseActivities';
+import { useCourseActivityMutations } from '../../../utils/hooks/useCourseActivityMutations';
+import { E_MODAL_MODE } from '../../../utils/modal/base-modal';
 
 export const CourseActivityTable = (): JSX.Element => {
   const { abbr } = useParams<'abbr'>();
@@ -44,76 +38,18 @@ export const CourseActivityTable = (): JSX.Element => {
 
   if (isUndefined(abbr)) navigate('/courses');
 
-  const { onOpen: openAddActivityModal, onClose: closeAddActivityModal } =
-    useModal(E_MODALS.ADD_NEW_ACTIVITY);
+  const { onOpen: openFormModal, onClose: closeFormModal } = useModal(
+    E_MODALS.ADD_NEW_ACTIVITY,
+  );
 
   const { data, isLoading, error, refetch, isFetching } =
     useCourseActivities(abbr);
 
-  const createMutation = useMutation<
-    TApiCourseActivity,
-    TApiError,
-    TCourseActivityCreateMutationVariables
-  >({
-    mutationFn: async ({
-      data: createData,
-    }: TCourseActivityCreateMutationVariables) =>
-      CourseActivityService.createCourseActivity(createData),
-    onSuccess: async () => {
-      await refetch();
-      closeAddActivityModal();
-
-      toast.success('New activity created successfully!');
-    },
-    onError: async () => {
-      await refetch();
-
-      toast.error('Failed to create activity');
-    },
-  });
-
-  const updateMutation = useMutation<
-    TApiCourseActivity,
-    TApiError,
-    TCourseActivityUpdateMutationVariables
-  >({
-    mutationFn: async ({
-      [E_COURSE_ACTIVITY_ENTITY_KEYS.ID]: id,
-      data: updateData,
-    }: TCourseActivityUpdateMutationVariables) =>
-      CourseActivityService.updateCourseActivity(id, updateData),
-    onSuccess: async () => {
-      await refetch();
-
-      toast.success('Activity updated successfully!');
-    },
-    onError: async () => {
-      await refetch();
-
-      toast.error('Failed to update activity');
-    },
-  });
-
-  const deleteMutation = useMutation<
-    void,
-    TApiError,
-    TCourseActivityDeleteMutationVariables
-  >({
-    mutationFn: async ({
-      [E_COURSE_ACTIVITY_ENTITY_KEYS.ID]: id,
-    }: TCourseActivityDeleteMutationVariables) =>
-      CourseActivityService.deleteCourseActivity(id),
-    onSuccess: async () => {
-      await refetch();
-
-      toast.success('Activity deleted successfully!');
-    },
-    onError: async () => {
-      await refetch();
-
-      toast.error('Failed to delete activity');
-    },
-  });
+  const { createMutation, updateMutation, deleteMutation } =
+    useCourseActivityMutations({
+      refetch,
+      closeFormModal,
+    });
 
   const [rows, setRows] = useState<Array<TApiCourseActivity>>([]);
   const [rowSelection, setRowSelection] = useState<Array<GridRowId>>([]);
@@ -122,30 +58,18 @@ export const CourseActivityTable = (): JSX.Element => {
     if (data && !isFetching) setRows(data);
   }, [data, isFetching]);
 
-  const handleRowUpdate = async (
-    newRow: TApiCourseActivity,
-    oldRow: TApiCourseActivity,
+  const handleUpdate = (
+    id: TApiCourseActivity[E_COURSE_ACTIVITY_ENTITY_KEYS.ID],
+    updateData: TCourseActivityUpdateData,
   ) => {
-    const diff = differenceWith([oldRow], [newRow], isEqual);
-    console.log(newRow);
-
-    if (diff.length === 0) return oldRow;
-
-    setRows((prevRows) =>
-      unionBy([newRow], prevRows, E_COURSE_ACTIVITY_ENTITY_KEYS.ID),
-    );
-
     updateMutation.mutate({
-      [E_COURSE_ACTIVITY_ENTITY_KEYS.ID]:
-        newRow[E_COURSE_ACTIVITY_ENTITY_KEYS.ID],
+      [E_COURSE_ACTIVITY_ENTITY_KEYS.ID]: id,
       data: omit(
-        newRow,
+        updateData,
         E_COURSE_ACTIVITY_ENTITY_KEYS.ID,
         E_COURSE_ACTIVITY_ENTITY_KEYS.COURSE,
       ),
     });
-
-    return newRow;
   };
 
   const handleRowSelection = (newSelection: Array<GridRowId>) => {
@@ -164,14 +88,45 @@ export const CourseActivityTable = (): JSX.Element => {
     {
       field: E_COURSE_ACTIVITY_ENTITY_KEYS.ID,
       headerName: 'ID',
+      flex: 1,
       hideable: true,
     },
     {
       field: E_COURSE_ACTIVITY_ENTITY_KEYS.FORM,
       headerName: 'Activity',
-      editable: true,
-      flex: 1,
       hideable: false,
+    },
+    {
+      field: 'actions',
+      type: 'actions',
+      hideable: false,
+      getActions: (params) => [
+        <GridActionsCellItem
+          key={'edit'}
+          label={'Edit'}
+          showInMenu
+          onClick={() =>
+            openFormModal({
+              mode: E_MODAL_MODE.UPDATE,
+              data: params.row,
+              id: params.row[E_COURSE_ACTIVITY_ENTITY_KEYS.ID],
+              onSuccess: handleUpdate,
+              course: abbr ?? '',
+            })
+          }
+        />,
+        <GridActionsCellItem
+          key={'delete'}
+          label={'Delete'}
+          showInMenu
+          onClick={() =>
+            deleteMutation.mutate({
+              [E_COURSE_ACTIVITY_ENTITY_KEYS.ID]:
+                params.row[E_COURSE_ACTIVITY_ENTITY_KEYS.ID],
+            })
+          }
+        />,
+      ],
     },
   ];
 
@@ -218,9 +173,10 @@ export const CourseActivityTable = (): JSX.Element => {
           size={'small'}
           startIcon={<Add />}
           onClick={() =>
-            openAddActivityModal({
+            openFormModal({
+              mode: E_MODAL_MODE.CREATE,
               onSuccess: handleAddCourseActivitySuccess,
-              course: abbr ? abbr : '',
+              course: abbr ?? '',
             })
           }
         >
@@ -245,7 +201,6 @@ export const CourseActivityTable = (): JSX.Element => {
       <DataGrid
         columns={gridColumns}
         rows={rows}
-        editMode={'row'}
         loading={isLoading}
         checkboxSelection
         disableColumnSelector
@@ -257,7 +212,6 @@ export const CourseActivityTable = (): JSX.Element => {
             sort: 'asc',
           },
         ]}
-        processRowUpdate={handleRowUpdate}
         slots={{
           loadingOverlay: LinearProgress,
           toolbar,
