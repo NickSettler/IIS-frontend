@@ -26,6 +26,7 @@ import { E_MODAL_MODE } from '../../../utils/modal/base-modal';
 import { useCourseModalHandlers } from '../../../utils/hooks/useCourseModalHandlers';
 import { toast } from 'react-hot-toast';
 import { useCoursePermissions } from '../../../utils/hooks/useCoursePermissions';
+import { CourseActivityTable } from '../../course-activity/data-table';
 
 export const CourseInfo = (): JSX.Element => {
   const { abbr } = useParams<'abbr'>();
@@ -171,7 +172,7 @@ export const CourseInfo = (): JSX.Element => {
         )}
       </Stack>
       <Container maxWidth={false} disableGutters>
-        <Grid container columnSpacing={4} direction={'row'}>
+        <Grid container columnSpacing={4} rowSpacing={4} direction={'row'}>
           <Grid container item xs={6} rowSpacing={1}>
             <Grid item xs={12}>
               <Typography variant={'h6'}>Guarantor</Typography>
@@ -244,6 +245,10 @@ export const CourseInfo = (): JSX.Element => {
                 ))}
               </List>
             </Paper>
+          </Grid>
+          <Grid item xs={6} />
+          <Grid item xs={6}>
+            <CourseActivityTable />
           </Grid>
         </Grid>
       </Container>
