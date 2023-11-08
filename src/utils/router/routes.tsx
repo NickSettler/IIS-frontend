@@ -9,6 +9,7 @@ import { CourseInfo } from '../../components/courses/course-info';
 import { courseManageRoles } from '../hooks/course/useCoursePermissions';
 import { ClassesDataTable } from '../../components/classes/data-table';
 import { classManageRoles } from '../hooks/class/useClassPermissions';
+import ProfilePage from '../../pages/profile';
 
 export type TAppRoute = RouteObject & {
   path: string;
@@ -59,5 +60,19 @@ export const appRoutes: Array<TAppRoute> = [
     label: 'Classes',
     roles: [...classManageRoles],
     element: <ClassesDataTable />,
+  },
+  {
+    path: '/profile',
+    label: 'Profile',
+    roles: [
+      E_ROLE.ADMIN,
+      E_ROLE.GUARANTOR,
+      E_ROLE.TEACHER,
+      E_ROLE.SCHEDULER,
+      E_ROLE.STUDENT,
+    ],
+    noPadding: true,
+    bottomNav: true,
+    element: <ProfilePage />,
   },
 ];
