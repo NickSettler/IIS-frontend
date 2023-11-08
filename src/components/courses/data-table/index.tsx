@@ -1,24 +1,13 @@
-import { useQuery } from '@tanstack/react-query';
-import CourseService from '../../../api/course/course.service';
-import { JSX, useEffect, useState } from 'react';
+import { JSX } from 'react';
 import { E_COURSE_ENTITY_KEYS, TPureCourse } from '../../../api/course/types';
-import {
-  DataGrid,
-  GridActionsCellItem,
-  GridColDef,
-  GridRowId,
-} from '@mui/x-data-grid';
+import { GridActionsCellItem, GridColDef } from '@mui/x-data-grid';
 import { E_USER_ENTITY_KEYS } from '../../../api/user/types';
 import { chipSelectColDef } from '../../data-grid/chip-select';
-import { forEach, isEmpty, toString } from 'lodash';
+import { isEmpty } from 'lodash';
 import {
   GridRenderCellParams,
   GridValueFormatterParams,
 } from '@mui/x-data-grid/models/params/gridCellParams';
-import { LinearProgress } from '@mui/material';
-import { TApiError } from '../../../api/base/types';
-import { DataTableError } from '../../data-grid/error';
-import { CourseDataTableToolbar } from './toolbar';
 import { OpenInNew } from '@mui/icons-material';
 import { useNavigate } from 'react-router-dom';
 import { useModal } from '../../../utils/hooks/modal/useModal';
@@ -27,6 +16,8 @@ import { E_MODAL_MODE } from '../../../utils/modal/base-modal';
 import { useCourseMutations } from '../../../utils/hooks/course/useCourseMutations';
 import { useCourseModalHandlers } from '../../../utils/hooks/course/useCourseModalHandlers';
 import { useCoursePermissions } from '../../../utils/hooks/course/useCoursePermissions';
+import { GenericDataGrid } from '../../data-grid/generic-datagrid';
+import { useCourses } from '../../../utils/hooks/course/useCourses';
 
 export const CoursesDataTable = (): JSX.Element => {
   const navigate = useNavigate();
@@ -35,13 +26,7 @@ export const CoursesDataTable = (): JSX.Element => {
     E_MODALS.COURSE_FORM,
   );
 
-  const { data, isLoading, isFetching, error, refetch } = useQuery<
-    Array<TPureCourse>,
-    TApiError
-  >({
-    queryKey: ['getCourses'],
-    queryFn: CourseService.getCourses.bind(CourseService),
-  });
+  const { refetch } = useCourses();
 
   const { canCreate, canUpdate, canDelete } = useCoursePermissions();
 
@@ -56,25 +41,6 @@ export const CoursesDataTable = (): JSX.Element => {
     createMutation,
     updateMutation,
   });
-
-  const [rows, setRows] = useState<Array<TPureCourse>>([]);
-  const [rowSelection, setRowSelection] = useState<Array<GridRowId>>([]);
-
-  useEffect(() => {
-    if (data && !isFetching) setRows(data);
-  }, [data, isFetching]);
-
-  const handleDeleteSelected = () => {
-    forEach(rowSelection, (id) => {
-      deleteMutation.mutate({
-        [E_COURSE_ENTITY_KEYS.ABBR]: toString(id),
-      });
-    });
-  };
-
-  const handleRowSelection = (newSelection: Array<GridRowId>) => {
-    setRowSelection(newSelection);
-  };
 
   const handleDuplicateAction = (duplicateData: TPureCourse) => {
     openCourseFormModal({
@@ -198,40 +164,16 @@ export const CoursesDataTable = (): JSX.Element => {
     },
   ];
 
-  if (isLoading || error) {
-    return (
-      <DataTableError isLoading={isLoading} error={error} refetch={refetch} />
-    );
-  }
-
   return (
-    <>
-      <DataGrid
-        columns={gridColumns}
-        rows={rows}
-        loading={isLoading}
-        checkboxSelection={canDelete}
-        getRowId={(row) => row[E_COURSE_ENTITY_KEYS.ABBR]}
-        rowSelectionModel={rowSelection}
-        onRowSelectionModelChange={handleRowSelection}
-        sortModel={[
-          {
-            field: E_COURSE_ENTITY_KEYS.ABBR,
-            sort: 'asc',
-          },
-        ]}
-        slots={{
-          loadingOverlay: LinearProgress,
-          toolbar: () => (
-            <CourseDataTableToolbar
-              rowSelection={rowSelection}
-              openCreateModal={openCourseFormModal}
-              handleCreateSuccess={handleCreateSuccess}
-              handleDeleteSelected={handleDeleteSelected}
-            />
-          ),
-        }}
-      />
-    </>
+    <GenericDataGrid
+      modalKey={E_MODALS.COURSE_FORM}
+      primaryKey={E_COURSE_ENTITY_KEYS.ABBR}
+      columns={gridColumns}
+      caption={'Course'}
+      queryFunction={useCourses}
+      permissionsFunction={useCoursePermissions}
+      mutationsFunction={useCourseMutations}
+      modalHandlersFunction={useCourseModalHandlers}
+    />
   );
 };
