@@ -162,6 +162,12 @@ export const GenericDataGrid = <
     });
   };
 
+  const handleOpenInTabAction = (id: Value[PK]) => {
+    navigate(id, {
+      relative: 'route',
+    });
+  };
+
   const handleDuplicateAction = (duplicateData: Value) => {
     openFormModal({
       mode: E_MODAL_MODE.CREATE,
@@ -210,11 +216,7 @@ export const GenericDataGrid = <
                 key={'open-details'}
                 label={'Open details'}
                 icon={<OpenInNew />}
-                onClick={() =>
-                  navigate(params.row[primaryKey], {
-                    relative: 'route',
-                  })
-                }
+                onClick={() => handleOpenInTabAction(params.row[primaryKey])}
               />,
             ]
           : []),
@@ -268,6 +270,10 @@ export const GenericDataGrid = <
         getRowId={(row) => row[primaryKey]}
         rowSelectionModel={rowSelection}
         onRowSelectionModelChange={handleRowSelection}
+        {...(actions?.includes('open-in-tab') && {
+          onRowDoubleClick: (params) =>
+            handleOpenInTabAction(params.row[primaryKey]),
+        })}
         slots={{
           loadingOverlay: LinearProgress,
           toolbar: () => (
