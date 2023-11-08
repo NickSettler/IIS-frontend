@@ -17,17 +17,20 @@ export const ProfileTeacherRequirements = (): JSX.Element => {
       field: E_TEACHER_REQUIREMENT_ENTITY_KEYS.START_TIME,
       headerName: 'Start time',
       type: 'dateTime',
+      hideable: false,
       width: 200,
     },
     {
       field: E_TEACHER_REQUIREMENT_ENTITY_KEYS.END_TIME,
       headerName: 'End time',
       type: 'dateTime',
+      hideable: false,
       width: 200,
     },
     {
       field: E_TEACHER_REQUIREMENT_ENTITY_KEYS.MODE,
       headerName: 'Mode',
+      hideable: false,
       flex: 1,
     },
   ];

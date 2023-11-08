@@ -12,6 +12,8 @@ import {
 import { CopyAll, VisibilityOff } from '@mui/icons-material';
 import { toast } from 'react-hot-toast';
 import { E_USER_ENTITY_KEYS } from '../../api/user/types';
+import Grid from '@mui/material/Grid';
+import { ProfileTeacherRequirements } from './teacher-requirements';
 
 export const ProfileUserInfo = (): JSX.Element => {
   const { data, isLoading, error } = useMe();
@@ -44,85 +46,96 @@ export const ProfileUserInfo = (): JSX.Element => {
   if (error) return <Navigate to={'/'} />;
 
   return (
-    <Stack maxWidth={'33.33%'} gap={1}>
-      {isLoading ? (
-        <Skeleton
-          variant={'text'}
-          animation={'wave'}
-          sx={{ maxWidth: 'initial' }}
-        >
-          <Typography variant={'caption'} flexGrow={1}>
-            ID:
-          </Typography>
-        </Skeleton>
-      ) : (
-        <Stack direction={'row'} gap={1} alignItems={'center'}>
-          <Typography variant={'caption'}>ID: {id}</Typography>
-          <Link
-            sx={{ cursor: 'pointer', fontSize: '0.25rem' }}
-            onClick={handleIDCopy}
-          >
-            <CopyAll fontSize={'small'} />
-          </Link>
+    <Grid container spacing={4}>
+      <Grid item xs={4}>
+        <Stack spacing={2}>
+          <Typography variant={'h6'}>User info</Typography>
+          <Stack gap={1}>
+            {isLoading ? (
+              <Skeleton
+                variant={'text'}
+                animation={'wave'}
+                sx={{ maxWidth: 'initial' }}
+              >
+                <Typography variant={'caption'} flexGrow={1}>
+                  ID:
+                </Typography>
+              </Skeleton>
+            ) : (
+              <Stack direction={'row'} gap={1} alignItems={'center'}>
+                <Typography variant={'caption'}>ID: {id}</Typography>
+                <Link
+                  sx={{ cursor: 'pointer', fontSize: '0.25rem' }}
+                  onClick={handleIDCopy}
+                >
+                  <CopyAll fontSize={'small'} />
+                </Link>
+              </Stack>
+            )}
+            {isLoading ? (
+              Array.from({ length: 4 }).map((_, i) => (
+                <Skeleton
+                  key={i}
+                  variant={'rectangular'}
+                  animation={'wave'}
+                  sx={{ maxWidth: 'initial' }}
+                />
+              ))
+            ) : (
+              <>
+                <Stack
+                  direction={'row'}
+                  gap={1}
+                  alignItems={'center'}
+                  justifyContent={'space-between'}
+                >
+                  <Typography variant={'body1'}>First name</Typography>
+                  <Typography variant={'h6'}>{firstName}</Typography>
+                </Stack>
+                <Stack
+                  direction={'row'}
+                  gap={1}
+                  alignItems={'center'}
+                  justifyContent={'space-between'}
+                >
+                  <Typography variant={'body1'}>Last name</Typography>
+                  <Typography variant={'h6'}>{lastName}</Typography>
+                </Stack>
+                <Stack
+                  direction={'row'}
+                  gap={1}
+                  alignItems={'center'}
+                  justifyContent={'space-between'}
+                >
+                  <Typography variant={'body1'}>Username</Typography>
+                  <Typography variant={'h6'}>{username}</Typography>
+                </Stack>
+                <Stack
+                  direction={'row'}
+                  gap={1}
+                  alignItems={'center'}
+                  justifyContent={'space-between'}
+                >
+                  <Typography variant={'body1'}>Password</Typography>
+                  <Typography variant={'h6'}>
+                    <Tooltip title={'Password is hidden'}>
+                      <Icon color={'warning'} fontSize={'small'}>
+                        <VisibilityOff fontSize={'small'} />
+                      </Icon>
+                    </Tooltip>
+                  </Typography>
+                </Stack>
+              </>
+            )}
+          </Stack>
         </Stack>
-      )}
-      <Stack gap={1}>
-        {isLoading ? (
-          Array.from({ length: 4 }).map((_, i) => (
-            <Skeleton
-              key={i}
-              variant={'rectangular'}
-              animation={'wave'}
-              sx={{ maxWidth: 'initial' }}
-            />
-          ))
-        ) : (
-          <>
-            <Stack
-              direction={'row'}
-              gap={1}
-              alignItems={'center'}
-              justifyContent={'space-between'}
-            >
-              <Typography variant={'body1'}>First name</Typography>
-              <Typography variant={'h6'}>{firstName}</Typography>
-            </Stack>
-            <Stack
-              direction={'row'}
-              gap={1}
-              alignItems={'center'}
-              justifyContent={'space-between'}
-            >
-              <Typography variant={'body1'}>Last name</Typography>
-              <Typography variant={'h6'}>{lastName}</Typography>
-            </Stack>
-            <Stack
-              direction={'row'}
-              gap={1}
-              alignItems={'center'}
-              justifyContent={'space-between'}
-            >
-              <Typography variant={'body1'}>Username</Typography>
-              <Typography variant={'h6'}>{username}</Typography>
-            </Stack>
-            <Stack
-              direction={'row'}
-              gap={1}
-              alignItems={'center'}
-              justifyContent={'space-between'}
-            >
-              <Typography variant={'body1'}>Password</Typography>
-              <Typography variant={'h6'}>
-                <Tooltip title={'Password is hidden'}>
-                  <Icon color={'warning'} fontSize={'small'}>
-                    <VisibilityOff fontSize={'small'} />
-                  </Icon>
-                </Tooltip>
-              </Typography>
-            </Stack>
-          </>
-        )}
-      </Stack>
-    </Stack>
+      </Grid>
+      <Grid item xs={8}>
+        <Stack spacing={2}>
+          <Typography variant={'h6'}>Teacher requirements</Typography>
+          <ProfileTeacherRequirements />
+        </Stack>
+      </Grid>
+    </Grid>
   );
 };
