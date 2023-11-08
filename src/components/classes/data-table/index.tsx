@@ -29,16 +29,15 @@ export const ClassesDataTable = (): JSX.Element => {
     E_MODALS.CLASS_FORM,
   );
 
-  const { data, isLoading, isFetching, error, refetch } = useQuery<
-    Array<TClass>,
-    TApiError
-  >({
-    queryKey: ['getClasses'],
-    queryFn: ClassService.getClasses.bind(ClassService),
-  });
+  const useQueryFn = () =>
+    useQuery<Array<TClass>, TApiError>({
+      queryKey: ['getClasses'],
+      queryFn: ClassService.getClasses.bind(ClassService),
+    });
 
-  const { canCreateClass, canUpdateClass, canDeleteClass } =
-    useClassPermissions();
+  const { data, isLoading, isFetching, error, refetch } = useQueryFn();
+
+  const { canCreate, canUpdate, canDelete } = useClassPermissions();
 
   const { createMutation, updateMutation, deleteMutation } = useClassMutations({
     refetch,
@@ -121,7 +120,7 @@ export const ClassesDataTable = (): JSX.Element => {
             navigate(`/classes/${params.row[E_CLASS_ENTITY_KEYS.ABBR]}`)
           }
         />,
-        ...(canCreateClass
+        ...(canCreate
           ? [
               <GridActionsCellItem
                 showInMenu
@@ -131,7 +130,7 @@ export const ClassesDataTable = (): JSX.Element => {
               />,
             ]
           : []),
-        ...(canUpdateClass
+        ...(canUpdate
           ? [
               <GridActionsCellItem
                 showInMenu
@@ -141,7 +140,7 @@ export const ClassesDataTable = (): JSX.Element => {
               />,
             ]
           : []),
-        ...(canDeleteClass
+        ...(canDelete
           ? [
               <GridActionsCellItem
                 showInMenu
@@ -169,7 +168,7 @@ export const ClassesDataTable = (): JSX.Element => {
         columns={gridColumns}
         rows={rows}
         loading={isLoading}
-        checkboxSelection={canDeleteClass}
+        checkboxSelection={canDelete}
         getRowId={(row) => row[E_CLASS_ENTITY_KEYS.ABBR]}
         rowSelectionModel={rowSelection}
         onRowSelectionModelChange={handleRowSelection}

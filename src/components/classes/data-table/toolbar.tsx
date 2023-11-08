@@ -21,13 +21,13 @@ export const ClassDataTableToolbar = ({
   handleCreateSuccess,
   handleDeleteSelected,
 }: TClassDataTableToolbarProps): JSX.Element => {
-  const { canCreateClass, canDeleteClass } = useClassPermissions();
+  const { canCreate, canDelete } = useClassPermissions();
 
   return (
     <DataGridToolbar
       selection={rowSelection}
       prependButtons={[
-        ...(canCreateClass
+        ...(canCreate
           ? [
               <Button
                 key={E_MODALS.ADD_NEW_USER}
@@ -46,7 +46,7 @@ export const ClassDataTableToolbar = ({
           : []),
       ]}
       endButtons={[
-        ...(canDeleteClass
+        ...(canDelete
           ? [
               <Button
                 key={'delete-selected'}
