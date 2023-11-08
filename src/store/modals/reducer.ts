@@ -19,6 +19,14 @@ import {
   E_COURSE_ACTIVITY_ENTITY_KEYS,
   TApiCourseActivity,
 } from '../../api/course-activities/types';
+import {
+  TTeacherRequirementCreateData,
+  TTeacherRequirementUpdateData,
+} from '../../api/teacher-requirements/teacher-requirements.service';
+import {
+  E_TEACHER_REQUIREMENT_ENTITY_KEYS,
+  TTeacherRequirement,
+} from '../../api/teacher-requirements/types';
 
 export enum E_MODALS {
   MANAGE_ROLES = 'manage-roles.modal',
@@ -26,12 +34,17 @@ export enum E_MODALS {
   COURSE_FORM = 'course-form.modal',
   CLASS_FORM = 'class-form.modal',
   ADD_NEW_ACTIVITY = 'add-new-activity.modal',
+  TEACHER_REQUIREMENT_FORM = 'teacher-requirement-form.modal',
 }
 
 export type TModalMapItem = {
   id: E_MODALS;
   open: boolean;
   meta?: any;
+};
+
+export type TModalGenericMetaItems = {
+  onSuccess(...args: Array<any>): void;
 };
 
 export type TModalMetaMap = {
@@ -81,6 +94,22 @@ export type TModalMetaMap = {
         ): void;
       }
   );
+  [E_MODALS.TEACHER_REQUIREMENT_FORM]:
+    | {
+        mode: E_MODAL_MODE.CREATE;
+        initialData?: Partial<TTeacherRequirement>;
+        onSuccess(data: TTeacherRequirementCreateData): void;
+      }
+    | {
+        mode: E_MODAL_MODE.UPDATE;
+        initialData: Partial<TTeacherRequirement> & {
+          [E_TEACHER_REQUIREMENT_ENTITY_KEYS.ID]: TTeacherRequirement[E_TEACHER_REQUIREMENT_ENTITY_KEYS.ID];
+        };
+        onSuccess(
+          id: TTeacherRequirement[E_TEACHER_REQUIREMENT_ENTITY_KEYS.ID],
+          data: TTeacherRequirementUpdateData,
+        ): void;
+      };
 };
 
 export type TModalState = {
