@@ -46,7 +46,6 @@ const CourseFormModal = ({
   onSuccess,
   mode,
   initialData,
-  ...rest
 }: TCourseFormModalProps) => {
   const { data: usersData } = useQuery({
     queryKey: ['getUsers'],
@@ -167,9 +166,7 @@ const CourseFormModal = ({
     }
 
     if (mode === E_MODAL_MODE.UPDATE) {
-      // eslint-disable-next-line @typescript-eslint/ban-ts-comment
-      // @ts-ignore
-      const abbr = rest.abbr;
+      const abbr = initialData[E_COURSE_ENTITY_KEYS.ABBR];
 
       onSuccess(abbr, {
         ...data,

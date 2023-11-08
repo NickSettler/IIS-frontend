@@ -8,12 +8,20 @@ import { TApiError } from '../../api/base/types';
 import { GenericToolbar, TUseGenericPermissions } from './generic-toolbar';
 import { E_MODALS } from '../../store/modals';
 import { useModal } from '../../utils/hooks/modal/useModal';
-import { DataGrid, GridColDef, GridRowId } from '@mui/x-data-grid';
+import {
+  DataGrid,
+  GridActionsCellItem,
+  GridColDef,
+  GridRowId,
+  GridRowParams,
+} from '@mui/x-data-grid';
 import { forEach, lowerCase, sortBy, toString } from 'lodash';
 import { compare } from '../../utils/object/compare';
 import { E_MODAL_MODE } from '../../utils/modal/base-modal';
 import { DataTableError } from './error';
 import { LinearProgress } from '@mui/material';
+import { OpenInNew } from '@mui/icons-material';
+import { useNavigate } from 'react-router-dom';
 
 export type TGenericMutationsFunctionParams = {
   refetch(): Promise<unknown>;
@@ -49,6 +57,12 @@ export type TGenericModalHandlers<
   handleUpdateSuccess(id: Value[PK], updateData: TUpdateData): void;
 };
 
+export type TGenericDataGridActions =
+  | 'delete'
+  | 'duplicate'
+  | 'edit'
+  | 'open-in-tab';
+
 export type TGenericDataGridProps<
   Value extends Record<PropertyKey, any>,
   PK extends keyof Value,
@@ -57,10 +71,12 @@ export type TGenericDataGridProps<
   TDeleteData extends Record<PropertyKey, any>,
 > = {
   modalKey: E_MODALS;
-  primaryKey: keyof Value;
+  primaryKey: PK;
   columns: Array<GridColDef<Value>>;
   caption: string;
   sortKey?: keyof Value;
+  actions?: Array<TGenericDataGridActions>;
+  modalInitial?: Partial<Value>;
   queryFunction(
     options?: Omit<
       UseQueryOptions<Array<Value>, TApiError, Array<Value>, Array<string>>,
@@ -77,7 +93,7 @@ export type TGenericDataGridProps<
 };
 
 export const GenericDataGrid = <
-  Value extends Record<PropertyKey, any>,
+  Value extends Record<string, any>,
   PK extends keyof Value,
   TCreateData extends Record<PropertyKey, any>,
   TUpdateData extends Record<PropertyKey, any>,
@@ -88,6 +104,8 @@ export const GenericDataGrid = <
   columns,
   caption,
   sortKey,
+  actions,
+  modalInitial,
   queryFunction: useQueryFunction,
   permissionsFunction: usePermissionsFunction,
   mutationsFunction: useMutationsFunction,
@@ -99,9 +117,11 @@ export const GenericDataGrid = <
   TUpdateData,
   TDeleteData
 >): JSX.Element => {
+  const navigate = useNavigate();
+
   const { onOpen: openFormModal, onClose: closeFormModal } = useModal(modalKey);
 
-  const { data, isFetching, isLoading, error, refetch } = useQueryFunction();
+  const { data, isLoading, error, refetch } = useQueryFunction();
 
   const { canCreate, canUpdate, canDelete } = usePermissionsFunction();
 
@@ -145,7 +165,10 @@ export const GenericDataGrid = <
   const handleDuplicateAction = (duplicateData: Value) => {
     openFormModal({
       mode: E_MODAL_MODE.CREATE,
-      initialData: duplicateData,
+      initialData: {
+        ...(modalInitial ?? {}),
+        ...duplicateData,
+      },
       onSuccess: handleCreateSuccess,
     });
   };
@@ -155,16 +178,79 @@ export const GenericDataGrid = <
     // @ts-ignore
     openFormModal({
       mode: E_MODAL_MODE.UPDATE,
-      initialData: editData,
+      // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+      // @ts-ignore
+      initialData: {
+        ...(modalInitial ?? {}),
+        ...editData,
+      },
       onSuccess: handleUpdateSuccess,
     });
   };
 
   const handleDeleteAction = (id: Value[PK]) => {
     deleteMutation.mutate({
-      id,
+      [primaryKey]: id,
     });
   };
+
+  const gridColumns: Array<GridColDef<Value>> = [
+    ...columns,
+    {
+      field: 'actions',
+      type: 'actions',
+      headerName: 'Actions',
+      hideable: false,
+      flex: 1,
+      align: 'right',
+      getActions: (params: GridRowParams<Value>) => [
+        ...(actions?.includes('open-in-tab')
+          ? [
+              <GridActionsCellItem
+                key={'open-details'}
+                label={'Open details'}
+                icon={<OpenInNew />}
+                onClick={() =>
+                  navigate(params.row[primaryKey], {
+                    relative: 'route',
+                  })
+                }
+              />,
+            ]
+          : []),
+        ...(canCreate && actions?.includes('duplicate')
+          ? [
+              <GridActionsCellItem
+                showInMenu
+                key={'duplicate'}
+                label={'Duplicate'}
+                onClick={() => handleDuplicateAction(params.row)}
+              />,
+            ]
+          : []),
+        ...(canUpdate && actions?.includes('edit')
+          ? [
+              <GridActionsCellItem
+                showInMenu
+                key={'edit'}
+                label={'Edit'}
+                onClick={() => handleEditAction(params.row)}
+              />,
+            ]
+          : []),
+        ...(canDelete && actions?.includes('delete')
+          ? [
+              <GridActionsCellItem
+                showInMenu
+                key={'delete'}
+                label={'Delete'}
+                onClick={() => handleDeleteAction(params.row[primaryKey])}
+              />,
+            ]
+          : []),
+      ],
+    },
+  ];
 
   if (isLoading || error) {
     return (
@@ -175,7 +261,7 @@ export const GenericDataGrid = <
   return (
     <>
       <DataGrid
-        columns={columns}
+        columns={gridColumns}
         rows={rows}
         loading={isLoading}
         checkboxSelection={canDelete}
@@ -189,6 +275,7 @@ export const GenericDataGrid = <
               modalKey={modalKey}
               createCaption={`Add new ${lowerCase(caption)}`}
               rowSelection={rowSelection}
+              modalInitial={modalInitial}
               permissionsFunc={usePermissionsFunction}
               openCreateModal={openFormModal}
               handleCreateSuccess={handleCreateSuccess}

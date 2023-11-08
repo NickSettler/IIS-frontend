@@ -16,7 +16,7 @@ import {
   E_COURSE_ACTIVITY_ENTITY_KEYS,
   E_COURSE_ACTIVITY_FORM,
 } from '../../../api/course-activities/types';
-import { mapValues, startCase, toString, values } from 'lodash';
+import { startCase, values } from 'lodash';
 import { TCourseActivityCreateData } from '../../../api/course-activities/course-activities.service';
 
 export type TAddNewActivityModalProps = TCommonModalProps &
@@ -30,23 +30,23 @@ export type TAddNewActivityModalForm = Omit<
 const AddNewActivityModal = ({
   onClose,
   onSuccess,
-  course,
   mode,
-  ...rest
+  initialData,
 }: TAddNewActivityModalProps) => {
   const [data, setData] = useState<TAddNewActivityModalForm>({
     [E_COURSE_ACTIVITY_ENTITY_KEYS.FORM]: E_COURSE_ACTIVITY_FORM.LECTURE,
   });
 
   useEffect(() => {
-    // eslint-disable-next-line @typescript-eslint/ban-ts-comment
-    // @ts-ignore
-    const initialData = rest.data;
-    if (initialData)
+    if (initialData) {
+      const { [E_COURSE_ACTIVITY_ENTITY_KEYS.FORM]: initialForm } = initialData;
       setData((prev) => ({
         ...prev,
-        ...mapValues(initialData, toString),
+        ...(initialForm && {
+          [E_COURSE_ACTIVITY_ENTITY_KEYS.FORM]: initialForm,
+        }),
       }));
+    }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
@@ -81,18 +81,21 @@ const AddNewActivityModal = ({
 
   const handleSave = (event: FormEvent) => {
     event.preventDefault();
+
     if (isSaveDisabled) return;
 
     if (mode === E_MODAL_MODE.CREATE) {
       onSuccess({
-        course,
+        [E_COURSE_ACTIVITY_ENTITY_KEYS.COURSE]: initialData.course,
         ...data,
       });
-    } else if (mode === E_MODAL_MODE.UPDATE) {
-      // eslint-disable-next-line @typescript-eslint/ban-ts-comment
-      // @ts-ignore
-      onSuccess(rest.id, {
-        course,
+    }
+
+    if (mode === E_MODAL_MODE.UPDATE) {
+      const id = initialData[E_COURSE_ACTIVITY_ENTITY_KEYS.ID];
+
+      onSuccess(id, {
+        [E_COURSE_ACTIVITY_ENTITY_KEYS.COURSE]: initialData.course,
         ...data,
       });
     }

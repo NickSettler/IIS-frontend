@@ -16,6 +16,7 @@ export type TGenericDataTableToolbarProps<T extends E_MODALS> = {
   modalKey: T;
   createCaption: string;
   rowSelection: Array<GridRowId>;
+  modalInitial?: any;
   permissionsFunc(): TUseGenericPermissions;
   handleCreateSuccess(data: Parameters<TDynModalMeta<T>['onSuccess']>[0]): void;
   openCreateModal(meta: TDynModalMeta<T>): void;
@@ -26,6 +27,7 @@ export const GenericToolbar = ({
   modalKey,
   createCaption,
   rowSelection,
+  modalInitial,
   permissionsFunc,
   openCreateModal,
   handleCreateSuccess,
@@ -47,6 +49,7 @@ export const GenericToolbar = ({
                   openCreateModal({
                     mode: E_MODAL_MODE.CREATE,
                     onSuccess: handleCreateSuccess,
+                    ...(modalInitial && { initialData: modalInitial }),
                   })
                 }
               >

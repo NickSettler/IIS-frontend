@@ -55,7 +55,6 @@ export const CourseInfo = (): JSX.Element => {
     if (!data) return;
 
     openCourseFormModal({
-      abbr: data[E_COURSE_ENTITY_KEYS.ABBR],
       mode: E_MODAL_MODE.UPDATE,
       initialData: data,
       onSuccess: handleUpdateSuccess,

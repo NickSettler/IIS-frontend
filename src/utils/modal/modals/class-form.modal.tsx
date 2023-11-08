@@ -22,7 +22,6 @@ const ClassFormModal = ({
   onSuccess,
   mode,
   initialData,
-  ...rest
 }: TClassFormModalProps) => {
   const [data, setData] = useState<TClassFormModalData>({
     [E_CLASS_ENTITY_KEYS.ABBR]: '',
@@ -91,9 +90,7 @@ const ClassFormModal = ({
     }
 
     if (mode === E_MODAL_MODE.UPDATE) {
-      // eslint-disable-next-line @typescript-eslint/ban-ts-comment
-      // @ts-ignore
-      const abbr = rest.abbr;
+      const abbr = initialData[E_CLASS_ENTITY_KEYS.ABBR];
 
       onSuccess(abbr, {
         ...data,
