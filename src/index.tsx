@@ -10,6 +10,9 @@ import { BrowserRouter } from 'react-router-dom';
 import { ModalProvider } from './utils/modal/modal-provider';
 import { Provider } from 'react-redux';
 import store from './store';
+import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs';
+import { LocalizationProvider } from '@mui/x-date-pickers';
+import 'dayjs/locale/cs';
 
 const root = ReactDOM.createRoot(
   document.getElementById('root') as HTMLElement,
@@ -19,11 +22,13 @@ root.render(
     <Provider store={store}>
       <BrowserRouter>
         <ThemeProvider theme={theme}>
-          <QueryClientProvider client={client}>
-            <ModalProvider>
-              <App />
-            </ModalProvider>
-          </QueryClientProvider>
+          <LocalizationProvider dateAdapter={AdapterDayjs} adapterLocale={'cs'}>
+            <QueryClientProvider client={client}>
+              <ModalProvider>
+                <App />
+              </ModalProvider>
+            </QueryClientProvider>
+          </LocalizationProvider>
         </ThemeProvider>
       </BrowserRouter>
     </Provider>

@@ -22,6 +22,7 @@ import { useLocalStorage } from 'usehooks-ts';
 import { filter } from 'lodash';
 import { userHasRoles } from './utils/auth/roles';
 import { toast, Toaster } from 'react-hot-toast';
+import { useCurrentRoute } from './utils/hooks/router/useCurrentRoute';
 
 const App = (): ReactElement => {
   const [, setAccessToken] = useLocalStorage<string | null>(
@@ -45,6 +46,8 @@ const App = (): ReactElement => {
     LocalStorage.clear();
   };
 
+  const currentRoute = useCurrentRoute();
+
   const visibleRoutes = useMemo(
     (): Array<TAppRoute> =>
       filter(
@@ -60,6 +63,18 @@ const App = (): ReactElement => {
     [user],
   );
 
+  const topRoutes = useMemo(
+    (): Array<TAppRoute> =>
+      filter(visibleRoutes, ({ bottomNav }) => !bottomNav),
+    [visibleRoutes],
+  );
+
+  const bottomRoutes = useMemo(
+    (): Array<TAppRoute> =>
+      filter(visibleRoutes, ({ bottomNav }) => !!bottomNav),
+    [visibleRoutes],
+  );
+
   return (
     <Box sx={{ display: 'flex' }}>
       <CssBaseline />
@@ -68,8 +83,15 @@ const App = (): ReactElement => {
         sx={{ zIndex: (theme) => theme.zIndex.drawer + 1 }}
       >
         <Toolbar>
-          <Typography variant='h6' noWrap component='div'>
-            Schedule Planner
+          <Typography
+            component={Link}
+            to={'/'}
+            variant='h6'
+            noWrap
+            color={'inherit'}
+            style={{ textDecoration: 'none' }}
+          >
+            Schedule Planner {currentRoute ? `- ${currentRoute.label}` : ''}
           </Typography>
         </Toolbar>
       </AppBar>
@@ -90,7 +112,7 @@ const App = (): ReactElement => {
             sx={{ display: 'flex', flexDirection: 'column', height: '100%' }}
           >
             <>
-              {visibleRoutes.map(({ path, label }) => (
+              {topRoutes.map(({ path, label }) => (
                 <ListItem
                   key={path}
                   disablePadding
@@ -104,6 +126,19 @@ const App = (): ReactElement => {
                 </ListItem>
               ))}
               <Box flexGrow={1} />
+              {bottomRoutes.map(({ path, label }) => (
+                <ListItem
+                  key={path}
+                  disablePadding
+                  component={Link}
+                  button
+                  to={path}
+                >
+                  <ListItemButton>
+                    <ListItemText primary={label} />
+                  </ListItemButton>
+                </ListItem>
+              ))}
               <ListItem disablePadding>
                 <ListItemButton onClick={handleLogout}>
                   <ListItemText primary='Logout' />
@@ -116,10 +151,21 @@ const App = (): ReactElement => {
 
       <Box
         component='main'
-        sx={{ flexGrow: 1, px: 3, height: '100vh', overflowX: 'hidden' }}
+        sx={{
+          flexGrow: 1,
+          px: currentRoute?.noPadding ? 0 : 3,
+          height: '100vh',
+          overflowX: 'hidden',
+        }}
       >
         <Toolbar />
-        <Box sx={{ flexGrow: 1, py: 2, height: 'calc(100% - 64px)' }}>
+        <Box
+          sx={{
+            flexGrow: 1,
+            py: currentRoute?.noPadding ? 0 : 2,
+            height: 'calc(100% - 64px)',
+          }}
+        >
           <Routes>
             {appRoutes.map(({ path, roles, element }) => (
               <Route

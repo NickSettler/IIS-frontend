@@ -1,11 +1,11 @@
-import { useCurrentUser } from './useCurrentUser';
+import { useCurrentUser } from '../user/useCurrentUser';
 import {
   E_ROLE,
   E_ROLE_ENTITY_KEYS,
   E_USER_ENTITY_KEYS,
-} from '../../api/user/types';
+} from '../../../api/user/types';
 import { map, some } from 'lodash';
-import { E_COURSE_ENTITY_KEYS, TPureCourse } from '../../api/course/types';
+import { E_COURSE_ENTITY_KEYS, TPureCourse } from '../../../api/course/types';
 
 export const courseManageRoles = [
   E_ROLE.ADMIN,
@@ -14,9 +14,9 @@ export const courseManageRoles = [
 ] as const;
 
 export type TUseCoursePermissions = {
-  canCreateCourse: boolean;
-  canUpdateCourse: boolean;
-  canDeleteCourse: boolean;
+  canCreate: boolean;
+  canUpdate: boolean;
+  canDelete: boolean;
 };
 
 export const useCoursePermissions = (
@@ -26,9 +26,9 @@ export const useCoursePermissions = (
 
   if (!currentUser) {
     return {
-      canCreateCourse: false,
-      canUpdateCourse: false,
-      canDeleteCourse: false,
+      canCreate: false,
+      canUpdate: false,
+      canDelete: false,
     };
   }
 
@@ -42,9 +42,9 @@ export const useCoursePermissions = (
 
   if (!course) {
     return {
-      canCreateCourse: isAdmin || isGuarantor,
-      canUpdateCourse: isAdmin || isGuarantor,
-      canDeleteCourse: isAdmin || isGuarantor,
+      canCreate: isAdmin || isGuarantor,
+      canUpdate: isAdmin || isGuarantor,
+      canDelete: isAdmin || isGuarantor,
     };
   }
 
@@ -71,8 +71,8 @@ export const useCoursePermissions = (
   if (isAdmin) canDeleteCourse = true;
 
   return {
-    canCreateCourse,
-    canUpdateCourse,
-    canDeleteCourse,
+    canCreate: canCreateCourse,
+    canUpdate: canUpdateCourse,
+    canDelete: canDeleteCourse,
   };
 };

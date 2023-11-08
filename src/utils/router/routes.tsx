@@ -6,14 +6,17 @@ import { UsersDataTable } from '../../components/users/data-table';
 import { E_ROLE } from '../../api/user/types';
 import { CoursesDataTable } from '../../components/courses/data-table';
 import { CourseInfo } from '../../components/courses/course-info';
-import { courseManageRoles } from '../hooks/useCoursePermissions';
+import { courseManageRoles } from '../hooks/course/useCoursePermissions';
 import { ClassesDataTable } from '../../components/classes/data-table';
-import { classManageRoles } from '../hooks/useClassPermissions';
+import { classManageRoles } from '../hooks/class/useClassPermissions';
+import { ProfileUserInfo } from '../../components/profile/user-info';
 
 export type TAppRoute = RouteObject & {
   path: string;
   label: string;
   showInNav?: boolean;
+  bottomNav?: boolean;
+  noPadding?: boolean;
   roles?: Array<E_ROLE>;
 };
 
@@ -57,5 +60,18 @@ export const appRoutes: Array<TAppRoute> = [
     label: 'Classes',
     roles: [...classManageRoles],
     element: <ClassesDataTable />,
+  },
+  {
+    path: '/profile',
+    label: 'Profile',
+    roles: [
+      E_ROLE.ADMIN,
+      E_ROLE.GUARANTOR,
+      E_ROLE.TEACHER,
+      E_ROLE.SCHEDULER,
+      E_ROLE.STUDENT,
+    ],
+    bottomNav: true,
+    element: <ProfileUserInfo />,
   },
 ];

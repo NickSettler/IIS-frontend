@@ -1,11 +1,11 @@
-import { TApiError } from '../../api/base/types';
+import { TApiError } from '../../../api/base/types';
 import {
   UseQueryResult,
   useQuery,
   UseQueryOptions,
 } from '@tanstack/react-query';
-import { E_COURSE_ENTITY_KEYS, TPureCourse } from '../../api/course/types';
-import CourseService from '../../api/course/course.service';
+import { E_COURSE_ENTITY_KEYS, TPureCourse } from '../../../api/course/types';
+import CourseService from '../../../api/course/course.service';
 
 export const useCourse = (
   abbr: TPureCourse[E_COURSE_ENTITY_KEYS.ABBR] | undefined,

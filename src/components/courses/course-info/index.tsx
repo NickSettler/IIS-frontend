@@ -2,7 +2,7 @@ import React, { JSX, useMemo } from 'react';
 import { Navigate, useNavigate, useParams } from 'react-router-dom';
 import { E_COURSE_ENTITY_KEYS } from '../../../api/course/types';
 import { isUndefined } from 'lodash';
-import { useCourse } from '../../../utils/hooks/useCourse';
+import { useCourse } from '../../../utils/hooks/course/useCourse';
 import {
   IconButton,
   ListItem,
@@ -19,13 +19,13 @@ import Grid from '@mui/material/Grid';
 import Container from '@mui/material/Container';
 import List from '@mui/material/List';
 import ListItemText from '@mui/material/ListItemText';
-import { useCourseMutations } from '../../../utils/hooks/useCourseMutations';
-import { useModal } from '../../../utils/hooks/useModal';
+import { useCourseMutations } from '../../../utils/hooks/course/useCourseMutations';
+import { useModal } from '../../../utils/hooks/modal/useModal';
 import { E_MODALS } from '../../../store/modals';
 import { E_MODAL_MODE } from '../../../utils/modal/base-modal';
-import { useCourseModalHandlers } from '../../../utils/hooks/useCourseModalHandlers';
+import { useCourseModalHandlers } from '../../../utils/hooks/course/useCourseModalHandlers';
 import { toast } from 'react-hot-toast';
-import { useCoursePermissions } from '../../../utils/hooks/useCoursePermissions';
+import { useCoursePermissions } from '../../../utils/hooks/course/useCoursePermissions';
 import { CourseActivityTable } from '../../course-activity/data-table';
 
 export const CourseInfo = (): JSX.Element => {
@@ -34,18 +34,17 @@ export const CourseInfo = (): JSX.Element => {
 
   if (isUndefined(abbr)) navigate('/courses');
 
-  const { onOpen: openCourseFormModal, onClose: closeCourseFormModal } =
-    useModal(E_MODALS.COURSE_FORM);
+  const { onOpen: openCourseFormModal, onClose: closeFormModal } = useModal(
+    E_MODALS.COURSE_FORM,
+  );
 
   const { data, isLoading, error, refetch } = useCourse(abbr);
 
-  const { canUpdateCourse, canDeleteCourse } = useCoursePermissions(
-    data ?? undefined,
-  );
+  const { canUpdate, canDelete } = useCoursePermissions(data ?? undefined);
 
   const { updateMutation, deleteMutation } = useCourseMutations({
     refetch,
-    closeCourseFormModal,
+    closeFormModal,
   });
 
   const { handleUpdateSuccess } = useCourseModalHandlers({
@@ -56,7 +55,6 @@ export const CourseInfo = (): JSX.Element => {
     if (!data) return;
 
     openCourseFormModal({
-      abbr: data[E_COURSE_ENTITY_KEYS.ABBR],
       mode: E_MODAL_MODE.UPDATE,
       initialData: data,
       onSuccess: handleUpdateSuccess,
@@ -145,9 +143,9 @@ export const CourseInfo = (): JSX.Element => {
             </Typography>
           )}
         </Stack>
-        {(canUpdateCourse || canDeleteCourse) && (
+        {(canUpdate || canDelete) && (
           <Stack direction='row' gap={1} alignItems={'center'}>
-            {canUpdateCourse && (
+            {canUpdate && (
               <Button
                 size={'small'}
                 variant={'text'}
@@ -157,7 +155,7 @@ export const CourseInfo = (): JSX.Element => {
                 Edit
               </Button>
             )}
-            {canDeleteCourse && (
+            {canDelete && (
               <Button
                 size={'small'}
                 variant={'text'}

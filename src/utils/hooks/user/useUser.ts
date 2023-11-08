@@ -2,14 +2,14 @@ import {
   E_USER_ENTITY_KEYS,
   TApiUserWithRoles,
   TUser,
-} from '../../api/user/types';
-import { TApiError } from '../../api/base/types';
+} from '../../../api/user/types';
+import { TApiError } from '../../../api/base/types';
 import {
   UseQueryResult,
   useQuery,
   UseQueryOptions,
 } from '@tanstack/react-query';
-import UserService from '../../api/user/user.service';
+import UserService from '../../../api/user/user.service';
 
 export const useUser = (
   userId: TUser[E_USER_ENTITY_KEYS.ID] | null,

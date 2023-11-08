@@ -1,27 +1,39 @@
 import { JSX } from 'react';
-import { DataGridToolbar } from '../../data-grid/toolbar';
-import { Button } from '@mui/material';
-import { E_MODALS, TDynModalMeta } from '../../../store/modals';
-import { Add, Delete } from '@mui/icons-material';
 import { GridRowId } from '@mui/x-data-grid';
-import { E_MODAL_MODE } from '../../../utils/modal/base-modal';
-import { TClassCreateData } from '../../../api/class/class.service';
-import { useClassPermissions } from '../../../utils/hooks/class/useClassPermissions';
+import { E_MODALS, TDynModalMeta } from '../../store/modals';
+import { DataGridToolbar } from './toolbar';
+import { Button } from '@mui/material';
+import { Add, Delete } from '@mui/icons-material';
+import { E_MODAL_MODE } from '../../utils/modal/base-modal';
 
-export type TClassDataTableToolbarProps = {
+export type TUseGenericPermissions = {
+  canCreate: boolean;
+  canUpdate: boolean;
+  canDelete: boolean;
+};
+
+export type TGenericDataTableToolbarProps<T extends E_MODALS> = {
+  modalKey: T;
+  createCaption: string;
   rowSelection: Array<GridRowId>;
-  handleCreateSuccess(data: TClassCreateData): void;
-  openCreateModal(meta: TDynModalMeta<E_MODALS.CLASS_FORM>): void;
+  modalInitial?: any;
+  permissionsFunc(): TUseGenericPermissions;
+  handleCreateSuccess(data: Parameters<TDynModalMeta<T>['onSuccess']>[0]): void;
+  openCreateModal(meta: TDynModalMeta<T>): void;
   handleDeleteSelected(): void;
 };
 
-export const ClassDataTableToolbar = ({
+export const GenericToolbar = ({
+  modalKey,
+  createCaption,
   rowSelection,
+  modalInitial,
+  permissionsFunc,
   openCreateModal,
   handleCreateSuccess,
   handleDeleteSelected,
-}: TClassDataTableToolbarProps): JSX.Element => {
-  const { canCreate, canDelete } = useClassPermissions();
+}: TGenericDataTableToolbarProps<any>): JSX.Element => {
+  const { canCreate, canDelete } = permissionsFunc();
 
   return (
     <DataGridToolbar
@@ -30,17 +42,18 @@ export const ClassDataTableToolbar = ({
         ...(canCreate
           ? [
               <Button
-                key={E_MODALS.ADD_NEW_USER}
+                key={modalKey}
                 size={'small'}
                 startIcon={<Add />}
                 onClick={() =>
                   openCreateModal({
                     mode: E_MODAL_MODE.CREATE,
                     onSuccess: handleCreateSuccess,
+                    ...(modalInitial && { initialData: modalInitial }),
                   })
                 }
               >
-                Add new class
+                {createCaption}
               </Button>,
             ]
           : []),

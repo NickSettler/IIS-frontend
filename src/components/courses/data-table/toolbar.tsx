@@ -6,7 +6,7 @@ import { Add, Delete } from '@mui/icons-material';
 import { GridRowId } from '@mui/x-data-grid';
 import { E_MODAL_MODE } from '../../../utils/modal/base-modal';
 import { TCourseCreateData } from '../../../api/course/course.service';
-import { useCoursePermissions } from '../../../utils/hooks/useCoursePermissions';
+import { useCoursePermissions } from '../../../utils/hooks/course/useCoursePermissions';
 
 export type TCourseDataTableToolbarProps = {
   rowSelection: Array<GridRowId>;
@@ -21,13 +21,13 @@ export const CourseDataTableToolbar = ({
   handleCreateSuccess,
   handleDeleteSelected,
 }: TCourseDataTableToolbarProps): JSX.Element => {
-  const { canCreateCourse, canDeleteCourse } = useCoursePermissions();
+  const { canCreate, canDelete } = useCoursePermissions();
 
   return (
     <DataGridToolbar
       selection={rowSelection}
       prependButtons={[
-        ...(canCreateCourse
+        ...(canCreate
           ? [
               <Button
                 key={E_MODALS.ADD_NEW_USER}
@@ -46,7 +46,7 @@ export const CourseDataTableToolbar = ({
           : []),
       ]}
       endButtons={[
-        ...(canDeleteCourse
+        ...(canDelete
           ? [
               <Button
                 key={'delete-selected'}

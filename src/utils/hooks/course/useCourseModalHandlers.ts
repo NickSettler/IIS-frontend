@@ -2,9 +2,9 @@ import { TUseCourseMutations } from './useCourseMutations';
 import {
   TCourseCreateData,
   TCourseUpdateData,
-} from '../../api/course/course.service';
+} from '../../../api/course/course.service';
 import { pick } from 'lodash';
-import { E_COURSE_ENTITY_KEYS, TPureCourse } from '../../api/course/types';
+import { E_COURSE_ENTITY_KEYS, TPureCourse } from '../../../api/course/types';
 
 export type TUseCourseModalHandlersParams = Partial<
   Omit<TUseCourseMutations, 'deleteMutation'>

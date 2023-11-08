@@ -4,7 +4,7 @@ import { findLastIndex } from 'lodash';
 import { TUserCreateData } from '../../api/user/user.service';
 import { E_ROLE } from '../../api/user/types';
 import { E_MODAL_MODE } from '../../utils/modal/base-modal';
-import { TPureCourse } from '../../api/course/types';
+import { E_COURSE_ENTITY_KEYS, TPureCourse } from '../../api/course/types';
 import { TCourseCreateData } from '../../api/course/course.service';
 import {
   TCourseActivityCreateData,
@@ -14,11 +14,19 @@ import {
   TClassCreateData,
   TClassUpdateData,
 } from '../../api/class/class.service';
-import { TClass } from '../../api/class/types';
+import { E_CLASS_ENTITY_KEYS, TClass } from '../../api/class/types';
 import {
   E_COURSE_ACTIVITY_ENTITY_KEYS,
   TApiCourseActivity,
 } from '../../api/course-activities/types';
+import {
+  TTeacherRequirementCreateData,
+  TTeacherRequirementUpdateData,
+} from '../../api/teacher-requirements/teacher-requirements.service';
+import {
+  E_TEACHER_REQUIREMENT_ENTITY_KEYS,
+  TTeacherRequirement,
+} from '../../api/teacher-requirements/types';
 
 export enum E_MODALS {
   MANAGE_ROLES = 'manage-roles.modal',
@@ -26,12 +34,17 @@ export enum E_MODALS {
   COURSE_FORM = 'course-form.modal',
   CLASS_FORM = 'class-form.modal',
   ADD_NEW_ACTIVITY = 'add-new-activity.modal',
+  TEACHER_REQUIREMENT_FORM = 'teacher-requirement-form.modal',
 }
 
 export type TModalMapItem = {
   id: E_MODALS;
   open: boolean;
   meta?: any;
+};
+
+export type TModalGenericMetaItems = {
+  onSuccess(...args: Array<any>): void;
 };
 
 export type TModalMetaMap = {
@@ -42,45 +55,67 @@ export type TModalMetaMap = {
     userID: string;
     onSuccess(userID: string, roles: Array<E_ROLE>): void;
   };
-  [E_MODALS.COURSE_FORM]: { initialData?: Partial<TPureCourse> } & (
+  [E_MODALS.COURSE_FORM]:
     | {
         mode: E_MODAL_MODE.CREATE;
+        initialData?: Partial<TPureCourse>;
         onSuccess(data: TCourseCreateData): void;
       }
     | {
         mode: E_MODAL_MODE.UPDATE;
-        abbr: string;
+        initialData: Partial<TPureCourse> & {
+          [E_COURSE_ENTITY_KEYS.ABBR]: TPureCourse[E_COURSE_ENTITY_KEYS.ABBR];
+        };
         onSuccess(abbr: string, data: TCourseCreateData): void;
-      }
-  );
-  [E_MODALS.CLASS_FORM]: { initialData?: Partial<TClass> } & (
+      };
+  [E_MODALS.CLASS_FORM]:
     | {
         mode: E_MODAL_MODE.CREATE;
+        initialData?: Partial<TClass>;
         onSuccess(data: TClassCreateData): void;
       }
     | {
         mode: E_MODAL_MODE.UPDATE;
-        abbr: string;
+        initialData: Partial<TClass> & {
+          [E_CLASS_ENTITY_KEYS.ABBR]: TClass[E_CLASS_ENTITY_KEYS.ABBR];
+        };
         onSuccess(abbr: string, data: TClassUpdateData): void;
-      }
-  );
-  [E_MODALS.ADD_NEW_ACTIVITY]: {
-    course: string;
-  } & (
+      };
+  [E_MODALS.ADD_NEW_ACTIVITY]:
     | {
         mode: E_MODAL_MODE.CREATE;
+        initialData: Partial<TApiCourseActivity> & {
+          [E_COURSE_ACTIVITY_ENTITY_KEYS.COURSE]: TPureCourse[E_COURSE_ENTITY_KEYS.ABBR];
+        };
         onSuccess(data: TCourseActivityCreateData): void;
       }
     | {
         mode: E_MODAL_MODE.UPDATE;
-        data: Partial<TApiCourseActivity>;
-        id: TApiCourseActivity[E_COURSE_ACTIVITY_ENTITY_KEYS.ID];
+        initialData: Partial<TApiCourseActivity> & {
+          [E_COURSE_ACTIVITY_ENTITY_KEYS.ID]: TApiCourseActivity[E_COURSE_ACTIVITY_ENTITY_KEYS.ID];
+          [E_COURSE_ACTIVITY_ENTITY_KEYS.COURSE]: TPureCourse[E_COURSE_ENTITY_KEYS.ABBR];
+        };
         onSuccess(
           id: TApiCourseActivity[E_COURSE_ACTIVITY_ENTITY_KEYS.ID],
           data: TCourseActivityUpdateData,
         ): void;
+      };
+  [E_MODALS.TEACHER_REQUIREMENT_FORM]:
+    | {
+        mode: E_MODAL_MODE.CREATE;
+        initialData?: Partial<TTeacherRequirement>;
+        onSuccess(data: TTeacherRequirementCreateData): void;
       }
-  );
+    | {
+        mode: E_MODAL_MODE.UPDATE;
+        initialData: Partial<TTeacherRequirement> & {
+          [E_TEACHER_REQUIREMENT_ENTITY_KEYS.ID]: TTeacherRequirement[E_TEACHER_REQUIREMENT_ENTITY_KEYS.ID];
+        };
+        onSuccess(
+          id: TTeacherRequirement[E_TEACHER_REQUIREMENT_ENTITY_KEYS.ID],
+          data: TTeacherRequirementUpdateData,
+        ): void;
+      };
 };
 
 export type TModalState = {

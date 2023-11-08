@@ -1,15 +1,15 @@
 import { useMutation, UseMutationResult } from '@tanstack/react-query';
-import { TApiError } from '../../api/base/types';
+import { TApiError } from '../../../api/base/types';
 import { toast } from 'react-hot-toast';
 import {
   E_COURSE_ACTIVITY_ENTITY_KEYS,
   TApiCourseActivity,
-} from '../../api/course-activities/types';
+} from '../../../api/course-activities/types';
 import CourseActivityService, {
   TCourseActivityCreateMutationVariables,
   TCourseActivityDeleteMutationVariables,
   TCourseActivityUpdateMutationVariables,
-} from '../../api/course-activities/course-activities.service';
+} from '../../../api/course-activities/course-activities.service';
 
 export type TUseCourseActivityMutationsParams = {
   refetch(): Promise<unknown>;

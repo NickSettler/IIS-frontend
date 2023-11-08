@@ -4,8 +4,8 @@ import {
   isModalOpenSelector,
   openModal,
   TDynModalMeta,
-} from '../../store/modals';
-import { useAppDispatch } from '../../store';
+} from '../../../store/modals';
+import { useAppDispatch } from '../../../store';
 import { useCallback } from 'react';
 import { useSelector } from 'react-redux';
 

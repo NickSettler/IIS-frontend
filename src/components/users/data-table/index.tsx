@@ -40,7 +40,7 @@ import {
 import { chipSelectColDef } from '../../data-grid/chip-select';
 import { DataGridToolbar } from '../../data-grid/toolbar';
 import { Add, Delete } from '@mui/icons-material';
-import { useModal } from '../../../utils/hooks/useModal';
+import { useModal } from '../../../utils/hooks/modal/useModal';
 import { E_MODALS } from '../../../store/modals';
 import { toast } from 'react-hot-toast';
 

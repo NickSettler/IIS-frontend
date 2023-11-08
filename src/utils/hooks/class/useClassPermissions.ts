@@ -1,17 +1,17 @@
-import { useCurrentUser } from './useCurrentUser';
+import { useCurrentUser } from '../user/useCurrentUser';
 import {
   E_ROLE,
   E_ROLE_ENTITY_KEYS,
   E_USER_ENTITY_KEYS,
-} from '../../api/user/types';
+} from '../../../api/user/types';
 import { map } from 'lodash';
 
 export const classManageRoles = [E_ROLE.ADMIN] as const;
 
 export type TUseClassPermissions = {
-  canCreateClass: boolean;
-  canUpdateClass: boolean;
-  canDeleteClass: boolean;
+  canCreate: boolean;
+  canUpdate: boolean;
+  canDelete: boolean;
 };
 
 export const useClassPermissions = (): TUseClassPermissions => {
@@ -19,9 +19,9 @@ export const useClassPermissions = (): TUseClassPermissions => {
 
   if (!currentUser) {
     return {
-      canCreateClass: false,
-      canUpdateClass: false,
-      canDeleteClass: false,
+      canCreate: false,
+      canUpdate: false,
+      canDelete: false,
     };
   }
 
@@ -33,8 +33,8 @@ export const useClassPermissions = (): TUseClassPermissions => {
   const isAdmin = userRoles.includes(E_ROLE.ADMIN);
 
   return {
-    canCreateClass: isAdmin,
-    canUpdateClass: isAdmin,
-    canDeleteClass: isAdmin,
+    canCreate: isAdmin,
+    canUpdate: isAdmin,
+    canDelete: isAdmin,
   };
 };
