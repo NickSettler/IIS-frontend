@@ -5,8 +5,6 @@ import {
 } from './types';
 import Api from '../base/api';
 import { E_USER_ENTITY_KEYS, TUser } from '../user/types';
-import { E_COURSE_ENTITY_KEYS, TPureCourse } from '../course/types';
-import { TCourseUpdateData } from '../course/course.service';
 
 export type TTeacherRequirementCreateData = Omit<
   TTeacherRequirement,

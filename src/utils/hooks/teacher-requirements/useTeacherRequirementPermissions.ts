@@ -4,7 +4,7 @@ import {
   E_ROLE_ENTITY_KEYS,
   E_USER_ENTITY_KEYS,
 } from '../../../api/user/types';
-import { map, some } from 'lodash';
+import { map } from 'lodash';
 import { TUseGenericPermissions } from '../../../components/data-grid/generic-toolbar';
 
 export const teacherManageRoles = [E_ROLE.TEACHER] as const;
