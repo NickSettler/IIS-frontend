@@ -1,12 +1,12 @@
 import {
+  Box,
   Button,
   FormControl,
   FormGroup,
   InputLabel,
+  MenuItem,
   Select,
   SelectChangeEvent,
-  MenuItem,
-  Box,
 } from '@mui/material';
 import { FormEvent, JSX, useEffect, useMemo, useState } from 'react';
 import { BaseModal, E_MODAL_MODE, TCommonModalProps } from '../base-modal';
@@ -19,7 +19,7 @@ import {
 import { E_USER_ENTITY_KEYS, TApiUser } from '../../../api/user/types';
 import { DateTimePicker } from '@mui/x-date-pickers';
 import dayjs, { Dayjs } from 'dayjs';
-import { startCase, values } from 'lodash';
+import { omit, startCase, values } from 'lodash';
 import { useMe } from '../../hooks/user/useMe';
 
 export type TTeacherRequirementModalProps = TCommonModalProps &
@@ -56,6 +56,7 @@ const ClassFormModal = ({
     if (initialData)
       setData((prev) => ({
         ...prev,
+        ...omit(initialData, [E_TEACHER_REQUIREMENT_ENTITY_KEYS.ID]),
       }));
   }, [initialData]);
 
