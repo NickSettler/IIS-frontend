@@ -34,18 +34,17 @@ export const CourseInfo = (): JSX.Element => {
 
   if (isUndefined(abbr)) navigate('/courses');
 
-  const { onOpen: openCourseFormModal, onClose: closeCourseFormModal } =
-    useModal(E_MODALS.COURSE_FORM);
+  const { onOpen: openCourseFormModal, onClose: closeFormModal } = useModal(
+    E_MODALS.COURSE_FORM,
+  );
 
   const { data, isLoading, error, refetch } = useCourse(abbr);
 
-  const { canUpdateCourse, canDeleteCourse } = useCoursePermissions(
-    data ?? undefined,
-  );
+  const { canUpdate, canDelete } = useCoursePermissions(data ?? undefined);
 
   const { updateMutation, deleteMutation } = useCourseMutations({
     refetch,
-    closeCourseFormModal,
+    closeFormModal,
   });
 
   const { handleUpdateSuccess } = useCourseModalHandlers({
@@ -145,9 +144,9 @@ export const CourseInfo = (): JSX.Element => {
             </Typography>
           )}
         </Stack>
-        {(canUpdateCourse || canDeleteCourse) && (
+        {(canUpdate || canDelete) && (
           <Stack direction='row' gap={1} alignItems={'center'}>
-            {canUpdateCourse && (
+            {canUpdate && (
               <Button
                 size={'small'}
                 variant={'text'}
@@ -157,7 +156,7 @@ export const CourseInfo = (): JSX.Element => {
                 Edit
               </Button>
             )}
-            {canDeleteCourse && (
+            {canDelete && (
               <Button
                 size={'small'}
                 variant={'text'}

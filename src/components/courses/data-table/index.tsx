@@ -31,8 +31,9 @@ import { useCoursePermissions } from '../../../utils/hooks/course/useCoursePermi
 export const CoursesDataTable = (): JSX.Element => {
   const navigate = useNavigate();
 
-  const { onOpen: openCourseFormModal, onClose: closeCourseFormModal } =
-    useModal(E_MODALS.COURSE_FORM);
+  const { onOpen: openCourseFormModal, onClose: closeFormModal } = useModal(
+    E_MODALS.COURSE_FORM,
+  );
 
   const { data, isLoading, isFetching, error, refetch } = useQuery<
     Array<TPureCourse>,
@@ -42,13 +43,12 @@ export const CoursesDataTable = (): JSX.Element => {
     queryFn: CourseService.getCourses.bind(CourseService),
   });
 
-  const { canCreateCourse, canUpdateCourse, canDeleteCourse } =
-    useCoursePermissions();
+  const { canCreate, canUpdate, canDelete } = useCoursePermissions();
 
   const { createMutation, updateMutation, deleteMutation } = useCourseMutations(
     {
       refetch,
-      closeCourseFormModal,
+      closeFormModal,
     },
   );
 
@@ -162,7 +162,7 @@ export const CoursesDataTable = (): JSX.Element => {
             navigate(`/courses/${params.row[E_COURSE_ENTITY_KEYS.ABBR]}`)
           }
         />,
-        ...(canCreateCourse
+        ...(canCreate
           ? [
               <GridActionsCellItem
                 showInMenu
@@ -172,7 +172,7 @@ export const CoursesDataTable = (): JSX.Element => {
               />,
             ]
           : []),
-        ...(canUpdateCourse
+        ...(canUpdate
           ? [
               <GridActionsCellItem
                 showInMenu
@@ -182,7 +182,7 @@ export const CoursesDataTable = (): JSX.Element => {
               />,
             ]
           : []),
-        ...(canDeleteCourse
+        ...(canDelete
           ? [
               <GridActionsCellItem
                 showInMenu
@@ -210,7 +210,7 @@ export const CoursesDataTable = (): JSX.Element => {
         columns={gridColumns}
         rows={rows}
         loading={isLoading}
-        checkboxSelection={canDeleteCourse}
+        checkboxSelection={canDelete}
         getRowId={(row) => row[E_COURSE_ENTITY_KEYS.ABBR]}
         rowSelectionModel={rowSelection}
         onRowSelectionModelChange={handleRowSelection}
