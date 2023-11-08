@@ -21,6 +21,7 @@ import { ClassDataTableToolbar } from './toolbar';
 import { E_MODAL_MODE } from '../../../utils/modal/base-modal';
 import { OpenInNew } from '@mui/icons-material';
 import { DataTableError } from '../../data-grid/error';
+import { GenericDataGrid } from '../../data-grid/generic-datagrid';
 
 export const ClassesDataTable = (): JSX.Element => {
   const navigate = useNavigate();
@@ -48,25 +49,6 @@ export const ClassesDataTable = (): JSX.Element => {
     createMutation,
     updateMutation,
   });
-
-  const [rows, setRows] = useState<Array<TClass>>([]);
-  const [rowSelection, setRowSelection] = useState<Array<GridRowId>>([]);
-
-  useEffect(() => {
-    if (data && !isFetching) setRows(data);
-  }, [data, isFetching]);
-
-  const handleDeleteSelected = () => {
-    forEach(rowSelection, (id) => {
-      deleteMutation.mutate({
-        [E_CLASS_ENTITY_KEYS.ABBR]: toString(id),
-      });
-    });
-  };
-
-  const handleRowSelection = (newSelection: Array<GridRowId>) => {
-    setRowSelection(newSelection);
-  };
 
   const handleDuplicateAction = (duplicateData: TClass) => {
     openFormModal({
@@ -163,27 +145,15 @@ export const ClassesDataTable = (): JSX.Element => {
   }
 
   return (
-    <>
-      <DataGrid
-        columns={gridColumns}
-        rows={rows}
-        loading={isLoading}
-        checkboxSelection={canDelete}
-        getRowId={(row) => row[E_CLASS_ENTITY_KEYS.ABBR]}
-        rowSelectionModel={rowSelection}
-        onRowSelectionModelChange={handleRowSelection}
-        slots={{
-          loadingOverlay: LinearProgress,
-          toolbar: () => (
-            <ClassDataTableToolbar
-              rowSelection={rowSelection}
-              openCreateModal={openFormModal}
-              handleCreateSuccess={handleCreateSuccess}
-              handleDeleteSelected={handleDeleteSelected}
-            />
-          ),
-        }}
-      />
-    </>
+    <GenericDataGrid
+      modalKey={E_MODALS.CLASS_FORM}
+      primaryKey={E_CLASS_ENTITY_KEYS.ABBR}
+      columns={gridColumns}
+      caption={'Class'}
+      queryFunction={useQueryFn}
+      permissionsFunction={useClassPermissions}
+      mutationsFunction={useClassMutations}
+      modalHandlersFunction={useClassModalHandlers}
+    />
   );
 };
