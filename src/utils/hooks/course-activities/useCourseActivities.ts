@@ -12,18 +12,18 @@ export const useCourseActivities = (
   abbr: TPureCourse[E_COURSE_ENTITY_KEYS.ABBR] | undefined,
   options?: Omit<
     UseQueryOptions<
-      Array<TApiCourseActivity> | null,
+      Array<TApiCourseActivity>,
       TApiError,
-      Array<TApiCourseActivity> | null,
-      Array<string | null>
+      Array<TApiCourseActivity>,
+      Array<string>
     >,
     'initialData' | 'queryFn' | 'queryKey'
   > & { initialData?(): undefined },
-): UseQueryResult<Array<TApiCourseActivity> | null, TApiError> => {
+): UseQueryResult<Array<TApiCourseActivity>, TApiError> => {
   return useQuery(
-    ['course-activities', abbr ?? null],
-    async (): Promise<Array<TApiCourseActivity> | null> =>
-      abbr ? CourseActivityService.getCourseActivities(abbr) : null,
+    ['course-activities - ', abbr ?? '__EMPTY'],
+    async (): Promise<Array<TApiCourseActivity>> =>
+      abbr ? CourseActivityService.getCourseActivities(abbr) : [],
     options,
   );
 };
