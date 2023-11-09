@@ -1,4 +1,4 @@
-import { JSX, useEffect, useState } from 'react';
+import { JSX, useEffect, useMemo, useState } from 'react';
 import {
   UseMutationResult,
   UseQueryOptions,
@@ -15,13 +15,17 @@ import {
   GridRowId,
   GridRowParams,
 } from '@mui/x-data-grid';
-import { forEach, lowerCase, sortBy, toString } from 'lodash';
+import { forEach, isEmpty, lowerCase, sortBy, toString } from 'lodash';
 import { compare } from '../../utils/object/compare';
 import { E_MODAL_MODE } from '../../utils/modal/base-modal';
 import { DataTableError } from './error';
-import { LinearProgress } from '@mui/material';
+import { LinearProgress, Stack } from '@mui/material';
 import { OpenInNew } from '@mui/icons-material';
 import { useNavigate } from 'react-router-dom';
+import TextField from '@mui/material/TextField';
+import Scanner from '../../utils/qdl/scanner';
+import Parser from '../../utils/qdl/parser';
+import Executor from '../../utils/qdl/executor';
 
 export type TGenericMutationsFunctionParams = {
   refetch(): Promise<unknown>;
@@ -138,8 +142,38 @@ export const GenericDataGrid = <
     },
   );
 
+  // eslint-disable-next-line react/hook-use-state
+  const [DQLQuery, setDQLQuery] = useState<string>('');
+  // eslint-disable-next-line react/hook-use-state
+  const [DQLQueryError, setDQLQueryError] = useState<string>('');
   const [rows, setRows] = useState<Array<Value>>([]);
   const [rowSelection, setRowSelection] = useState<Array<GridRowId>>([]);
+
+  const filteredRows = useMemo(() => {
+    if (isEmpty(DQLQuery)) {
+      setDQLQueryError('');
+      return rows;
+    }
+
+    try {
+      const lexer = new Scanner(DQLQuery);
+      const scanner = new Parser(lexer.getNextToken.bind(lexer));
+      const tree = scanner.processQuery();
+      const executor = new Executor(tree);
+
+      const result = executor.filter(rows);
+
+      setDQLQueryError('');
+
+      return result;
+    } catch (e) {
+      if (e instanceof Error) {
+        setDQLQueryError(e.message);
+      }
+
+      return rows;
+    }
+  }, [DQLQuery, rows]);
 
   useEffect(() => {
     const sortedData = sortBy(data, sortKey ?? primaryKey);
@@ -261,10 +295,19 @@ export const GenericDataGrid = <
   }
 
   return (
-    <>
+    <Stack spacing={2}>
+      <TextField
+        size={'small'}
+        placeholder={'name == "username"'}
+        label={'Query'}
+        value={DQLQuery}
+        error={!isEmpty(DQLQueryError)}
+        helperText={DQLQueryError}
+        onChange={(e) => setDQLQuery(e.target.value)}
+      />
       <DataGrid
         columns={gridColumns}
-        rows={rows}
+        rows={filteredRows}
         loading={isLoading}
         checkboxSelection={canDelete}
         getRowId={(row) => row[primaryKey]}
@@ -290,6 +333,6 @@ export const GenericDataGrid = <
           ),
         }}
       />
-    </>
+    </Stack>
   );
 };

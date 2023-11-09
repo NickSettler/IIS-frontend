@@ -10,6 +10,7 @@ import { courseManageRoles } from '../hooks/course/useCoursePermissions';
 import { ClassesDataTable } from '../../components/classes/data-table';
 import { classManageRoles } from '../hooks/class/useClassPermissions';
 import { ProfileUserInfo } from '../../components/profile/user-info';
+import { MarkdownHelp } from '../../pages/help/markdown-help';
 
 export type TAppRoute = RouteObject & {
   path: string;
@@ -73,5 +74,11 @@ export const appRoutes: Array<TAppRoute> = [
     ],
     bottomNav: true,
     element: <ProfileUserInfo />,
+  },
+  {
+    path: '/help',
+    label: 'Help',
+    bottomNav: true,
+    element: <MarkdownHelp />,
   },
 ];
