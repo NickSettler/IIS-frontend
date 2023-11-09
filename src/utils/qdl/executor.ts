@@ -162,7 +162,6 @@ export default class Executor {
     }, E_SYNTAX_TREE_TRAVERSE_ORDER.POST_ORDER);
 
     if (this.filterTree.right?.type !== E_TOKEN_TYPE.RESULT) {
-      console.log(this.filterTree);
       DQLError(E_ERROR_CODES.FILTER_ERROR, 'Invalid filter tree');
     }
 

@@ -159,7 +159,6 @@ export const GenericDataGrid = <
       const lexer = new Scanner(DQLQuery);
       const scanner = new Parser(lexer.getNextToken.bind(lexer));
       const tree = scanner.processQuery();
-      console.log(tree);
       const executor = new Executor(tree);
 
       const result = executor.filter(rows);
