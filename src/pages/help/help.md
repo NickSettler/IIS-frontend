@@ -29,11 +29,11 @@ The syntax of the DQL language is as follows:
 
 <field_name> -> <string>
 
-<operator> -> == | != | > | >= | < | <=
+<operator> -> == | != | > | >= | < | <= | ~
 
 <expression> -> <expression_value> | <expression_value> <expr_operator> <expression>
 
-<expr_operator> -> + | - | * | /
+<expr_operator> -> + | - | * | / | // | % | ^ | **
 
 <expression_value> -> <string> | <number> | <boolean> | <null>
 ```
