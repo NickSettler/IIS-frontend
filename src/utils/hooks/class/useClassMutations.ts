@@ -61,10 +61,10 @@ export const useClassMutations = ({
     TClassUpdateMutationVariables
   >({
     mutationFn: async ({
-      [E_CLASS_ENTITY_KEYS.ABBR]: abbr,
+      [E_CLASS_ENTITY_KEYS.ID]: id,
       data: updateData,
     }: TClassUpdateMutationVariables) =>
-      ClassService.updateClass(abbr, updateData),
+      ClassService.updateClass(id, updateData),
     onSuccess: async () => {
       await refetch();
       closeFormModal();
@@ -84,8 +84,8 @@ export const useClassMutations = ({
     TClassDeleteMutationVariables
   >({
     mutationFn: async ({
-      [E_CLASS_ENTITY_KEYS.ABBR]: abbr,
-    }: TClassDeleteMutationVariables) => ClassService.deleteClass(abbr),
+      [E_CLASS_ENTITY_KEYS.ID]: id,
+    }: TClassDeleteMutationVariables) => ClassService.deleteClass(id),
     onSuccess: async () => {
       await refetch();
 

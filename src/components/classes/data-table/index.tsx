@@ -19,6 +19,11 @@ export const ClassesDataTable = (): JSX.Element => {
 
   const gridColumns: Array<GridColDef<TClass>> = [
     {
+      field: E_CLASS_ENTITY_KEYS.ID,
+      headerName: 'ID',
+      hideable: true,
+    },
+    {
       field: E_CLASS_ENTITY_KEYS.ABBR,
       headerName: 'Abbreviation',
       hideable: false,
@@ -35,7 +40,7 @@ export const ClassesDataTable = (): JSX.Element => {
   return (
     <GenericDataGrid
       modalKey={E_MODALS.CLASS_FORM}
-      primaryKey={E_CLASS_ENTITY_KEYS.ABBR}
+      primaryKey={E_CLASS_ENTITY_KEYS.ID}
       columns={gridColumns}
       caption={'Class'}
       actions={['duplicate', 'edit', 'delete']}

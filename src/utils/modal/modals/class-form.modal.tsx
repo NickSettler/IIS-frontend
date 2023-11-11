@@ -41,6 +41,9 @@ const ClassFormModal = ({
             initialData[E_CLASS_ENTITY_KEYS.CAPACITY],
           ),
         }),
+        ...(initialData[E_CLASS_ENTITY_KEYS.ABBR] && {
+          [E_CLASS_ENTITY_KEYS.ABBR]: initialData[E_CLASS_ENTITY_KEYS.ABBR],
+        }),
       }));
   }, [initialData]);
 
@@ -83,6 +86,8 @@ const ClassFormModal = ({
     if (mode === E_MODAL_MODE.CREATE) {
       onSuccess({
         ...data,
+        [E_CLASS_ENTITY_KEYS.ABBR]:
+          data[E_CLASS_ENTITY_KEYS.ABBR].toUpperCase(),
         [E_CLASS_ENTITY_KEYS.CAPACITY]: parseInt(
           data[E_CLASS_ENTITY_KEYS.CAPACITY],
         ),
@@ -90,9 +95,9 @@ const ClassFormModal = ({
     }
 
     if (mode === E_MODAL_MODE.UPDATE) {
-      const abbr = initialData[E_CLASS_ENTITY_KEYS.ABBR];
+      const id = initialData[E_CLASS_ENTITY_KEYS.ID];
 
-      onSuccess(abbr, {
+      onSuccess(id, {
         ...data,
         [E_CLASS_ENTITY_KEYS.CAPACITY]: parseInt(
           data[E_CLASS_ENTITY_KEYS.CAPACITY],
