@@ -41,8 +41,8 @@ const AddNewActivityModal = ({
 
   useEffect(() => {
     if (initialData) {
-      const { [E_COURSE_ACTIVITY_ENTITY_KEYS.FORM]: initialForm } = initialData;
       const {
+        [E_COURSE_ACTIVITY_ENTITY_KEYS.FORM]: initialForm,
         [E_COURSE_ACTIVITY_ENTITY_KEYS.REQUIREMENTS]: initialRequirements,
       } = initialData;
       setData((prev) => ({
@@ -64,7 +64,7 @@ const AddNewActivityModal = ({
     return !form;
   }, [data]);
 
-  const handleActivityFormChange = (
+  const handleActivityChange = (
     event: SelectChangeEvent<E_COURSE_ACTIVITY_FORM>,
   ) => {
     setData((prev) => ({
@@ -149,8 +149,8 @@ const AddNewActivityModal = ({
             <Select
               variant={'outlined'}
               fullWidth
-              label={'Activity Form'}
-              onChange={handleActivityFormChange}
+              label={'Activity'}
+              onChange={handleActivityChange}
               value={data[E_COURSE_ACTIVITY_ENTITY_KEYS.FORM]}
             >
               {values(E_COURSE_ACTIVITY_FORM).map((form) => (
