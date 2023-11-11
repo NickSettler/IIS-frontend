@@ -33,6 +33,11 @@ export const CourseActivityTable = (): JSX.Element => {
       headerName: 'Activity',
       hideable: false,
     },
+    {
+      field: E_COURSE_ACTIVITY_ENTITY_KEYS.REQUIREMENTS,
+      headerName: 'Requirements',
+      hideable: false,
+    },
   ];
 
   return (

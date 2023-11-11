@@ -13,6 +13,7 @@ export type TCourseActivityCreateData = Omit<
 > & {
   [E_COURSE_ACTIVITY_ENTITY_KEYS.COURSE]: string;
   [E_COURSE_ACTIVITY_ENTITY_KEYS.FORM]: E_COURSE_ACTIVITY_FORM;
+  [E_COURSE_ACTIVITY_ENTITY_KEYS.REQUIREMENTS]: string;
 };
 
 export type TCourseActivityUpdateData = Partial<TCourseActivityCreateData>;

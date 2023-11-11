@@ -7,6 +7,7 @@ import {
   Select,
   SelectChangeEvent,
   Stack,
+  TextField,
 } from '@mui/material';
 import { FormEvent, JSX, useEffect, useMemo, useState } from 'react';
 import { BaseModal, E_MODAL_MODE, TCommonModalProps } from '../base-modal';
@@ -35,15 +36,20 @@ const AddNewActivityModal = ({
 }: TAddNewActivityModalProps) => {
   const [data, setData] = useState<TAddNewActivityModalForm>({
     [E_COURSE_ACTIVITY_ENTITY_KEYS.FORM]: E_COURSE_ACTIVITY_FORM.LECTURE,
+    [E_COURSE_ACTIVITY_ENTITY_KEYS.REQUIREMENTS]: '',
   });
 
   useEffect(() => {
     if (initialData) {
       const { [E_COURSE_ACTIVITY_ENTITY_KEYS.FORM]: initialForm } = initialData;
+      const {
+        [E_COURSE_ACTIVITY_ENTITY_KEYS.REQUIREMENTS]: initialRequirements,
+      } = initialData;
       setData((prev) => ({
         ...prev,
         ...(initialForm && {
           [E_COURSE_ACTIVITY_ENTITY_KEYS.FORM]: initialForm,
+          [E_COURSE_ACTIVITY_ENTITY_KEYS.REQUIREMENTS]: initialRequirements,
         }),
       }));
     }
@@ -51,18 +57,29 @@ const AddNewActivityModal = ({
   }, []);
 
   const isSaveDisabled = useMemo(() => {
-    const { [E_COURSE_ACTIVITY_ENTITY_KEYS.FORM]: form } = data;
-
+    const {
+      [E_COURSE_ACTIVITY_ENTITY_KEYS.FORM]: form,
+      [E_COURSE_ACTIVITY_ENTITY_KEYS.REQUIREMENTS]: requirements,
+    } = data;
     return !form;
   }, [data]);
 
-  const handleActivityChange = (
+  const handleActivityFormChange = (
     event: SelectChangeEvent<E_COURSE_ACTIVITY_FORM>,
   ) => {
     setData((prev) => ({
       ...prev,
       [E_COURSE_ACTIVITY_ENTITY_KEYS.FORM]: event.target
         .value as E_COURSE_ACTIVITY_FORM,
+    }));
+  };
+
+  const handleRequirementsChange = (event: FormEvent) => {
+    const { name, value } = event.target as HTMLInputElement;
+
+    setData((prev) => ({
+      ...prev,
+      [name]: value,
     }));
   };
 
@@ -126,14 +143,14 @@ const AddNewActivityModal = ({
       footer={footer()}
     >
       <FormGroup sx={{ pt: 1, gap: 2 }}>
-        <Stack direction={'row'} gap={2}>
+        <Stack direction={'column'} gap={2}>
           <FormControl fullWidth>
             <InputLabel>Activity</InputLabel>
             <Select
               variant={'outlined'}
               fullWidth
-              label={'Activity'}
-              onChange={handleActivityChange}
+              label={'Activity Form'}
+              onChange={handleActivityFormChange}
               value={data[E_COURSE_ACTIVITY_ENTITY_KEYS.FORM]}
             >
               {values(E_COURSE_ACTIVITY_FORM).map((form) => (
@@ -143,6 +160,15 @@ const AddNewActivityModal = ({
               ))}
             </Select>
           </FormControl>
+          <TextField
+            fullWidth
+            multiline
+            rows={8}
+            label={'Requirements'}
+            name={E_COURSE_ACTIVITY_ENTITY_KEYS.REQUIREMENTS}
+            onChange={handleRequirementsChange}
+            value={data[E_COURSE_ACTIVITY_ENTITY_KEYS.REQUIREMENTS]}
+          />
         </Stack>
       </FormGroup>
     </BaseModal>
