@@ -26,7 +26,7 @@ export default class Api {
 
   private constructor() {
     this._axiosInstance = axios.create({
-      baseURL: 'http://localhost:3000/',
+      baseURL: process.env.REACT_APP_API_URL,
     });
 
     this._axiosInstance.interceptors.request.use((config) => {
