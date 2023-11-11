@@ -77,9 +77,9 @@ export type TModalMetaMap = {
     | {
         mode: E_MODAL_MODE.UPDATE;
         initialData: Partial<TClass> & {
-          [E_CLASS_ENTITY_KEYS.ABBR]: TClass[E_CLASS_ENTITY_KEYS.ABBR];
+          [E_CLASS_ENTITY_KEYS.ID]: TClass[E_CLASS_ENTITY_KEYS.ID];
         };
-        onSuccess(abbr: string, data: TClassUpdateData): void;
+        onSuccess(id: string, data: TClassUpdateData): void;
       };
   [E_MODALS.ADD_NEW_ACTIVITY]:
     | {

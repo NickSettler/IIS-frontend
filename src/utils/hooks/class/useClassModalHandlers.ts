@@ -30,13 +30,13 @@ export const useClassModalHandlers = ({
   };
 
   const handleUpdateSuccess = (
-    abbr: TClass[E_CLASS_ENTITY_KEYS.ABBR],
+    id: TClass[E_CLASS_ENTITY_KEYS.ID],
     updateData: TClassUpdateData,
   ) => {
     if (!updateMutation) return;
 
     updateMutation.mutate({
-      abbr,
+      id,
       data: updateData,
     });
   };
