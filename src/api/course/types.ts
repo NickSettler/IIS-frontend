@@ -1,6 +1,7 @@
 import { TApiUser } from '../user/types';
 
 export enum E_COURSE_ENTITY_KEYS {
+  ID = 'id',
   ABBR = 'abbr',
   NAME = 'name',
   CREDITS = 'credits',
@@ -10,6 +11,7 @@ export enum E_COURSE_ENTITY_KEYS {
 }
 
 export type TPureCourse = {
+  [E_COURSE_ENTITY_KEYS.ID]: string;
   [E_COURSE_ENTITY_KEYS.ABBR]: string;
   [E_COURSE_ENTITY_KEYS.NAME]: string;
   [E_COURSE_ENTITY_KEYS.CREDITS]: number;

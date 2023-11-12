@@ -35,7 +35,9 @@ export type TCourseFormModalProps = TCommonModalProps &
 
 export type TCourseFormModalData = Omit<
   TCourseCreateData,
-  E_COURSE_ENTITY_KEYS.CREDITS | E_COURSE_ENTITY_KEYS.TEACHERS
+  | E_COURSE_ENTITY_KEYS.CREDITS
+  | E_COURSE_ENTITY_KEYS.ID
+  | E_COURSE_ENTITY_KEYS.TEACHERS
 > & {
   [E_COURSE_ENTITY_KEYS.CREDITS]: string;
   [E_COURSE_ENTITY_KEYS.TEACHERS]: Array<TApiUser>;
@@ -62,7 +64,7 @@ const CourseFormModal = ({
   });
 
   useEffect(() => {
-    if (initialData)
+    if (initialData) {
       setData((prev) => ({
         ...prev,
         ...mapValues(
@@ -70,6 +72,7 @@ const CourseFormModal = ({
             E_COURSE_ENTITY_KEYS.CREDITS,
             E_COURSE_ENTITY_KEYS.GUARANTOR,
             E_COURSE_ENTITY_KEYS.TEACHERS,
+            E_COURSE_ENTITY_KEYS.ID,
           ]),
           toString,
         ),
@@ -87,6 +90,7 @@ const CourseFormModal = ({
             initialData[E_COURSE_ENTITY_KEYS.TEACHERS],
         }),
       }));
+    }
   }, [initialData]);
 
   const isSaveDisabled = useMemo(() => {
@@ -166,9 +170,9 @@ const CourseFormModal = ({
     }
 
     if (mode === E_MODAL_MODE.UPDATE) {
-      const abbr = initialData[E_COURSE_ENTITY_KEYS.ABBR];
+      const id = initialData[E_COURSE_ENTITY_KEYS.ID];
 
-      onSuccess(abbr, {
+      onSuccess(id, {
         ...data,
         [E_COURSE_ENTITY_KEYS.CREDITS]: parseInt(
           data[E_COURSE_ENTITY_KEYS.CREDITS],

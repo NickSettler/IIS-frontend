@@ -61,10 +61,10 @@ export const useCourseMutations = ({
     TCourseUpdateMutationVariables
   >({
     mutationFn: async ({
-      [E_COURSE_ENTITY_KEYS.ABBR]: abbr,
+      [E_COURSE_ENTITY_KEYS.ID]: id,
       data: updateData,
     }: TCourseUpdateMutationVariables) =>
-      CourseService.updateCourse(abbr, updateData),
+      CourseService.updateCourse(id, updateData),
     onSuccess: async () => {
       await refetch();
       closeFormModal();
@@ -84,8 +84,8 @@ export const useCourseMutations = ({
     TCourseDeleteMutationVariables
   >({
     mutationFn: async ({
-      [E_COURSE_ENTITY_KEYS.ABBR]: abbr,
-    }: TCourseDeleteMutationVariables) => CourseService.deleteCourse(abbr),
+      [E_COURSE_ENTITY_KEYS.ID]: id,
+    }: TCourseDeleteMutationVariables) => CourseService.deleteCourse(id),
     onSuccess: async () => {
       await refetch();
 

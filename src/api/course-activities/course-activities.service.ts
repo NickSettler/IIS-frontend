@@ -35,10 +35,10 @@ export default class CourseActivityService extends BaseService {
   protected static readonly endpoint = '/courses';
 
   public static async getCourseActivities(
-    abbr: TPureCourse[E_COURSE_ENTITY_KEYS.ABBR],
+    id: TPureCourse[E_COURSE_ENTITY_KEYS.ID],
   ): Promise<Array<TApiCourseActivity>> {
     return await Api.instance.get<Array<TApiCourseActivity>>(
-      `${this.endpoint}/${abbr}/activities`,
+      `${this.endpoint}/${id}/activities`,
     );
   }
 

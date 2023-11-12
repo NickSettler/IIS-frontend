@@ -4,12 +4,15 @@ import { E_COURSE_ENTITY_KEYS, TPureCourse } from './types';
 
 export type TCourseCreateData = Omit<
   TPureCourse,
+  | E_COURSE_ENTITY_KEYS.ABBR
   | E_COURSE_ENTITY_KEYS.ANNOTATION
   | E_COURSE_ENTITY_KEYS.CREDITS
   | E_COURSE_ENTITY_KEYS.GUARANTOR
+  | E_COURSE_ENTITY_KEYS.ID
   | E_COURSE_ENTITY_KEYS.TEACHERS
 > & {
   [E_COURSE_ENTITY_KEYS.CREDITS]: number;
+  [E_COURSE_ENTITY_KEYS.ABBR]: string;
   [E_COURSE_ENTITY_KEYS.ANNOTATION]?: string;
   [E_COURSE_ENTITY_KEYS.GUARANTOR]: string;
   [E_COURSE_ENTITY_KEYS.TEACHERS]?: Array<string>;
@@ -22,12 +25,12 @@ export type TCourseCreateMutationVariables = {
 };
 
 export type TCourseUpdateMutationVariables = {
-  [E_COURSE_ENTITY_KEYS.ABBR]: TPureCourse[E_COURSE_ENTITY_KEYS.ABBR];
+  [E_COURSE_ENTITY_KEYS.ID]: TPureCourse[E_COURSE_ENTITY_KEYS.ID];
   data: TCourseUpdateData;
 };
 
 export type TCourseDeleteMutationVariables = {
-  [E_COURSE_ENTITY_KEYS.ABBR]: TPureCourse[E_COURSE_ENTITY_KEYS.ABBR];
+  [E_COURSE_ENTITY_KEYS.ID]: TPureCourse[E_COURSE_ENTITY_KEYS.ID];
 };
 
 export default class CourseService extends BaseService {
@@ -38,9 +41,9 @@ export default class CourseService extends BaseService {
   }
 
   public static async getCourse(
-    abbr: TPureCourse[E_COURSE_ENTITY_KEYS.ABBR],
+    id: TPureCourse[E_COURSE_ENTITY_KEYS.ID],
   ): Promise<TPureCourse> {
-    return await Api.instance.get<TPureCourse>(`${this.endpoint}/${abbr}`);
+    return await Api.instance.get<TPureCourse>(`${this.endpoint}/${id}`);
   }
 
   public static async createCourse(
@@ -53,18 +56,18 @@ export default class CourseService extends BaseService {
   }
 
   public static async updateCourse(
-    abbr: TPureCourse[E_COURSE_ENTITY_KEYS.ABBR],
+    id: TPureCourse[E_COURSE_ENTITY_KEYS.ID],
     data: TCourseUpdateData,
   ): Promise<TPureCourse> {
     return await Api.instance.put<TCourseUpdateData, TPureCourse>(
-      `${this.endpoint}/${abbr}`,
+      `${this.endpoint}/${id}`,
       data,
     );
   }
 
   public static async deleteCourse(
-    abbr: TPureCourse[E_COURSE_ENTITY_KEYS.ABBR],
+    id: TPureCourse[E_COURSE_ENTITY_KEYS.ID],
   ): Promise<void> {
-    await Api.instance.delete<void>(`${this.endpoint}/${abbr}`);
+    await Api.instance.delete<void>(`${this.endpoint}/${id}`);
   }
 }

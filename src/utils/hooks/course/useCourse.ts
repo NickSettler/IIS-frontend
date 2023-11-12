@@ -8,7 +8,7 @@ import { E_COURSE_ENTITY_KEYS, TPureCourse } from '../../../api/course/types';
 import CourseService from '../../../api/course/course.service';
 
 export const useCourse = (
-  abbr: TPureCourse[E_COURSE_ENTITY_KEYS.ABBR] | undefined,
+  id: TPureCourse[E_COURSE_ENTITY_KEYS.ID] | undefined,
   options?: Omit<
     UseQueryOptions<
       TPureCourse | null,
@@ -20,9 +20,9 @@ export const useCourse = (
   > & { initialData?(): undefined },
 ): UseQueryResult<TPureCourse | null, TApiError> => {
   return useQuery(
-    ['course', abbr ?? null],
+    ['course', id ?? null],
     async (): Promise<TPureCourse | null> =>
-      abbr ? CourseService.getCourse(abbr) : null,
+      id ? CourseService.getCourse(id) : null,
     options,
   );
 };

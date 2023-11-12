@@ -13,7 +13,7 @@ export type TUseCourseModalHandlersParams = Partial<
 export type TUseCourseModalHandlers = {
   handleCreateSuccess(createData: TCourseCreateData): void;
   handleUpdateSuccess(
-    abbr: TPureCourse[E_COURSE_ENTITY_KEYS.ABBR],
+    id: TPureCourse[E_COURSE_ENTITY_KEYS.ID],
     updateData: TCourseUpdateData,
   ): void;
 };
@@ -26,7 +26,6 @@ export const useCourseModalHandlers = ({
     if (!createMutation) return;
 
     const pureData = pick(createData, [
-      E_COURSE_ENTITY_KEYS.ABBR,
       E_COURSE_ENTITY_KEYS.NAME,
       E_COURSE_ENTITY_KEYS.CREDITS,
       E_COURSE_ENTITY_KEYS.GUARANTOR,
@@ -35,6 +34,7 @@ export const useCourseModalHandlers = ({
     createMutation.mutate({
       data: {
         ...pureData,
+        [E_COURSE_ENTITY_KEYS.ABBR]: createData[E_COURSE_ENTITY_KEYS.ABBR],
         ...(createData[E_COURSE_ENTITY_KEYS.ANNOTATION] && {
           [E_COURSE_ENTITY_KEYS.ANNOTATION]:
             createData[E_COURSE_ENTITY_KEYS.ANNOTATION],
@@ -48,7 +48,7 @@ export const useCourseModalHandlers = ({
   };
 
   const handleUpdateSuccess = (
-    abbr: TPureCourse[E_COURSE_ENTITY_KEYS.ABBR],
+    id: TPureCourse[E_COURSE_ENTITY_KEYS.ID],
     updateData: TCourseUpdateData,
   ) => {
     if (!updateMutation) return;
@@ -61,7 +61,7 @@ export const useCourseModalHandlers = ({
     ]);
 
     updateMutation.mutate({
-      abbr,
+      id,
       data: {
         ...pureData,
         ...(updateData[E_COURSE_ENTITY_KEYS.ANNOTATION] && {
