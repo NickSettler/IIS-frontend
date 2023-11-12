@@ -65,7 +65,6 @@ const CourseFormModal = ({
 
   useEffect(() => {
     if (initialData) {
-      console.log(initialData);
       setData((prev) => ({
         ...prev,
         ...mapValues(
