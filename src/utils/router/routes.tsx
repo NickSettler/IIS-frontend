@@ -50,7 +50,7 @@ export const appRoutes: Array<TAppRoute> = [
     element: <CoursesDataTable />,
   },
   {
-    path: '/courses/:abbr',
+    path: '/courses/:id',
     label: 'Course info',
     roles: [...courseManageRoles, E_ROLE.SCHEDULER, E_ROLE.STUDENT],
     showInNav: false,

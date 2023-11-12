@@ -64,9 +64,9 @@ export type TModalMetaMap = {
     | {
         mode: E_MODAL_MODE.UPDATE;
         initialData: Partial<TPureCourse> & {
-          [E_COURSE_ENTITY_KEYS.ABBR]: TPureCourse[E_COURSE_ENTITY_KEYS.ABBR];
+          [E_COURSE_ENTITY_KEYS.ID]: TPureCourse[E_COURSE_ENTITY_KEYS.ID];
         };
-        onSuccess(abbr: string, data: TCourseCreateData): void;
+        onSuccess(id: string, data: TCourseCreateData): void;
       };
   [E_MODALS.CLASS_FORM]:
     | {
@@ -85,7 +85,7 @@ export type TModalMetaMap = {
     | {
         mode: E_MODAL_MODE.CREATE;
         initialData: Partial<TApiCourseActivity> & {
-          [E_COURSE_ACTIVITY_ENTITY_KEYS.COURSE]: TPureCourse[E_COURSE_ENTITY_KEYS.ABBR];
+          [E_COURSE_ACTIVITY_ENTITY_KEYS.COURSE]: TPureCourse[E_COURSE_ENTITY_KEYS.ID];
         };
         onSuccess(data: TCourseActivityCreateData): void;
       }
@@ -93,7 +93,7 @@ export type TModalMetaMap = {
         mode: E_MODAL_MODE.UPDATE;
         initialData: Partial<TApiCourseActivity> & {
           [E_COURSE_ACTIVITY_ENTITY_KEYS.ID]: TApiCourseActivity[E_COURSE_ACTIVITY_ENTITY_KEYS.ID];
-          [E_COURSE_ACTIVITY_ENTITY_KEYS.COURSE]: TPureCourse[E_COURSE_ENTITY_KEYS.ABBR];
+          [E_COURSE_ACTIVITY_ENTITY_KEYS.COURSE]: TPureCourse[E_COURSE_ENTITY_KEYS.ID];
         };
         onSuccess(
           id: TApiCourseActivity[E_COURSE_ACTIVITY_ENTITY_KEYS.ID],

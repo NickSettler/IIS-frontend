@@ -18,6 +18,11 @@ import { useCourses } from '../../../utils/hooks/course/useCourses';
 export const CoursesDataTable = (): JSX.Element => {
   const gridColumns: Array<GridColDef<TPureCourse>> = [
     {
+      field: E_COURSE_ENTITY_KEYS.ID,
+      headerName: 'ID',
+      hideable: true,
+    },
+    {
       field: E_COURSE_ENTITY_KEYS.ABBR,
       headerName: 'Abbreviation',
       hideable: false,
@@ -68,7 +73,7 @@ export const CoursesDataTable = (): JSX.Element => {
   return (
     <GenericDataGrid
       modalKey={E_MODALS.COURSE_FORM}
-      primaryKey={E_COURSE_ENTITY_KEYS.ABBR}
+      primaryKey={E_COURSE_ENTITY_KEYS.ID}
       columns={gridColumns}
       actions={['open-in-tab', 'duplicate', 'edit', 'delete']}
       caption={'Course'}

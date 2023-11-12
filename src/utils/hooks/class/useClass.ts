@@ -8,7 +8,7 @@ import { E_CLASS_ENTITY_KEYS, TClass } from '../../../api/class/types';
 import ClassService from '../../../api/class/class.service';
 
 export const useClass = (
-  abbr: TClass[E_CLASS_ENTITY_KEYS.ABBR] | undefined,
+  id: TClass[E_CLASS_ENTITY_KEYS.ID] | undefined,
   options?: Omit<
     UseQueryOptions<
       TClass | null,
@@ -20,9 +20,8 @@ export const useClass = (
   > & { initialData?(): undefined },
 ): UseQueryResult<TClass | null, TApiError> => {
   return useQuery(
-    ['class', abbr ?? null],
-    async (): Promise<TClass | null> =>
-      abbr ? ClassService.getClass(abbr) : null,
+    ['class', id ?? null],
+    async (): Promise<TClass | null> => (id ? ClassService.getClass(id) : null),
     options,
   );
 };

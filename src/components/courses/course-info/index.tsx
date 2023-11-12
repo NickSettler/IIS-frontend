@@ -29,16 +29,16 @@ import { useCoursePermissions } from '../../../utils/hooks/course/useCoursePermi
 import { CourseActivityTable } from '../../course-activity/data-table';
 
 export const CourseInfo = (): JSX.Element => {
-  const { abbr } = useParams<'abbr'>();
+  const { id } = useParams<'id'>();
   const navigate = useNavigate();
 
-  if (isUndefined(abbr)) navigate('/courses');
+  if (isUndefined(id)) navigate('/courses');
 
   const { onOpen: openCourseFormModal, onClose: closeFormModal } = useModal(
     E_MODALS.COURSE_FORM,
   );
 
-  const { data, isLoading, error, refetch } = useCourse(abbr);
+  const { data, isLoading, error, refetch } = useCourse(id);
 
   const { canUpdate, canDelete } = useCoursePermissions(data ?? undefined);
 
@@ -62,11 +62,11 @@ export const CourseInfo = (): JSX.Element => {
   };
 
   const handleDeleteClick = () => {
-    if (!data || !abbr) return;
+    if (!data || !id) return;
 
     deleteMutation.mutate(
       {
-        [E_COURSE_ENTITY_KEYS.ABBR]: abbr,
+        [E_COURSE_ENTITY_KEYS.ID]: id,
       },
       {
         onSuccess: async () => {

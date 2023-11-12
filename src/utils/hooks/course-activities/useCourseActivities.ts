@@ -9,7 +9,7 @@ import CourseActivityService from '../../../api/course-activities/course-activit
 import { TApiCourseActivity } from '../../../api/course-activities/types';
 
 export const useCourseActivities = (
-  abbr: TPureCourse[E_COURSE_ENTITY_KEYS.ABBR] | undefined,
+  id: TPureCourse[E_COURSE_ENTITY_KEYS.ID] | undefined,
   options?: Omit<
     UseQueryOptions<
       Array<TApiCourseActivity>,
@@ -21,9 +21,9 @@ export const useCourseActivities = (
   > & { initialData?(): undefined },
 ): UseQueryResult<Array<TApiCourseActivity>, TApiError> => {
   return useQuery(
-    ['course-activities - ', abbr ?? '__EMPTY'],
+    ['course-activities - ', id ?? '__EMPTY'],
     async (): Promise<Array<TApiCourseActivity>> =>
-      abbr ? CourseActivityService.getCourseActivities(abbr) : [],
+      id ? CourseActivityService.getCourseActivities(id) : [],
     options,
   );
 };

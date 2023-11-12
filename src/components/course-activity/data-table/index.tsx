@@ -14,12 +14,12 @@ import { useCourseActivityModalHandlers } from '../../../utils/hooks/course-acti
 import { useCourseActivityPermissions } from '../../../utils/hooks/course-activities/useCourseActivityPermissions';
 
 export const CourseActivityTable = (): JSX.Element => {
-  const { abbr } = useParams<'abbr'>();
+  const { id } = useParams<'id'>();
   const navigate = useNavigate();
 
-  if (isUndefined(abbr)) navigate('/courses');
+  if (isUndefined(id)) navigate('/courses');
 
-  const useQueryFn = useCourseActivities.bind(this, abbr);
+  const useQueryFn = useCourseActivities.bind(this, id);
 
   const gridColumns: Array<GridColDef<TApiCourseActivity>> = [
     {
@@ -51,7 +51,7 @@ export const CourseActivityTable = (): JSX.Element => {
       modalInitial={{
         // eslint-disable-next-line @typescript-eslint/ban-ts-comment
         // @ts-ignore
-        [E_COURSE_ACTIVITY_ENTITY_KEYS.COURSE]: abbr ?? '',
+        [E_COURSE_ACTIVITY_ENTITY_KEYS.COURSE]: id ?? '',
       }}
       permissionsFunction={useCourseActivityPermissions}
       mutationsFunction={useCourseActivityMutations}
