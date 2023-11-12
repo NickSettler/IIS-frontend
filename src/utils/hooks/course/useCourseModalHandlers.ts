@@ -34,9 +34,7 @@ export const useCourseModalHandlers = ({
     createMutation.mutate({
       data: {
         ...pureData,
-        ...(createData[E_COURSE_ENTITY_KEYS.ABBR] && {
-          [E_COURSE_ENTITY_KEYS.ABBR]: createData[E_COURSE_ENTITY_KEYS.ABBR],
-        }),
+        [E_COURSE_ENTITY_KEYS.ABBR]: createData[E_COURSE_ENTITY_KEYS.ABBR],
         ...(createData[E_COURSE_ENTITY_KEYS.ANNOTATION] && {
           [E_COURSE_ENTITY_KEYS.ANNOTATION]:
             createData[E_COURSE_ENTITY_KEYS.ANNOTATION],

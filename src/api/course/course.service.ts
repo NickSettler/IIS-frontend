@@ -12,7 +12,7 @@ export type TCourseCreateData = Omit<
   | E_COURSE_ENTITY_KEYS.TEACHERS
 > & {
   [E_COURSE_ENTITY_KEYS.CREDITS]: number;
-  [E_COURSE_ENTITY_KEYS.ABBR]?: string;
+  [E_COURSE_ENTITY_KEYS.ABBR]: string;
   [E_COURSE_ENTITY_KEYS.ANNOTATION]?: string;
   [E_COURSE_ENTITY_KEYS.GUARANTOR]: string;
   [E_COURSE_ENTITY_KEYS.TEACHERS]?: Array<string>;
