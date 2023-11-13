@@ -11,6 +11,7 @@ import { useModal } from '../../utils/hooks/modal/useModal';
 import {
   DataGrid,
   GridActionsCellItem,
+  GridActionsColDef,
   GridColDef,
   GridRowId,
   GridRowParams,
@@ -80,6 +81,7 @@ export type TGenericDataGridProps<
   caption: string;
   sortKey?: keyof Value;
   actions?: Array<TGenericDataGridActions>;
+  customActions?: GridActionsColDef<Value>;
   modalInitial?: Partial<Value>;
   queryFunction(
     options?: Omit<
@@ -109,6 +111,7 @@ export const GenericDataGrid = <
   caption,
   sortKey,
   actions,
+  customActions,
   modalInitial,
   queryFunction: useQueryFunction,
   permissionsFunction: usePermissionsFunction,
@@ -244,6 +247,7 @@ export const GenericDataGrid = <
       flex: 1,
       align: 'right',
       getActions: (params: GridRowParams<Value>) => [
+        ...(customActions?.getActions(params) ?? []),
         ...(actions?.includes('open-in-tab')
           ? [
               <GridActionsCellItem
