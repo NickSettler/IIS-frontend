@@ -4,7 +4,7 @@ import { isUndefined } from 'lodash';
 import { E_MODALS } from '../../../store/modals';
 import {
   E_COURSE_ACTIVITY_ENTITY_KEYS,
-  TApiCourseActivity,
+  TCourseActivity,
 } from '../../../api/course-activities/types';
 import { useNavigate, useParams } from 'react-router-dom';
 import { useCourseActivities } from '../../../utils/hooks/course-activities/useCourseActivities';
@@ -21,7 +21,7 @@ export const CourseActivityTable = (): JSX.Element => {
 
   const useQueryFn = useCourseActivities.bind(this, id);
 
-  const gridColumns: Array<GridColDef<TApiCourseActivity>> = [
+  const gridColumns: Array<GridColDef<TCourseActivity>> = [
     {
       field: E_COURSE_ACTIVITY_ENTITY_KEYS.ID,
       headerName: 'ID',

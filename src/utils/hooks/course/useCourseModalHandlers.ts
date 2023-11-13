@@ -4,7 +4,7 @@ import {
   TCourseUpdateData,
 } from '../../../api/course/course.service';
 import { pick } from 'lodash';
-import { E_COURSE_ENTITY_KEYS, TPureCourse } from '../../../api/course/types';
+import { E_COURSE_ENTITY_KEYS, TCourse } from '../../../api/course/types';
 
 export type TUseCourseModalHandlersParams = Partial<
   Omit<TUseCourseMutations, 'deleteMutation'>
@@ -13,7 +13,7 @@ export type TUseCourseModalHandlersParams = Partial<
 export type TUseCourseModalHandlers = {
   handleCreateSuccess(createData: TCourseCreateData): void;
   handleUpdateSuccess(
-    id: TPureCourse[E_COURSE_ENTITY_KEYS.ID],
+    id: TCourse[E_COURSE_ENTITY_KEYS.ID],
     updateData: TCourseUpdateData,
   ): void;
 };
@@ -48,7 +48,7 @@ export const useCourseModalHandlers = ({
   };
 
   const handleUpdateSuccess = (
-    id: TPureCourse[E_COURSE_ENTITY_KEYS.ID],
+    id: TCourse[E_COURSE_ENTITY_KEYS.ID],
     updateData: TCourseUpdateData,
   ) => {
     if (!updateMutation) return;

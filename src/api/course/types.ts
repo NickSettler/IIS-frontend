@@ -11,7 +11,7 @@ export enum E_COURSE_ENTITY_KEYS {
   STUDENTS = 'students',
 }
 
-export type TPureCourse = {
+export type TCourse = {
   [E_COURSE_ENTITY_KEYS.ID]: string;
   [E_COURSE_ENTITY_KEYS.ABBR]: string;
   [E_COURSE_ENTITY_KEYS.NAME]: string;
