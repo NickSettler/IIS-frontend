@@ -9,6 +9,10 @@ import { E_CLASS_ENTITY_KEYS, TClass } from '../../../api/class/types';
 import { useClassMutations } from '../../../utils/hooks/class/useClassMutations';
 import { useClassModalHandlers } from '../../../utils/hooks/class/useClassModalHandlers';
 import { GenericDataGrid } from '../../data-grid/generic-datagrid';
+import { Event, OpenInNew } from '@mui/icons-material';
+import { useNavigate } from 'react-router-dom';
+import { Tooltip } from '@mui/material';
+import { useClasses } from '../../../utils/hooks/class/useClasses';
 
 export const ClassesDataTable = (): JSX.Element => {
   const useQueryFn = () =>
@@ -44,7 +48,8 @@ export const ClassesDataTable = (): JSX.Element => {
       columns={gridColumns}
       caption={'Class'}
       actions={['duplicate', 'edit', 'delete']}
-      queryFunction={useQueryFn}
+      customActions={customActions}
+      queryFunction={useClasses}
       permissionsFunction={useClassPermissions}
       mutationsFunction={useClassMutations}
       modalHandlersFunction={useClassModalHandlers}
