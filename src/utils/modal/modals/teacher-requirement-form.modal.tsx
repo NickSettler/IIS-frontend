@@ -7,6 +7,7 @@ import {
   MenuItem,
   Select,
   SelectChangeEvent,
+  TextField,
 } from '@mui/material';
 import { FormEvent, JSX, useEffect, useMemo, useState } from 'react';
 import { BaseModal, E_MODAL_MODE, TCommonModalProps } from '../base-modal';
@@ -192,6 +193,7 @@ const ClassFormModal = ({
           onChange={handleDateChange(
             E_TEACHER_REQUIREMENT_ENTITY_KEYS.START_TIME,
           )}
+          renderInput={(props) => <TextField {...props} />}
         />
         <DateTimePicker
           label={'End time'}
@@ -199,6 +201,7 @@ const ClassFormModal = ({
           onChange={handleDateChange(
             E_TEACHER_REQUIREMENT_ENTITY_KEYS.END_TIME,
           )}
+          renderInput={(props) => <TextField {...props} />}
         />
         <FormControl fullWidth required>
           <InputLabel>Mode</InputLabel>
