@@ -34,9 +34,20 @@ export type TCourseActivityDeleteMutationVariables = {
 export default class CourseActivityService extends BaseService {
   protected static readonly endpoint = '/courses';
 
+  public static async getCourseActivities(): Promise<Array<TCourseActivity>>;
+
   public static async getCourseActivities(
     id: TCourse[E_COURSE_ENTITY_KEYS.ID],
+  ): Promise<Array<TCourseActivity>>;
+
+  public static async getCourseActivities(
+    id?: TCourse[E_COURSE_ENTITY_KEYS.ID],
   ): Promise<Array<TCourseActivity>> {
+    if (id === undefined)
+      return await Api.instance.get<Array<TCourseActivity>>(
+        `${this.endpoint}/activities`,
+      );
+
     return await Api.instance.get<Array<TCourseActivity>>(
       `${this.endpoint}/${id}/activities`,
     );
