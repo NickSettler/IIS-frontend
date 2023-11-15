@@ -1,4 +1,4 @@
-import { JSX, useEffect, useMemo, useState } from 'react';
+import { ChangeEvent, JSX, useEffect, useMemo, useState } from 'react';
 import {
   UseMutationResult,
   UseQueryOptions,
@@ -16,13 +16,20 @@ import {
   GridRowId,
   GridRowParams,
 } from '@mui/x-data-grid';
-import { forEach, isEmpty, lowerCase, sortBy, toString } from 'lodash';
+import {
+  debounce,
+  forEach,
+  isEmpty,
+  lowerCase,
+  sortBy,
+  toString,
+} from 'lodash';
 import { compare } from '../../utils/object/compare';
 import { E_MODAL_MODE } from '../../utils/modal/base-modal';
 import { DataTableError } from './error';
 import { LinearProgress, Stack } from '@mui/material';
 import { OpenInNew } from '@mui/icons-material';
-import { useNavigate } from 'react-router-dom';
+import { useLocation, useNavigate } from 'react-router-dom';
 import TextField from '@mui/material/TextField';
 import Scanner from '../../utils/qdl/scanner';
 import Parser from '../../utils/qdl/parser';
@@ -124,7 +131,10 @@ export const GenericDataGrid = <
   TUpdateData,
   TDeleteData
 >): JSX.Element => {
+  const location = useLocation();
   const navigate = useNavigate();
+
+  const urlSearchParams = new URLSearchParams(location.search);
 
   const { onOpen: openFormModal, onClose: closeFormModal } = useModal(modalKey);
 
@@ -146,7 +156,9 @@ export const GenericDataGrid = <
   );
 
   // eslint-disable-next-line react/hook-use-state
-  const [DQLQuery, setDQLQuery] = useState<string>('');
+  const [DQLQuery, setDQLQuery] = useState<string>(
+    urlSearchParams.get('q') ?? '',
+  );
   // eslint-disable-next-line react/hook-use-state
   const [DQLQueryError, setDQLQueryError] = useState<string>('');
   const [rows, setRows] = useState<Array<Value>>([]);
@@ -177,6 +189,21 @@ export const GenericDataGrid = <
       return rows;
     }
   }, [DQLQuery, rows]);
+
+  const updateURLFunc = (query: string) => {
+    urlSearchParams.set('q', query);
+    navigate(`?${urlSearchParams.toString()}`, {
+      replace: true,
+    });
+  };
+
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  const updateURL = useMemo(() => debounce(updateURLFunc, 1000), []);
+
+  const handleQueryChange = (e: ChangeEvent<HTMLInputElement>) => {
+    setDQLQuery(e.target.value);
+    updateURL(e.target.value);
+  };
 
   useEffect(() => {
     const sortedData = sortBy(data, sortKey ?? primaryKey);
@@ -307,7 +334,7 @@ export const GenericDataGrid = <
         value={DQLQuery}
         error={!isEmpty(DQLQueryError)}
         helperText={DQLQueryError}
-        onChange={(e) => setDQLQuery(e.target.value)}
+        onChange={handleQueryChange}
       />
       <DataGrid
         columns={gridColumns}
