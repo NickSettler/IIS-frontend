@@ -4,13 +4,14 @@ import ResourceEditorProps = AppointmentForm.ResourceEditorProps;
 import {
   FormControl,
   FormHelperText,
+  IconButton,
   InputLabel,
   ListItem,
   ListItemIcon,
   MenuItem,
   Select,
 } from '@mui/material';
-import { Circle } from '@mui/icons-material';
+import { Circle, OpenInNew } from '@mui/icons-material';
 import ListItemText from '@mui/material/ListItemText';
 import { SelectChangeEvent } from '@mui/material/Select/SelectInput';
 import { useScheduleTeacherRequirements } from '../../utils/hooks/schedule/useScheduleTeacherRequirements';
@@ -58,6 +59,24 @@ export const ScheduleResourceEditor = ({
     setValue(e.target.value);
   };
 
+  const isNavigateVisible = useMemo(
+    () =>
+      !isEmpty(value) &&
+      resource.fieldName !== E_SCHEDULE_ITEM_ENTITY_KEYS.COURSE_ACTIVITY,
+    [value, resource.fieldName],
+  );
+
+  const handleNavigate = () => {
+    const pageMap: Record<string, string> = {
+      [E_SCHEDULE_ITEM_ENTITY_KEYS.TEACHER]: 'users',
+      [E_SCHEDULE_ITEM_ENTITY_KEYS.CLASS]: 'classes',
+    };
+
+    if (!value || !pageMap[resource.fieldName]) return;
+
+    window.open(`/${pageMap[resource.fieldName]}?q=id == "${value}"`, '_blank');
+  };
+
   return (
     <FormControl
       fullWidth
@@ -66,7 +85,18 @@ export const ScheduleResourceEditor = ({
       }}
     >
       <InputLabel>{resource.title}</InputLabel>
-      <Select label={resource.title} onChange={handleChange} value={value}>
+      <Select
+        label={resource.title}
+        onChange={handleChange}
+        value={value}
+        {...(isNavigateVisible && {
+          endAdornment: (
+            <IconButton sx={{ mr: 2 }} onClick={handleNavigate}>
+              <OpenInNew />
+            </IconButton>
+          ),
+        })}
+      >
         {instances.map((instance) => (
           <MenuItem key={instance.id} value={instance.id}>
             <ListItem sx={{ p: 0 }} component={'div'}>
