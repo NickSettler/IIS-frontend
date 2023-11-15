@@ -1,10 +1,11 @@
 import { JSX } from 'react';
 import { E_MODALS } from '../../../store/modals';
-import { GridColDef } from '@mui/x-data-grid';
+import {
+  GridActionsCellItem,
+  GridActionsColDef,
+  GridColDef,
+} from '@mui/x-data-grid';
 import { useClassPermissions } from '../../../utils/hooks/class/useClassPermissions';
-import { useQuery } from '@tanstack/react-query';
-import { TApiError } from '../../../api/base/types';
-import ClassService from '../../../api/class/class.service';
 import { E_CLASS_ENTITY_KEYS, TClass } from '../../../api/class/types';
 import { useClassMutations } from '../../../utils/hooks/class/useClassMutations';
 import { useClassModalHandlers } from '../../../utils/hooks/class/useClassModalHandlers';
@@ -15,11 +16,22 @@ import { Tooltip } from '@mui/material';
 import { useClasses } from '../../../utils/hooks/class/useClasses';
 
 export const ClassesDataTable = (): JSX.Element => {
-  const useQueryFn = () =>
-    useQuery<Array<TClass>, TApiError>({
-      queryKey: ['getClasses'],
-      queryFn: ClassService.getClasses.bind(ClassService),
-    });
+  const navigate = useNavigate();
+
+  const customActions: GridActionsColDef<TClass> = {
+    field: 'actions',
+    type: 'actions',
+    headerName: 'Actions',
+    getActions: (params) => [
+      <Tooltip title={'Open schedule'} key={'open-schedule'}>
+        <GridActionsCellItem
+          label={'Open schedule'}
+          icon={<Event />}
+          onClick={() => navigate(`/schedule/class/${params.id}`)}
+        />
+      </Tooltip>,
+    ],
+  };
 
   const gridColumns: Array<GridColDef<TClass>> = [
     {
