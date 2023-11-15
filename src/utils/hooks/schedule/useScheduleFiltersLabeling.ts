@@ -1,9 +1,6 @@
 import { E_SCHEDULE_ITEM_ENTITY_KEYS } from '../../../api/schedule/types';
 import { find } from 'lodash';
-import {
-  E_USER_ENTITY_KEYS,
-  TApiUserWithTeacherRequirements,
-} from '../../../api/user/types';
+import { E_USER_ENTITY_KEYS, TApiUserWithRoles } from '../../../api/user/types';
 import { TScheduleFilter } from '../../../components/schedule/schedule-filters';
 import { E_CLASS_ENTITY_KEYS, TClass } from '../../../api/class/types';
 import {
@@ -25,7 +22,7 @@ export type TUseScheduleFiltersLabeling = {
 };
 
 export type TUseScheduleFiltersLabelingProps = {
-  teachersData: Array<TApiUserWithTeacherRequirements> | undefined;
+  teachersData: Array<TApiUserWithRoles> | undefined;
   classesData: Array<TClass> | undefined;
   courseActivitiesData: Array<TCourseActivity> | undefined;
 };

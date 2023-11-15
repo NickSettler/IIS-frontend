@@ -14,7 +14,6 @@ export const useTeacherInstances = (): Array<ResourceInstance> => {
     return {
       id: item[E_USER_ENTITY_KEYS.ID],
       text: `${fullName} (${item[E_USER_ENTITY_KEYS.USERNAME]})`,
-      something: 'a;',
     };
   });
 };

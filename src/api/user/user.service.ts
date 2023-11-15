@@ -4,7 +4,6 @@ import {
   E_USER_ENTITY_KEYS,
   TApiUser,
   TApiUserWithRoles,
-  TApiUserWithTeacherRequirements,
   TUser,
 } from './types';
 import Api from '../base/api';
@@ -33,14 +32,6 @@ export default class UserService extends BaseService {
 
   public static async getUsers(): Promise<Array<TApiUserWithRoles>> {
     return await Api.instance.get<Array<TApiUserWithRoles>>(this.endpoint);
-  }
-
-  public static async getTeachers(): Promise<
-    Array<TApiUserWithTeacherRequirements>
-  > {
-    return await Api.instance.get<Array<TApiUserWithTeacherRequirements>>(
-      `${this.endpoint}/teachers`,
-    );
   }
 
   public static async getUser(

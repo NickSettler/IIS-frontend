@@ -1,35 +1,22 @@
 import { TApiError } from '../../../api/base/types';
-import {
-  UseQueryResult,
-  useQuery,
-  UseQueryOptions,
-} from '@tanstack/react-query';
-import {
-  TApiUserWithRoles,
-  TApiUserWithTeacherRequirements,
-} from '../../../api/user/types';
-import UserService from '../../../api/user/user.service';
-import { applyTransforms, transformDate } from '../../react-query/transforms';
-import { map } from 'lodash';
+import { UseQueryResult, UseQueryOptions } from '@tanstack/react-query';
+import { TApiUserWithRoles } from '../../../api/user/types';
+import { applyFilters, filterTeachers } from '../../react-query/transforms';
+import { useUsers } from './useUsers';
 
 export const useTeachers = (
   options?: Omit<
     UseQueryOptions<
-      Array<TApiUserWithTeacherRequirements>,
+      Array<TApiUserWithRoles>,
       TApiError,
-      Array<TApiUserWithTeacherRequirements>,
+      Array<TApiUserWithRoles>,
       Array<string>
     >,
     'initialData' | 'queryFn' | 'queryKey'
   > & { initialData?(): undefined },
-): UseQueryResult<Array<TApiUserWithTeacherRequirements>, TApiError> => {
-  return useQuery(
-    ['getTeachers'],
-    async (): Promise<Array<TApiUserWithTeacherRequirements>> =>
-      UserService.getTeachers(),
-    {
-      ...options,
-      select: (d) => map(d, applyTransforms(transformDate).bind(this)),
-    },
-  );
+): UseQueryResult<Array<TApiUserWithRoles>, TApiError> => {
+  return useUsers({
+    ...options,
+    select: applyFilters(filterTeachers).bind(this),
+  });
 };

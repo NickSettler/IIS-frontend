@@ -1,5 +1,3 @@
-import { TTeacherRequirement } from '../teacher-requirements/types';
-
 export enum E_PERMISSION_ENTITY_KEYS {
   NAME = 'name',
 }
@@ -53,8 +51,4 @@ export type TUser = TApiUser & {
 
 export type TApiUserWithRoles = TApiUser & {
   [E_USER_ENTITY_KEYS.ROLES]: Array<TUserRoleWithPermissions>;
-};
-
-export type TApiUserWithTeacherRequirements = TApiUserWithRoles & {
-  [E_USER_ENTITY_KEYS.TEACHER_REQUIREMENTS]: Array<TTeacherRequirement>;
 };
