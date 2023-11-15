@@ -37,6 +37,10 @@ export const transformDate = <Value extends Record<PropertyKey, any>>(
       return [key, new Date(value)];
     }
 
+    if (isArray(value)) {
+      return [key, value.map(transformDate)];
+    }
+
     if (isObject(value)) {
       return [key, transformDate(value)];
     }
