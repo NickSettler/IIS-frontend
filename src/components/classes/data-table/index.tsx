@@ -10,10 +10,11 @@ import { E_CLASS_ENTITY_KEYS, TClass } from '../../../api/class/types';
 import { useClassMutations } from '../../../utils/hooks/class/useClassMutations';
 import { useClassModalHandlers } from '../../../utils/hooks/class/useClassModalHandlers';
 import { GenericDataGrid } from '../../data-grid/generic-datagrid';
-import { Event, OpenInNew } from '@mui/icons-material';
+import { Event } from '@mui/icons-material';
 import { useNavigate } from 'react-router-dom';
 import { Tooltip } from '@mui/material';
 import { useClasses } from '../../../utils/hooks/class/useClasses';
+import { E_SCHEDULE_ITEM_ENTITY_KEYS } from '../../../api/schedule/types';
 
 export const ClassesDataTable = (): JSX.Element => {
   const navigate = useNavigate();
@@ -27,7 +28,11 @@ export const ClassesDataTable = (): JSX.Element => {
         <GridActionsCellItem
           label={'Open schedule'}
           icon={<Event />}
-          onClick={() => navigate(`/schedule/class/${params.id}`)}
+          onClick={() =>
+            navigate(
+              `/schedule?${E_SCHEDULE_ITEM_ENTITY_KEYS.CLASS}=${params.id}`,
+            )
+          }
         />
       </Tooltip>,
     ],
