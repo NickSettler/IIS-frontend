@@ -33,14 +33,23 @@ export const ScheduleFilters = ({
   const location = useLocation();
   const navigate = useNavigate();
 
+  const { search } = location;
+  const searchParams = new URLSearchParams(search);
+
   const { data: teachersData } = useTeachers();
   const { data: classesData } = useClasses();
   const { data: courseActivitiesData } = useCourseActivities();
 
   const [filter, setFilter] = useState<TScheduleFilter>({
-    [E_SCHEDULE_ITEM_ENTITY_KEYS.TEACHER]: null,
-    [E_SCHEDULE_ITEM_ENTITY_KEYS.CLASS]: null,
-    [E_SCHEDULE_ITEM_ENTITY_KEYS.COURSE_ACTIVITY]: null,
+    [E_SCHEDULE_ITEM_ENTITY_KEYS.TEACHER]: searchParams.get(
+      E_SCHEDULE_ITEM_ENTITY_KEYS.TEACHER,
+    ),
+    [E_SCHEDULE_ITEM_ENTITY_KEYS.CLASS]: searchParams.get(
+      E_SCHEDULE_ITEM_ENTITY_KEYS.CLASS,
+    ),
+    [E_SCHEDULE_ITEM_ENTITY_KEYS.COURSE_ACTIVITY]: searchParams.get(
+      E_SCHEDULE_ITEM_ENTITY_KEYS.COURSE_ACTIVITY,
+    ),
   });
 
   const handleChange =
@@ -68,9 +77,6 @@ export const ScheduleFilters = ({
     });
 
   useEffect(() => {
-    const { search } = location;
-    const searchParams = new URLSearchParams(search);
-
     const teacher = searchParams.get(E_SCHEDULE_ITEM_ENTITY_KEYS.TEACHER);
     const classID = searchParams.get(E_SCHEDULE_ITEM_ENTITY_KEYS.CLASS);
     const courseActivity = searchParams.get(
@@ -79,9 +85,9 @@ export const ScheduleFilters = ({
 
     setFilter((prev) => ({
       ...prev,
-      [E_SCHEDULE_ITEM_ENTITY_KEYS.TEACHER]: teacher ?? null,
-      [E_SCHEDULE_ITEM_ENTITY_KEYS.CLASS]: classID ?? null,
-      [E_SCHEDULE_ITEM_ENTITY_KEYS.COURSE_ACTIVITY]: courseActivity ?? null,
+      [E_SCHEDULE_ITEM_ENTITY_KEYS.TEACHER]: teacher,
+      [E_SCHEDULE_ITEM_ENTITY_KEYS.CLASS]: classID,
+      [E_SCHEDULE_ITEM_ENTITY_KEYS.COURSE_ACTIVITY]: courseActivity,
     }));
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
@@ -95,25 +101,40 @@ export const ScheduleFilters = ({
       [E_SCHEDULE_ITEM_ENTITY_KEYS.COURSE_ACTIVITY]: courseActivity,
     } = filter;
 
-    const { search } = location;
-    const searchParams = new URLSearchParams(search);
+    const hasTeacherChanged =
+      searchParams.get(E_SCHEDULE_ITEM_ENTITY_KEYS.TEACHER) !== teacher;
+    const hasClassChanged =
+      searchParams.get(E_SCHEDULE_ITEM_ENTITY_KEYS.CLASS) !== classID;
+    const hasCourseActivityChanged =
+      searchParams.get(E_SCHEDULE_ITEM_ENTITY_KEYS.COURSE_ACTIVITY) !==
+      courseActivity;
 
-    if (teacher) searchParams.set(E_SCHEDULE_ITEM_ENTITY_KEYS.TEACHER, teacher);
-    else searchParams.delete(E_SCHEDULE_ITEM_ENTITY_KEYS.TEACHER);
+    if (hasTeacherChanged)
+      if (teacher)
+        searchParams.set(E_SCHEDULE_ITEM_ENTITY_KEYS.TEACHER, teacher);
+      else searchParams.delete(E_SCHEDULE_ITEM_ENTITY_KEYS.TEACHER);
 
-    if (classID) searchParams.set(E_SCHEDULE_ITEM_ENTITY_KEYS.CLASS, classID);
-    else searchParams.delete(E_SCHEDULE_ITEM_ENTITY_KEYS.CLASS);
+    if (hasClassChanged)
+      if (classID) searchParams.set(E_SCHEDULE_ITEM_ENTITY_KEYS.CLASS, classID);
+      else searchParams.delete(E_SCHEDULE_ITEM_ENTITY_KEYS.CLASS);
 
-    if (courseActivity)
-      searchParams.set(
-        E_SCHEDULE_ITEM_ENTITY_KEYS.COURSE_ACTIVITY,
-        courseActivity,
+    if (hasCourseActivityChanged)
+      if (courseActivity)
+        searchParams.set(
+          E_SCHEDULE_ITEM_ENTITY_KEYS.COURSE_ACTIVITY,
+          courseActivity,
+        );
+      else searchParams.delete(E_SCHEDULE_ITEM_ENTITY_KEYS.COURSE_ACTIVITY);
+
+    if (hasTeacherChanged || hasClassChanged || hasCourseActivityChanged)
+      navigate(
+        {
+          search: searchParams.toString(),
+        },
+        {
+          replace: true,
+        },
       );
-    else searchParams.delete(E_SCHEDULE_ITEM_ENTITY_KEYS.COURSE_ACTIVITY);
-
-    navigate({
-      search: searchParams.toString(),
-    });
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [filter]);
 
