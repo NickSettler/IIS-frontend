@@ -1,5 +1,4 @@
 import { RouteObject, Navigate } from 'react-router-dom';
-import HomePage from '../../pages/home';
 import LogInPage from '../../pages/login';
 import SignUpPage from '../../pages/register';
 import { UsersDataTable } from '../../components/users/data-table';
@@ -19,6 +18,7 @@ export type TAppRoute = RouteObject & {
   showInNav?: boolean;
   bottomNav?: boolean;
   noPadding?: boolean;
+  noOverflow?: boolean;
   roles?: Array<E_ROLE>;
 };
 
@@ -33,6 +33,7 @@ export const appRoutes: Array<TAppRoute> = [
     path: '/schedule',
     label: 'Common Schedule',
     element: <ScheduleCommon />,
+    noOverflow: true,
     noPadding: true,
   },
   {

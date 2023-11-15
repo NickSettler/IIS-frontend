@@ -163,6 +163,7 @@ const App = (): ReactElement => {
           sx={{
             flexGrow: 1,
             py: currentRoute?.noPadding ? 0 : 2,
+            overflow: currentRoute?.noOverflow ? 'hidden' : 'initial',
             height: 'calc(100% - 64px)',
           }}
         >
