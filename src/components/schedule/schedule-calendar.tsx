@@ -39,6 +39,8 @@ import {
 import { useSchedulePermissions } from '../../utils/hooks/schedule/useSchedulePermissions';
 import { useTeacherInstances } from '../../utils/hooks/user/useTeacherInstances';
 import { toast } from 'react-hot-toast';
+import { ScheduleDateEditor } from './schedule-date-editor';
+import { ScheduleResourceEditor } from './schedule-resource-editor';
 
 // export enum E_SCHEDULE_CALENDAR_MODE {
 //   GENERAL = 'GENERAL',
@@ -202,8 +204,12 @@ export const ScheduleCalendar = ({
         showOpenButton={canUpdate}
         showDeleteButton={canDelete}
       />
-      {canManage && <AppointmentForm />}
+      {canManage && (
+        <AppointmentForm
           dateEditorComponent={ScheduleDateEditor}
+          resourceEditorComponent={ScheduleResourceEditor}
+        />
+      )}
 
       <Resources
         data={resources}
