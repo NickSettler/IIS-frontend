@@ -1,7 +1,7 @@
 import {
   E_USER_ENTITY_KEYS,
+  TApiUser,
   TApiUserWithRoles,
-  TUser,
 } from '../../../api/user/types';
 import { TApiError } from '../../../api/base/types';
 import {
@@ -12,7 +12,7 @@ import {
 import UserService from '../../../api/user/user.service';
 
 export const useUser = (
-  userId: TUser[E_USER_ENTITY_KEYS.ID] | null,
+  userId: TApiUser[E_USER_ENTITY_KEYS.ID] | null,
   options?: Omit<
     UseQueryOptions<
       TApiUserWithRoles | null,

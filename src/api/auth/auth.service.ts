@@ -1,15 +1,15 @@
 import { BaseService } from '../base/service';
-import { E_USER_ENTITY_KEYS, TUser } from '../user/types';
+import { E_USER_ENTITY_KEYS, TApiUser } from '../user/types';
 import Api from '../base/api';
 
 export type TAuthLoginMutationVariables = {
-  [E_USER_ENTITY_KEYS.USERNAME]: TUser[E_USER_ENTITY_KEYS.USERNAME];
+  [E_USER_ENTITY_KEYS.USERNAME]: TApiUser[E_USER_ENTITY_KEYS.USERNAME];
   password: string;
 };
 
 export type TAuthRegisterMutationVariables = TAuthLoginMutationVariables & {
-  [E_USER_ENTITY_KEYS.FIRST_NAME]: TUser[E_USER_ENTITY_KEYS.FIRST_NAME];
-  [E_USER_ENTITY_KEYS.LAST_NAME]: TUser[E_USER_ENTITY_KEYS.LAST_NAME];
+  [E_USER_ENTITY_KEYS.FIRST_NAME]: TApiUser[E_USER_ENTITY_KEYS.FIRST_NAME];
+  [E_USER_ENTITY_KEYS.LAST_NAME]: TApiUser[E_USER_ENTITY_KEYS.LAST_NAME];
 };
 
 export type TAuthLoginResponse = {
@@ -22,7 +22,7 @@ export default class AuthService extends BaseService {
   protected static readonly endpoint = '/auth';
 
   public static async signIn(
-    username: TUser[E_USER_ENTITY_KEYS.USERNAME],
+    username: TApiUser[E_USER_ENTITY_KEYS.USERNAME],
     password: string,
   ): Promise<TAuthLoginResponse> {
     return await Api.instance.post<
@@ -35,9 +35,9 @@ export default class AuthService extends BaseService {
   }
 
   public static async signUp(
-    firstName: TUser[E_USER_ENTITY_KEYS.FIRST_NAME],
-    lastName: TUser[E_USER_ENTITY_KEYS.LAST_NAME],
-    username: TUser[E_USER_ENTITY_KEYS.USERNAME],
+    firstName: TApiUser[E_USER_ENTITY_KEYS.FIRST_NAME],
+    lastName: TApiUser[E_USER_ENTITY_KEYS.LAST_NAME],
+    username: TApiUser[E_USER_ENTITY_KEYS.USERNAME],
     password: string,
   ): Promise<TAuthLoginResponse> {
     return await Api.instance.post<
