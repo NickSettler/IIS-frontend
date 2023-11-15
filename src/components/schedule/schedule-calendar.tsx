@@ -203,6 +203,7 @@ export const ScheduleCalendar = ({
         showDeleteButton={canDelete}
       />
       {canManage && <AppointmentForm />}
+          dateEditorComponent={ScheduleDateEditor}
 
       <Resources
         data={resources}
