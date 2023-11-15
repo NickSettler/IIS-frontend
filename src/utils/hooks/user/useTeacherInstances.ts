@@ -1,12 +1,9 @@
 import { ResourceInstance } from '@devexpress/dx-react-scheduler';
-import { useUsers } from './useUsers';
-import { applyFilters, filterTeachers } from '../../react-query/transforms';
 import { E_USER_ENTITY_KEYS } from '../../../api/user/types';
+import { useTeachers } from './useTeachers';
 
 export const useTeacherInstances = (): Array<ResourceInstance> => {
-  const { data } = useUsers({
-    select: applyFilters(filterTeachers),
-  });
+  const { data } = useTeachers();
 
   if (!data) return [];
 
@@ -17,6 +14,7 @@ export const useTeacherInstances = (): Array<ResourceInstance> => {
     return {
       id: item[E_USER_ENTITY_KEYS.ID],
       text: `${fullName} (${item[E_USER_ENTITY_KEYS.USERNAME]})`,
+      something: 'a;',
     };
   });
 };
