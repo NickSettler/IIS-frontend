@@ -53,6 +53,14 @@ export default class CourseActivityService extends BaseService {
     );
   }
 
+  public static async getCourseActivity(
+    id: TCourseActivity[E_COURSE_ACTIVITY_ENTITY_KEYS.ID],
+  ): Promise<TCourseActivity> {
+    return await Api.instance.get<TCourseActivity>(
+      `${this.endpoint}/activity/${id}`,
+    );
+  }
+
   public static async createCourseActivity(
     data: TCourseActivityCreateData,
   ): Promise<TCourseActivity> {
