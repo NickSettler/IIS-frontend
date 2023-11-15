@@ -17,7 +17,7 @@ import UserService, {
   TUserDeleteMutationVariables,
   TUserUpdateMutationVariables,
 } from '../../../api/user/user.service';
-import { useMutation, useQuery } from '@tanstack/react-query';
+import { useMutation } from '@tanstack/react-query';
 import {
   Button,
   Card,
@@ -43,6 +43,7 @@ import { Add, Delete } from '@mui/icons-material';
 import { useModal } from '../../../utils/hooks/modal/useModal';
 import { E_MODALS } from '../../../store/modals';
 import { toast } from 'react-hot-toast';
+import { useUsers } from '../../../utils/hooks/user/useUsers';
 
 export const UsersDataTable = (): JSX.Element => {
   const { onOpen: openAddUserModal, onClose: closeAddUserModal } = useModal(
@@ -51,13 +52,9 @@ export const UsersDataTable = (): JSX.Element => {
   const { onOpen: openManageRolesModal, onClose: closeManageRolesModal } =
     useModal(E_MODALS.MANAGE_ROLES);
 
-  const getQuery = useQuery<Array<TApiUserWithRoles>, TApiError>({
-    queryKey: ['getUsers'],
-    queryFn: UserService.getUsers.bind(UserService),
+  const { data, isLoading, error, refetch, isFetching } = useUsers({
     staleTime: 0,
   });
-
-  const { data, isLoading, error, refetch, isFetching } = getQuery;
 
   const createMutation = useMutation<
     TApiUserWithRoles,
