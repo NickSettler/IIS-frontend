@@ -182,6 +182,15 @@ export const ScheduleCalendar = ({
     [canCreate, canUpdate, canDelete],
   );
 
+  const fixScroll = () => {
+    document.getElementById('main-content')?.scrollTo({
+      top: 0,
+      behavior: 'smooth',
+    });
+  };
+
+  const Comp = () => <>asd</>;
+
   return (
     <Scheduler data={itemsState} firstDayOfWeek={1}>
       <ViewState
@@ -203,11 +212,13 @@ export const ScheduleCalendar = ({
         showCloseButton
         showOpenButton={canUpdate}
         showDeleteButton={canDelete}
+        headerComponent={Comp}
       />
       {canManage && (
         <AppointmentForm
           dateEditorComponent={ScheduleDateEditor}
           resourceEditorComponent={ScheduleResourceEditor}
+          onVisibilityChange={fixScroll}
         />
       )}
 

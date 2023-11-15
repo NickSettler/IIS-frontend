@@ -160,6 +160,7 @@ const App = (): ReactElement => {
       >
         <Toolbar />
         <Box
+          id={'main-content'}
           sx={{
             flexGrow: 1,
             py: currentRoute?.noPadding ? 0 : 2,
