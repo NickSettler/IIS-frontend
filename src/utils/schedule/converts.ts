@@ -59,7 +59,7 @@ export const convertAppointmentToScheduleBody = async <
   Mode extends 'create' | 'update',
 >(
   appointment: AppointmentModel,
-  mode: Mode,
+  _: Mode,
 ): Promise<
   Mode extends 'create' ? TScheduleItemCreateData : TScheduleItemUpdateData
 > =>
