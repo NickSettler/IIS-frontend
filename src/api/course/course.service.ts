@@ -1,10 +1,6 @@
 import { BaseService } from '../base/service';
 import Api from '../base/api';
-import {
-  E_COURSE_ENTITY_KEYS,
-  TCourseWithStudents,
-  TCourse,
-} from './types';
+import { E_COURSE_ENTITY_KEYS, TCourseWithStudents, TCourse } from './types';
 
 export type TCourseCreateData = Omit<
   TCourse,

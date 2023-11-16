@@ -21,6 +21,6 @@ export type TCourse = {
   [E_COURSE_ENTITY_KEYS.TEACHERS]: Array<TApiUser>;
 };
 
-export type TCourseWithStudents = TPureCourse & {
+export type TCourseWithStudents = TCourse & {
   [E_COURSE_ENTITY_KEYS.STUDENTS]: Array<TApiUser>;
 };
