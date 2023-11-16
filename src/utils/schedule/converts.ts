@@ -24,11 +24,6 @@ export const convertScheduleToAppointment = (
     courseActivity[E_COURSE_ACTIVITY_ENTITY_KEYS.FORM]
   }`;
 
-  const rRule =
-    scheduleItem[E_SCHEDULE_ITEM_ENTITY_KEYS.ID] === '1'
-      ? 'FREQ=WEEKLY;UNTIL=20231217T130000Z;WKST=MO;BYDAY=FR,TH'
-      : 'FREQ=WEEKLY;UNTIL=20231217T130000Z;WKST=MO;BYDAY=MO,WE';
-
   const courseActivityID =
     scheduleItem[E_SCHEDULE_ITEM_ENTITY_KEYS.COURSE_ACTIVITY][
       E_COURSE_ACTIVITY_ENTITY_KEYS.ID
@@ -45,7 +40,15 @@ export const convertScheduleToAppointment = (
     title: title,
     startDate: scheduleItem[E_SCHEDULE_ITEM_ENTITY_KEYS.START_TIME],
     endDate: scheduleItem[E_SCHEDULE_ITEM_ENTITY_KEYS.END_TIME],
-    rRule,
+    ...(scheduleItem[E_SCHEDULE_ITEM_ENTITY_KEYS.RECURRENCE_RULE] && {
+      rRule: scheduleItem[E_SCHEDULE_ITEM_ENTITY_KEYS.RECURRENCE_RULE],
+    }),
+    ...(scheduleItem[E_SCHEDULE_ITEM_ENTITY_KEYS.EXCLUSION_DATES] && {
+      exDate: scheduleItem[E_SCHEDULE_ITEM_ENTITY_KEYS.EXCLUSION_DATES],
+    }),
+    ...(scheduleItem[E_SCHEDULE_ITEM_ENTITY_KEYS.NOTES] && {
+      notes: scheduleItem[E_SCHEDULE_ITEM_ENTITY_KEYS.NOTES],
+    }),
     [E_SCHEDULE_ITEM_ENTITY_KEYS.COURSE_ACTIVITY]: courseActivityID,
     [E_SCHEDULE_ITEM_ENTITY_KEYS.CLASS]: classID,
     [E_SCHEDULE_ITEM_ENTITY_KEYS.TEACHER]: teacherID,
@@ -95,12 +98,9 @@ export const convertAppointmentToScheduleBody = async <
         [E_SCHEDULE_ITEM_ENTITY_KEYS.TEACHER]:
           appointment[E_SCHEDULE_ITEM_ENTITY_KEYS.TEACHER],
       }),
-      ...(appointment.rRule && {
-        [E_SCHEDULE_ITEM_ENTITY_KEYS.RECURRENCE_RULE]: appointment.rRule,
-      }),
-      ...(appointment.exDate && {
-        [E_SCHEDULE_ITEM_ENTITY_KEYS.EXCLUSION_DATES]: appointment.exDate,
-      }),
+      [E_SCHEDULE_ITEM_ENTITY_KEYS.RECURRENCE_RULE]: appointment.rRule,
+      [E_SCHEDULE_ITEM_ENTITY_KEYS.EXCLUSION_DATES]: appointment.exDate,
+      [E_SCHEDULE_ITEM_ENTITY_KEYS.NOTES]: appointment.notes,
       [E_SCHEDULE_ITEM_ENTITY_KEYS.START_TIME]: startDateString,
       [E_SCHEDULE_ITEM_ENTITY_KEYS.END_TIME]: endDateString,
     });
