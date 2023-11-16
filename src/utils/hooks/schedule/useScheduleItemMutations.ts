@@ -5,7 +5,7 @@ import {
   E_SCHEDULE_ITEM_ENTITY_KEYS,
   TScheduleItem,
 } from '../../../api/schedule/types';
-import {
+import ScheduleService, {
   TScheduleItemCreateMutationVariables,
   TScheduleItemDeleteMutationVariables,
   TScheduleItemUpdateMutationVariables,
@@ -43,10 +43,8 @@ export const useScheduleItemMutations = ({
   >({
     mutationFn: async ({
       data: createData,
-    }: TScheduleItemCreateMutationVariables) => {
-      console.log('Create mutation', createData);
-      return {} as TScheduleItem;
-    },
+    }: TScheduleItemCreateMutationVariables) =>
+      ScheduleService.create(createData),
     onSuccess: async () => {
       await refetch();
 
@@ -67,10 +65,8 @@ export const useScheduleItemMutations = ({
     mutationFn: async ({
       [E_SCHEDULE_ITEM_ENTITY_KEYS.ID]: id,
       data: updateData,
-    }: TScheduleItemUpdateMutationVariables) => {
-      console.log('Update mutation', id, updateData);
-      return {} as TScheduleItem;
-    },
+    }: TScheduleItemUpdateMutationVariables) =>
+      ScheduleService.update(id, updateData),
     onSuccess: async () => {
       await refetch();
 
@@ -90,10 +86,7 @@ export const useScheduleItemMutations = ({
   >({
     mutationFn: async ({
       [E_SCHEDULE_ITEM_ENTITY_KEYS.ID]: id,
-    }: TScheduleItemDeleteMutationVariables) => {
-      console.log('Delete mutation', id);
-      return;
-    },
+    }: TScheduleItemDeleteMutationVariables) => ScheduleService.delete(id),
     onSuccess: async () => {
       await refetch();
 
