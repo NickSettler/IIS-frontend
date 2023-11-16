@@ -201,7 +201,7 @@ export const ScheduleCalendar = ({
       {canManage && <EditingState onCommitChanges={handleCommitChanges} />}
       {canManage && <EditRecurrenceMenu />}
 
-      <WeekView startDayHour={6} endDayHour={21} />
+      <WeekView startDayHour={6} endDayHour={23} />
 
       <Toolbar />
       <DateNavigator />
