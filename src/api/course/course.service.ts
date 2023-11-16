@@ -1,6 +1,10 @@
 import { BaseService } from '../base/service';
 import Api from '../base/api';
-import { E_COURSE_ENTITY_KEYS, TPureCourse } from './types';
+import {
+  E_COURSE_ENTITY_KEYS,
+  TCourseWithStudents,
+  TPureCourse,
+} from './types';
 
 export type TCourseCreateData = Omit<
   TPureCourse,
@@ -42,8 +46,10 @@ export default class CourseService extends BaseService {
 
   public static async getCourse(
     id: TPureCourse[E_COURSE_ENTITY_KEYS.ID],
-  ): Promise<TPureCourse> {
-    return await Api.instance.get<TPureCourse>(`${this.endpoint}/${id}`);
+  ): Promise<TCourseWithStudents> {
+    return await Api.instance.get<TCourseWithStudents>(
+      `${this.endpoint}/${id}`,
+    );
   }
 
   public static async createCourse(
