@@ -11,6 +11,7 @@ export enum E_SCHEDULE_ITEM_ENTITY_KEYS {
   END_TIME = 'end_time',
   RECURRENCE_RULE = 'recurrence_rule',
   EXCLUSION_DATES = 'exclusion_dates',
+  NOTES = 'notes',
 }
 
 export type TScheduleItem = {
@@ -20,4 +21,7 @@ export type TScheduleItem = {
   [E_SCHEDULE_ITEM_ENTITY_KEYS.CLASS]: TClass;
   [E_SCHEDULE_ITEM_ENTITY_KEYS.START_TIME]: Date;
   [E_SCHEDULE_ITEM_ENTITY_KEYS.END_TIME]: Date;
+  [E_SCHEDULE_ITEM_ENTITY_KEYS.RECURRENCE_RULE]: string | null;
+  [E_SCHEDULE_ITEM_ENTITY_KEYS.EXCLUSION_DATES]: string | null;
+  [E_SCHEDULE_ITEM_ENTITY_KEYS.NOTES]: string | null;
 };
