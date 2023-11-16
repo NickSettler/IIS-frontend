@@ -118,6 +118,11 @@ export const CourseInfo = (): JSX.Element => {
     [data],
   );
 
+  const students = useMemo(
+    () => (data ? data[E_COURSE_ENTITY_KEYS.STUDENTS] : []),
+    [data],
+  );
+
   if (error && error.statusCode === 404) return <Navigate to={'/courses'} />;
 
   return (
@@ -170,7 +175,7 @@ export const CourseInfo = (): JSX.Element => {
         )}
       </Stack>
       <Container maxWidth={false} disableGutters>
-        <Grid container columnSpacing={4} rowSpacing={4} direction={'row'}>
+        <Grid container columnSpacing={4} rowSpacing={2} direction={'row'}>
           <Grid container item xs={6} rowSpacing={1}>
             <Grid item xs={12}>
               <Typography variant={'h6'}>Guarantor</Typography>
@@ -244,7 +249,23 @@ export const CourseInfo = (): JSX.Element => {
               </List>
             </Paper>
           </Grid>
-          <Grid item xs={6} />
+          <Grid container item xs={6} direction={'column'} rowGap={1}>
+            <Typography variant={'h6'}>Students</Typography>
+            <Paper variant={'outlined'}>
+              <List dense disablePadding>
+                {students.map((student) => (
+                  <ListItem key={student[E_USER_ENTITY_KEYS.ID]}>
+                    <ListItemText
+                      primary={`${student[E_USER_ENTITY_KEYS.FIRST_NAME]} ${
+                        student[E_USER_ENTITY_KEYS.LAST_NAME]
+                      }`}
+                      secondary={student[E_USER_ENTITY_KEYS.USERNAME]}
+                    />
+                  </ListItem>
+                ))}
+              </List>
+            </Paper>
+          </Grid>
           <Grid item xs={6}>
             <CourseActivityTable />
           </Grid>
