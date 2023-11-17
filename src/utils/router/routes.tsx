@@ -56,7 +56,7 @@ export const appRoutes: Array<TAppRoute> = [
   {
     path: '/users',
     label: 'Users',
-    roles: [E_ROLE.ADMIN],
+    roles: [E_ROLE.ADMIN, E_ROLE.GUARANTOR, E_ROLE.TEACHER, E_ROLE.SCHEDULER],
     element: <UsersDataTable />,
   },
   {
@@ -75,7 +75,12 @@ export const appRoutes: Array<TAppRoute> = [
   {
     path: '/classes',
     label: 'Classes',
-    roles: [...classManageRoles],
+    roles: [
+      ...classManageRoles,
+      E_ROLE.GUARANTOR,
+      E_ROLE.TEACHER,
+      E_ROLE.SCHEDULER,
+    ],
     element: <ClassesDataTable />,
   },
   {
