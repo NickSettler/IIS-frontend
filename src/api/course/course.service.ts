@@ -3,11 +3,13 @@ import Api from '../base/api';
 import {
   E_COURSE_ENTITY_KEYS,
   TCourseWithStudents,
-  TPureCourse,
+  TCourse,
+  TCourseStudent,
+  E_COURSE_STUDENT_ENTITY_KEYS,
 } from './types';
 
 export type TCourseCreateData = Omit<
-  TPureCourse,
+  TCourse,
   | E_COURSE_ENTITY_KEYS.ABBR
   | E_COURSE_ENTITY_KEYS.ANNOTATION
   | E_COURSE_ENTITY_KEYS.CREDITS
@@ -29,51 +31,85 @@ export type TCourseCreateMutationVariables = {
 };
 
 export type TCourseUpdateMutationVariables = {
-  [E_COURSE_ENTITY_KEYS.ID]: TPureCourse[E_COURSE_ENTITY_KEYS.ID];
+  [E_COURSE_ENTITY_KEYS.ID]: TCourse[E_COURSE_ENTITY_KEYS.ID];
   data: TCourseUpdateData;
 };
 
 export type TCourseDeleteMutationVariables = {
-  [E_COURSE_ENTITY_KEYS.ID]: TPureCourse[E_COURSE_ENTITY_KEYS.ID];
+  [E_COURSE_ENTITY_KEYS.ID]: TCourse[E_COURSE_ENTITY_KEYS.ID];
+};
+
+export type TCourseStudentCreateData = {
+  [E_COURSE_STUDENT_ENTITY_KEYS.COURSE]: TCourseStudent[E_COURSE_STUDENT_ENTITY_KEYS.COURSE_ID];
+  [E_COURSE_STUDENT_ENTITY_KEYS.STUDENT]: TCourseStudent[E_COURSE_STUDENT_ENTITY_KEYS.STUDENT_ID];
+};
+
+export type TCourseStudentCreateMutationVariables = {
+  data: TCourseStudentCreateData;
+};
+
+export type TCourseStudentDeleteMutationVariables = {
+  [E_COURSE_STUDENT_ENTITY_KEYS.COURSE]: TCourseStudent[E_COURSE_STUDENT_ENTITY_KEYS.COURSE_ID];
+  [E_COURSE_STUDENT_ENTITY_KEYS.STUDENT]: TCourseStudent[E_COURSE_STUDENT_ENTITY_KEYS.STUDENT_ID];
 };
 
 export default class CourseService extends BaseService {
   protected static readonly endpoint = '/courses';
 
-  public static async getCourses(): Promise<Array<TPureCourse>> {
-    return await Api.instance.get<Array<TPureCourse>>(this.endpoint);
+  public static async getCourses(): Promise<Array<TCourse>> {
+    return await Api.instance.get<Array<TCourse>>(this.endpoint);
   }
 
   public static async getCourse(
-    id: TPureCourse[E_COURSE_ENTITY_KEYS.ID],
+    id: TCourse[E_COURSE_ENTITY_KEYS.ID],
   ): Promise<TCourseWithStudents> {
     return await Api.instance.get<TCourseWithStudents>(
       `${this.endpoint}/${id}`,
     );
   }
 
-  public static async createCourse(
-    data: TCourseCreateData,
-  ): Promise<TPureCourse> {
-    return await Api.instance.post<TCourseCreateData, TPureCourse>(
+  public static async createCourse(data: TCourseCreateData): Promise<TCourse> {
+    return await Api.instance.post<TCourseCreateData, TCourse>(
       this.endpoint,
       data,
     );
   }
 
   public static async updateCourse(
-    id: TPureCourse[E_COURSE_ENTITY_KEYS.ID],
+    id: TCourse[E_COURSE_ENTITY_KEYS.ID],
     data: TCourseUpdateData,
-  ): Promise<TPureCourse> {
-    return await Api.instance.put<TCourseUpdateData, TPureCourse>(
+  ): Promise<TCourse> {
+    return await Api.instance.put<TCourseUpdateData, TCourse>(
       `${this.endpoint}/${id}`,
       data,
     );
   }
 
   public static async deleteCourse(
-    id: TPureCourse[E_COURSE_ENTITY_KEYS.ID],
+    id: TCourse[E_COURSE_ENTITY_KEYS.ID],
   ): Promise<void> {
     await Api.instance.delete<void>(`${this.endpoint}/${id}`);
+  }
+
+  public static async getCourseStudents() {
+    return await Api.instance.get<Array<TCourseStudent>>('/course/students');
+  }
+
+  public static async createCourseStudent(
+    data: TCourseStudentCreateData,
+  ): Promise<TCourseStudent> {
+    return await Api.instance.post<TCourseStudentCreateData, TCourseStudent>(
+      '/course/students',
+      data,
+    );
+  }
+
+  public static async deleteCourseStudent(
+    courseID: TCourseStudent[E_COURSE_STUDENT_ENTITY_KEYS.COURSE_ID],
+    studentID: TCourseStudent[E_COURSE_STUDENT_ENTITY_KEYS.STUDENT_ID],
+  ): Promise<void> {
+    await Api.instance.delete<void>(
+      `/course/students/${studentID}/${courseID}`,
+    );
   }
 }

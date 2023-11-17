@@ -4,23 +4,18 @@ import {
   useQuery,
   UseQueryOptions,
 } from '@tanstack/react-query';
-import { TPureCourse } from '../../../api/course/types';
+import { TCourse } from '../../../api/course/types';
 import CourseService from '../../../api/course/course.service';
 
 export const useCourses = (
   options?: Omit<
-    UseQueryOptions<
-      Array<TPureCourse>,
-      TApiError,
-      Array<TPureCourse>,
-      Array<string>
-    >,
+    UseQueryOptions<Array<TCourse>, TApiError, Array<TCourse>, Array<string>>,
     'initialData' | 'queryFn' | 'queryKey'
   > & { initialData?(): undefined },
-): UseQueryResult<Array<TPureCourse>, TApiError> => {
+): UseQueryResult<Array<TCourse>, TApiError> => {
   return useQuery(
     ['getCourses'],
-    async (): Promise<Array<TPureCourse>> => CourseService.getCourses(),
+    async (): Promise<Array<TCourse>> => CourseService.getCourses(),
     options,
   );
 };

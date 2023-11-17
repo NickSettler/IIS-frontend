@@ -1,4 +1,4 @@
-import { JSX, useEffect, useState } from 'react';
+import { ChangeEvent, JSX, useEffect, useMemo, useState } from 'react';
 import {
   DataGrid,
   GridActionsCellItem,
@@ -17,7 +17,7 @@ import UserService, {
   TUserDeleteMutationVariables,
   TUserUpdateMutationVariables,
 } from '../../../api/user/user.service';
-import { useMutation, useQuery } from '@tanstack/react-query';
+import { useMutation } from '@tanstack/react-query';
 import {
   Button,
   Card,
@@ -36,6 +36,8 @@ import {
   unionBy,
   values,
   toString,
+  isEmpty,
+  debounce,
 } from 'lodash';
 import { chipSelectColDef } from '../../data-grid/chip-select';
 import { DataGridToolbar } from '../../data-grid/toolbar';
@@ -43,21 +45,28 @@ import { Add, Delete } from '@mui/icons-material';
 import { useModal } from '../../../utils/hooks/modal/useModal';
 import { E_MODALS } from '../../../store/modals';
 import { toast } from 'react-hot-toast';
+import { useUsers } from '../../../utils/hooks/user/useUsers';
+import { useLocation, useNavigate } from 'react-router-dom';
+import Scanner from '../../../utils/qdl/scanner';
+import Parser from '../../../utils/qdl/parser';
+import Executor from '../../../utils/qdl/executor';
+import TextField from '@mui/material/TextField';
 
 export const UsersDataTable = (): JSX.Element => {
+  const location = useLocation();
+  const navigate = useNavigate();
+
+  const urlSearchParams = new URLSearchParams(location.search);
+
   const { onOpen: openAddUserModal, onClose: closeAddUserModal } = useModal(
     E_MODALS.ADD_NEW_USER,
   );
   const { onOpen: openManageRolesModal, onClose: closeManageRolesModal } =
     useModal(E_MODALS.MANAGE_ROLES);
 
-  const getQuery = useQuery<Array<TApiUserWithRoles>, TApiError>({
-    queryKey: ['getUsers'],
-    queryFn: UserService.getUsers.bind(UserService),
+  const { data, isLoading, error, refetch, isFetching } = useUsers({
     staleTime: 0,
   });
-
-  const { data, isLoading, error, refetch, isFetching } = getQuery;
 
   const createMutation = useMutation<
     TApiUserWithRoles,
@@ -120,8 +129,55 @@ export const UsersDataTable = (): JSX.Element => {
     },
   });
 
+  // eslint-disable-next-line react/hook-use-state
+  const [DQLQuery, setDQLQuery] = useState<string>(
+    urlSearchParams.get('q') ?? '',
+  );
+  // eslint-disable-next-line react/hook-use-state
+  const [DQLQueryError, setDQLQueryError] = useState<string>('');
   const [rows, setRows] = useState<Array<TApiUserWithRoles>>([]);
   const [rowSelection, setRowSelection] = useState<Array<GridRowId>>([]);
+
+  const filteredRows = useMemo(() => {
+    if (isEmpty(DQLQuery)) {
+      setDQLQueryError('');
+      return rows;
+    }
+
+    try {
+      const lexer = new Scanner(DQLQuery);
+      const scanner = new Parser(lexer.getNextToken.bind(lexer));
+      const tree = scanner.processQuery();
+      const executor = new Executor(tree);
+
+      const result = executor.filter(rows);
+
+      setDQLQueryError('');
+
+      return result;
+    } catch (e) {
+      if (e instanceof Error) {
+        setDQLQueryError(e.message);
+      }
+
+      return rows;
+    }
+  }, [DQLQuery, rows]);
+
+  const updateURLFunc = (query: string) => {
+    urlSearchParams.set('q', query);
+    navigate(`?${urlSearchParams.toString()}`, {
+      replace: true,
+    });
+  };
+
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  const updateURL = useMemo(() => debounce(updateURLFunc, 1000), []);
+
+  const handleQueryChange = (e: ChangeEvent<HTMLInputElement>) => {
+    setDQLQuery(e.target.value);
+    updateURL(e.target.value);
+  };
 
   useEffect(() => {
     if (data && !isFetching) setRows(data);
@@ -305,10 +361,19 @@ export const UsersDataTable = (): JSX.Element => {
   );
 
   return (
-    <>
+    <Stack spacing={2}>
+      <TextField
+        size={'small'}
+        placeholder={'name == "username"'}
+        label={'Query'}
+        value={DQLQuery}
+        error={!isEmpty(DQLQueryError)}
+        helperText={DQLQueryError}
+        onChange={handleQueryChange}
+      />
       <DataGrid
         columns={gridColumns}
-        rows={rows}
+        rows={filteredRows}
         editMode={'row'}
         loading={isLoading}
         checkboxSelection
@@ -326,6 +391,6 @@ export const UsersDataTable = (): JSX.Element => {
           toolbar,
         }}
       />
-    </>
+    </Stack>
   );
 };

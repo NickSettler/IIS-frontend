@@ -6,13 +6,13 @@ import {
 } from '@tanstack/react-query';
 import {
   E_COURSE_ENTITY_KEYS,
-  TPureCourse,
+  TCourse,
   TCourseWithStudents,
 } from '../../../api/course/types';
 import CourseService from '../../../api/course/course.service';
 
 export const useCourse = (
-  id: TPureCourse[E_COURSE_ENTITY_KEYS.ID] | undefined,
+  id: TCourse[E_COURSE_ENTITY_KEYS.ID] | undefined,
   options?: Omit<
     UseQueryOptions<
       TCourseWithStudents | null,

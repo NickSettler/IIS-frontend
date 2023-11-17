@@ -15,7 +15,7 @@ import {
   Typography,
 } from '@mui/material';
 import { Link } from './utils/router/link';
-import LocalStorage, { E_LOCAL_STORAGE_KEYS } from './utils/local-storage';
+import { E_LOCAL_STORAGE_KEYS } from './utils/local-storage';
 import ProtectedRoute from './utils/router/protected-route';
 import { TApiUserWithRoles } from './api/user/types';
 import { useLocalStorage } from 'usehooks-ts';
@@ -43,7 +43,7 @@ const App = (): ReactElement => {
     setAccessToken(null);
     setRefreshToken(null);
     setUser(null);
-    LocalStorage.clear();
+    localStorage.clear();
   };
 
   const currentRoute = useCurrentRoute();
@@ -160,9 +160,11 @@ const App = (): ReactElement => {
       >
         <Toolbar />
         <Box
+          id={'main-content'}
           sx={{
             flexGrow: 1,
             py: currentRoute?.noPadding ? 0 : 2,
+            overflow: currentRoute?.noOverflow ? 'hidden' : 'initial',
             height: 'calc(100% - 64px)',
           }}
         >

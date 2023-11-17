@@ -6,6 +6,7 @@ import { useCourse } from '../../../utils/hooks/course/useCourse';
 import {
   IconButton,
   ListItem,
+  ListItemSecondaryAction,
   Paper,
   Skeleton,
   Stack,
@@ -13,7 +14,7 @@ import {
   Typography,
 } from '@mui/material';
 import Button from '@mui/material/Button';
-import { ArrowBack, Delete, Edit } from '@mui/icons-material';
+import { ArrowBack, Delete, Edit, Event } from '@mui/icons-material';
 import { E_USER_ENTITY_KEYS } from '../../../api/user/types';
 import Grid from '@mui/material/Grid';
 import Container from '@mui/material/Container';
@@ -27,6 +28,7 @@ import { useCourseModalHandlers } from '../../../utils/hooks/course/useCourseMod
 import { toast } from 'react-hot-toast';
 import { useCoursePermissions } from '../../../utils/hooks/course/useCoursePermissions';
 import { CourseActivityTable } from '../../course-activity/data-table';
+import { E_SCHEDULE_ITEM_ENTITY_KEYS } from '../../../api/schedule/types';
 
 export const CourseInfo = (): JSX.Element => {
   const { id } = useParams<'id'>();
@@ -244,27 +246,46 @@ export const CourseInfo = (): JSX.Element => {
                       }`}
                       secondary={teacher[E_USER_ENTITY_KEYS.USERNAME]}
                     />
+                    <ListItemSecondaryAction>
+                      <Tooltip title={'Open schedule'} key={'open-schedule'}>
+                        <IconButton
+                          onClick={() =>
+                            navigate(
+                              `/schedule?${
+                                E_SCHEDULE_ITEM_ENTITY_KEYS.TEACHER
+                              }=${teacher[E_USER_ENTITY_KEYS.ID]}`,
+                            )
+                          }
+                        >
+                          <Event />
+                        </IconButton>
+                      </Tooltip>
+                    </ListItemSecondaryAction>
                   </ListItem>
                 ))}
               </List>
             </Paper>
           </Grid>
           <Grid container item xs={6} direction={'column'} rowGap={1}>
-            <Typography variant={'h6'}>Students</Typography>
-            <Paper variant={'outlined'}>
-              <List dense disablePadding>
-                {students.map((student) => (
-                  <ListItem key={student[E_USER_ENTITY_KEYS.ID]}>
-                    <ListItemText
-                      primary={`${student[E_USER_ENTITY_KEYS.FIRST_NAME]} ${
-                        student[E_USER_ENTITY_KEYS.LAST_NAME]
-                      }`}
-                      secondary={student[E_USER_ENTITY_KEYS.USERNAME]}
-                    />
-                  </ListItem>
-                ))}
-              </List>
-            </Paper>
+            {students.length > 0 && (
+              <>
+                <Typography variant={'h6'}>Students</Typography>
+                <Paper variant={'outlined'}>
+                  <List dense disablePadding>
+                    {students.map((student) => (
+                      <ListItem key={student[E_USER_ENTITY_KEYS.ID]}>
+                        <ListItemText
+                          primary={`${student[E_USER_ENTITY_KEYS.FIRST_NAME]} ${
+                            student[E_USER_ENTITY_KEYS.LAST_NAME]
+                          }`}
+                          secondary={student[E_USER_ENTITY_KEYS.USERNAME]}
+                        />
+                      </ListItem>
+                    ))}
+                  </List>
+                </Paper>
+              </>
+            )}
           </Grid>
           <Grid item xs={6}>
             <CourseActivityTable />

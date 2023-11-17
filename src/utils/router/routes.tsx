@@ -1,5 +1,4 @@
-import { RouteObject } from 'react-router-dom';
-import HomePage from '../../pages/home';
+import { Navigate, RouteObject } from 'react-router-dom';
 import LogInPage from '../../pages/login';
 import SignUpPage from '../../pages/register';
 import { UsersDataTable } from '../../components/users/data-table';
@@ -11,6 +10,7 @@ import { ClassesDataTable } from '../../components/classes/data-table';
 import { classManageRoles } from '../hooks/class/useClassPermissions';
 import { ProfileUserInfo } from '../../components/profile/user-info';
 import { MarkdownHelp } from '../../pages/help/markdown-help';
+import { ScheduleCommon } from '../../pages/schedule-common/schedule-common';
 
 export type TAppRoute = RouteObject & {
   path: string;
@@ -18,6 +18,7 @@ export type TAppRoute = RouteObject & {
   showInNav?: boolean;
   bottomNav?: boolean;
   noPadding?: boolean;
+  noOverflow?: boolean;
   roles?: Array<E_ROLE>;
 };
 
@@ -25,7 +26,22 @@ export const appRoutes: Array<TAppRoute> = [
   {
     path: '/',
     label: 'Home',
-    element: <HomePage />,
+    showInNav: false,
+    element: <Navigate to={'/schedule'} />,
+  },
+  {
+    path: '/schedule',
+    label: 'Common Schedule',
+    element: <ScheduleCommon />,
+    roles: [
+      E_ROLE.STUDENT,
+      E_ROLE.TEACHER,
+      E_ROLE.SCHEDULER,
+      E_ROLE.GUARANTOR,
+      E_ROLE.ADMIN,
+    ],
+    noOverflow: true,
+    noPadding: true,
   },
   {
     path: '/login',
@@ -40,7 +56,7 @@ export const appRoutes: Array<TAppRoute> = [
   {
     path: '/users',
     label: 'Users',
-    roles: [E_ROLE.ADMIN],
+    roles: [E_ROLE.ADMIN, E_ROLE.GUARANTOR, E_ROLE.TEACHER, E_ROLE.SCHEDULER],
     element: <UsersDataTable />,
   },
   {
@@ -59,7 +75,12 @@ export const appRoutes: Array<TAppRoute> = [
   {
     path: '/classes',
     label: 'Classes',
-    roles: [...classManageRoles],
+    roles: [
+      ...classManageRoles,
+      E_ROLE.GUARANTOR,
+      E_ROLE.TEACHER,
+      E_ROLE.SCHEDULER,
+    ],
     element: <ClassesDataTable />,
   },
   {

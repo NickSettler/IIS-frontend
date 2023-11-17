@@ -4,14 +4,14 @@ import {
   TTeacherRequirement,
 } from './types';
 import Api from '../base/api';
-import { E_USER_ENTITY_KEYS, TUser } from '../user/types';
+import { E_USER_ENTITY_KEYS, TApiUser } from '../user/types';
 
 export type TTeacherRequirementCreateData = Omit<
   TTeacherRequirement,
   | E_TEACHER_REQUIREMENT_ENTITY_KEYS.ID
   | E_TEACHER_REQUIREMENT_ENTITY_KEYS.TEACHER
 > & {
-  [E_TEACHER_REQUIREMENT_ENTITY_KEYS.TEACHER]: TUser[E_USER_ENTITY_KEYS.ID];
+  [E_TEACHER_REQUIREMENT_ENTITY_KEYS.TEACHER]: TApiUser[E_USER_ENTITY_KEYS.ID];
 };
 
 export type TTeacherRequirementUpdateData =
@@ -37,11 +37,11 @@ export default class TeacherRequirementsService extends BaseService {
     return await Api.instance.get<Array<TTeacherRequirement>>(this.endpoint);
   }
 
-  public static async getOne(
-    id: TTeacherRequirement[E_TEACHER_REQUIREMENT_ENTITY_KEYS.ID],
-  ): Promise<TTeacherRequirement> {
-    return await Api.instance.get<TTeacherRequirement>(
-      `${this.endpoint}/${id}`,
+  public static async getForTeacher(
+    id: TApiUser[E_USER_ENTITY_KEYS.ID],
+  ): Promise<Array<TTeacherRequirement>> {
+    return await Api.instance.get<Array<TTeacherRequirement>>(
+      `${this.endpoint}/teacher/${id}`,
     );
   }
 

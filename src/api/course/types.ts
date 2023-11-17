@@ -11,7 +11,7 @@ export enum E_COURSE_ENTITY_KEYS {
   STUDENTS = 'students',
 }
 
-export type TPureCourse = {
+export type TCourse = {
   [E_COURSE_ENTITY_KEYS.ID]: string;
   [E_COURSE_ENTITY_KEYS.ABBR]: string;
   [E_COURSE_ENTITY_KEYS.NAME]: string;
@@ -21,6 +21,20 @@ export type TPureCourse = {
   [E_COURSE_ENTITY_KEYS.TEACHERS]: Array<TApiUser>;
 };
 
-export type TCourseWithStudents = TPureCourse & {
+export type TCourseWithStudents = TCourse & {
   [E_COURSE_ENTITY_KEYS.STUDENTS]: Array<TApiUser>;
+};
+
+export enum E_COURSE_STUDENT_ENTITY_KEYS {
+  COURSE_ID = 'course_id',
+  STUDENT_ID = 'student_id',
+  COURSE = 'course',
+  STUDENT = 'student',
+}
+
+export type TCourseStudent = {
+  [E_COURSE_STUDENT_ENTITY_KEYS.COURSE_ID]: string;
+  [E_COURSE_STUDENT_ENTITY_KEYS.STUDENT_ID]: string;
+  [E_COURSE_STUDENT_ENTITY_KEYS.COURSE]: TCourse;
+  [E_COURSE_STUDENT_ENTITY_KEYS.STUDENT]: TApiUser;
 };

@@ -1,5 +1,5 @@
 import { JSX } from 'react';
-import { E_COURSE_ENTITY_KEYS, TPureCourse } from '../../../api/course/types';
+import { E_COURSE_ENTITY_KEYS, TCourse } from '../../../api/course/types';
 import { GridColDef } from '@mui/x-data-grid';
 import { E_USER_ENTITY_KEYS } from '../../../api/user/types';
 import { chipSelectColDef } from '../../data-grid/chip-select';
@@ -14,9 +14,10 @@ import { useCourseModalHandlers } from '../../../utils/hooks/course/useCourseMod
 import { useCoursePermissions } from '../../../utils/hooks/course/useCoursePermissions';
 import { GenericDataGrid } from '../../data-grid/generic-datagrid';
 import { useCourses } from '../../../utils/hooks/course/useCourses';
+import { useCourseEnroll } from '../../../utils/hooks/course/useCourseEnroll';
 
 export const CoursesDataTable = (): JSX.Element => {
-  const gridColumns: Array<GridColDef<TPureCourse>> = [
+  const gridColumns: Array<GridColDef<TCourse>> = [
     {
       field: E_COURSE_ENTITY_KEYS.ID,
       headerName: 'ID',
@@ -40,8 +41,8 @@ export const CoursesDataTable = (): JSX.Element => {
       renderCell: ({
         value,
       }: GridRenderCellParams<
-        TPureCourse,
-        TPureCourse[E_COURSE_ENTITY_KEYS.ANNOTATION]
+        TCourse,
+        TCourse[E_COURSE_ENTITY_KEYS.ANNOTATION]
       >) => (isEmpty(value) ? <i>None</i> : value),
     },
     {
@@ -55,9 +56,7 @@ export const CoursesDataTable = (): JSX.Element => {
       flex: 1,
       valueFormatter: ({
         value,
-      }: GridValueFormatterParams<
-        TPureCourse[E_COURSE_ENTITY_KEYS.GUARANTOR]
-      >) =>
+      }: GridValueFormatterParams<TCourse[E_COURSE_ENTITY_KEYS.GUARANTOR]>) =>
         `${value[E_USER_ENTITY_KEYS.FIRST_NAME]} ${
           value[E_USER_ENTITY_KEYS.LAST_NAME]
         }`,
@@ -70,6 +69,8 @@ export const CoursesDataTable = (): JSX.Element => {
     },
   ];
 
+  const { customActions } = useCourseEnroll();
+
   return (
     <GenericDataGrid
       modalKey={E_MODALS.COURSE_FORM}
@@ -77,6 +78,7 @@ export const CoursesDataTable = (): JSX.Element => {
       columns={gridColumns}
       actions={['open-in-tab', 'duplicate', 'edit', 'delete']}
       caption={'Course'}
+      customActions={customActions}
       queryFunction={useCourses}
       permissionsFunction={useCoursePermissions}
       mutationsFunction={useCourseMutations}

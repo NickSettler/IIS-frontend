@@ -35,6 +35,7 @@ export enum E_USER_ENTITY_KEYS {
   FIRST_NAME = 'first_name',
   LAST_NAME = 'last_name',
   ROLES = 'roles',
+  TEACHER_REQUIREMENTS = 'teacher_requirements',
 }
 
 export type TApiUser = {
@@ -49,9 +50,5 @@ export type TUser = TApiUser & {
 };
 
 export type TApiUserWithRoles = TApiUser & {
-  [E_USER_ENTITY_KEYS.ROLES]: Array<TUserRoleWithPermissions>;
-};
-
-export type TUserWithRoles = TUser & {
   [E_USER_ENTITY_KEYS.ROLES]: Array<TUserRoleWithPermissions>;
 };

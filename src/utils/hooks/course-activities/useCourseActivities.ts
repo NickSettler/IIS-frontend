@@ -4,26 +4,29 @@ import {
   useQuery,
   UseQueryOptions,
 } from '@tanstack/react-query';
-import { E_COURSE_ENTITY_KEYS, TPureCourse } from '../../../api/course/types';
+import { E_COURSE_ENTITY_KEYS, TCourse } from '../../../api/course/types';
 import CourseActivityService from '../../../api/course-activities/course-activities.service';
-import { TApiCourseActivity } from '../../../api/course-activities/types';
+import { TCourseActivity } from '../../../api/course-activities/types';
+import { isUndefined } from 'lodash';
 
 export const useCourseActivities = (
-  id: TPureCourse[E_COURSE_ENTITY_KEYS.ID] | undefined,
+  id?: TCourse[E_COURSE_ENTITY_KEYS.ID],
   options?: Omit<
     UseQueryOptions<
-      Array<TApiCourseActivity>,
+      Array<TCourseActivity>,
       TApiError,
-      Array<TApiCourseActivity>,
+      Array<TCourseActivity>,
       Array<string>
     >,
     'initialData' | 'queryFn' | 'queryKey'
   > & { initialData?(): undefined },
-): UseQueryResult<Array<TApiCourseActivity>, TApiError> => {
+): UseQueryResult<Array<TCourseActivity>, TApiError> => {
   return useQuery(
-    ['course-activities - ', id ?? '__EMPTY'],
-    async (): Promise<Array<TApiCourseActivity>> =>
-      id ? CourseActivityService.getCourseActivities(id) : [],
+    ['course-activities - ', id ?? '__ALL'],
+    async (): Promise<Array<TCourseActivity>> =>
+      !isUndefined(id)
+        ? CourseActivityService.getCourseActivities(id)
+        : CourseActivityService.getCourseActivities(),
     options,
   );
 };

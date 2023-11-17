@@ -5,7 +5,7 @@ import {
   E_USER_ENTITY_KEYS,
 } from '../../../api/user/types';
 import { map, some } from 'lodash';
-import { E_COURSE_ENTITY_KEYS, TPureCourse } from '../../../api/course/types';
+import { E_COURSE_ENTITY_KEYS, TCourse } from '../../../api/course/types';
 
 export const courseManageRoles = [
   E_ROLE.ADMIN,
@@ -20,7 +20,7 @@ export type TUseCoursePermissions = {
 };
 
 export const useCoursePermissions = (
-  course?: TPureCourse,
+  course?: TCourse,
 ): TUseCoursePermissions => {
   const { currentUser } = useCurrentUser();
 

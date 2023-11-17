@@ -1,10 +1,14 @@
 import { JSX } from 'react';
-import { GridColDef } from '@mui/x-data-grid';
+import {
+  GridActionsCellItem,
+  GridActionsColDef,
+  GridColDef,
+} from '@mui/x-data-grid';
 import { isUndefined } from 'lodash';
 import { E_MODALS } from '../../../store/modals';
 import {
   E_COURSE_ACTIVITY_ENTITY_KEYS,
-  TApiCourseActivity,
+  TCourseActivity,
 } from '../../../api/course-activities/types';
 import { useNavigate, useParams } from 'react-router-dom';
 import { useCourseActivities } from '../../../utils/hooks/course-activities/useCourseActivities';
@@ -12,6 +16,9 @@ import { useCourseActivityMutations } from '../../../utils/hooks/course-activiti
 import { GenericDataGrid } from '../../data-grid/generic-datagrid';
 import { useCourseActivityModalHandlers } from '../../../utils/hooks/course-activities/useCourseActivityModalHandlers';
 import { useCourseActivityPermissions } from '../../../utils/hooks/course-activities/useCourseActivityPermissions';
+import { Tooltip } from '@mui/material';
+import { Event } from '@mui/icons-material';
+import { E_SCHEDULE_ITEM_ENTITY_KEYS } from '../../../api/schedule/types';
 
 export const CourseActivityTable = (): JSX.Element => {
   const { id } = useParams<'id'>();
@@ -21,7 +28,7 @@ export const CourseActivityTable = (): JSX.Element => {
 
   const useQueryFn = useCourseActivities.bind(this, id);
 
-  const gridColumns: Array<GridColDef<TApiCourseActivity>> = [
+  const gridColumns: Array<GridColDef<TCourseActivity>> = [
     {
       field: E_COURSE_ACTIVITY_ENTITY_KEYS.ID,
       headerName: 'ID',
@@ -40,6 +47,25 @@ export const CourseActivityTable = (): JSX.Element => {
     },
   ];
 
+  const customActions: GridActionsColDef<TCourseActivity> = {
+    field: 'actions',
+    type: 'actions',
+    headerName: 'Actions',
+    getActions: (params) => [
+      <Tooltip title={'Open schedule'} key={'open-schedule'}>
+        <GridActionsCellItem
+          label={'Open schedule'}
+          icon={<Event />}
+          onClick={() =>
+            navigate(
+              `/schedule?${E_SCHEDULE_ITEM_ENTITY_KEYS.COURSE_ACTIVITY}=${params.id}`,
+            )
+          }
+        />
+      </Tooltip>,
+    ],
+  };
+
   return (
     <GenericDataGrid
       modalKey={E_MODALS.ADD_NEW_ACTIVITY}
@@ -53,6 +79,7 @@ export const CourseActivityTable = (): JSX.Element => {
         // @ts-ignore
         [E_COURSE_ACTIVITY_ENTITY_KEYS.COURSE]: id ?? '',
       }}
+      customActions={customActions}
       permissionsFunction={useCourseActivityPermissions}
       mutationsFunction={useCourseActivityMutations}
       modalHandlersFunction={useCourseActivityModalHandlers}

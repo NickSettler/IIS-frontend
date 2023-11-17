@@ -14,22 +14,17 @@ export type TUserCreateData = Omit<TUser, E_USER_ENTITY_KEYS.ID> & {
 
 export type TUserUpdateData = Partial<TUserCreateData>;
 
-export type TUserAssignRoleMutationVariables = {
-  [E_USER_ENTITY_KEYS.ID]: TUser[E_USER_ENTITY_KEYS.ID];
-  role: E_ROLE;
-};
-
 export type TUserCreateMutationVariables = {
   data: TUserCreateData;
 };
 
 export type TUserUpdateMutationVariables = {
-  [E_USER_ENTITY_KEYS.ID]: TUser[E_USER_ENTITY_KEYS.ID];
+  [E_USER_ENTITY_KEYS.ID]: TApiUser[E_USER_ENTITY_KEYS.ID];
   data: TUserUpdateData;
 };
 
 export type TUserDeleteMutationVariables = {
-  [E_USER_ENTITY_KEYS.ID]: TUser[E_USER_ENTITY_KEYS.ID];
+  [E_USER_ENTITY_KEYS.ID]: TApiUser[E_USER_ENTITY_KEYS.ID];
 };
 
 export default class UserService extends BaseService {
@@ -59,7 +54,7 @@ export default class UserService extends BaseService {
   }
 
   public static async updateUser(
-    id: TUser[E_USER_ENTITY_KEYS.ID],
+    id: TApiUser[E_USER_ENTITY_KEYS.ID],
     data: TUserUpdateData,
   ): Promise<TApiUserWithRoles> {
     return await Api.instance.put<TUserUpdateData, TApiUserWithRoles>(
@@ -69,13 +64,13 @@ export default class UserService extends BaseService {
   }
 
   public static async deleteUser(
-    id: TUser[E_USER_ENTITY_KEYS.ID],
+    id: TApiUser[E_USER_ENTITY_KEYS.ID],
   ): Promise<void> {
     await Api.instance.delete(`${this.endpoint}/${id}`);
   }
 
   public static async assignRole(
-    id: TUser[E_USER_ENTITY_KEYS.ID],
+    id: TApiUser[E_USER_ENTITY_KEYS.ID],
     role: E_ROLE,
   ): Promise<TApiUserWithRoles> {
     return await Api.instance.post<Record<string, never>, TApiUserWithRoles>(

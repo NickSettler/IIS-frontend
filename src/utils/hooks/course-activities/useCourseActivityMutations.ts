@@ -3,7 +3,7 @@ import { TApiError } from '../../../api/base/types';
 import { toast } from 'react-hot-toast';
 import {
   E_COURSE_ACTIVITY_ENTITY_KEYS,
-  TApiCourseActivity,
+  TCourseActivity,
 } from '../../../api/course-activities/types';
 import CourseActivityService, {
   TCourseActivityCreateMutationVariables,
@@ -18,12 +18,12 @@ export type TUseCourseActivityMutationsParams = {
 
 export type TUseCourseActivityMutations = {
   createMutation: UseMutationResult<
-    TApiCourseActivity,
+    TCourseActivity,
     TApiError,
     TCourseActivityCreateMutationVariables
   >;
   updateMutation: UseMutationResult<
-    TApiCourseActivity,
+    TCourseActivity,
     TApiError,
     TCourseActivityUpdateMutationVariables
   >;
@@ -39,7 +39,7 @@ export const useCourseActivityMutations = ({
   closeFormModal,
 }: TUseCourseActivityMutationsParams): TUseCourseActivityMutations => {
   const createMutation = useMutation<
-    TApiCourseActivity,
+    TCourseActivity,
     TApiError,
     TCourseActivityCreateMutationVariables
   >({
@@ -61,7 +61,7 @@ export const useCourseActivityMutations = ({
   });
 
   const updateMutation = useMutation<
-    TApiCourseActivity,
+    TCourseActivity,
     TApiError,
     TCourseActivityUpdateMutationVariables
   >({

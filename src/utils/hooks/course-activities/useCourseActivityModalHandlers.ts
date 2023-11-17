@@ -4,7 +4,7 @@ import {
 } from '../../../api/course-activities/course-activities.service';
 import {
   E_COURSE_ACTIVITY_ENTITY_KEYS,
-  TApiCourseActivity,
+  TCourseActivity,
 } from '../../../api/course-activities/types';
 import { omit } from 'lodash';
 import { TUseCourseActivityMutations } from './useCourseActivityMutations';
@@ -16,7 +16,7 @@ export type TUseCourseActivityModalHandlersParams = Partial<
 export type TUseCourseActivityModalHandlers = {
   handleCreateSuccess(createData: TCourseActivityCreateData): void;
   handleUpdateSuccess(
-    id: TApiCourseActivity[E_COURSE_ACTIVITY_ENTITY_KEYS.ID],
+    id: TCourseActivity[E_COURSE_ACTIVITY_ENTITY_KEYS.ID],
     updateData: TCourseActivityUpdateData,
   ): void;
 };
@@ -34,7 +34,7 @@ export const useCourseActivityModalHandlers = ({
   };
 
   const handleUpdateSuccess = (
-    id: TApiCourseActivity[E_COURSE_ACTIVITY_ENTITY_KEYS.ID],
+    id: TCourseActivity[E_COURSE_ACTIVITY_ENTITY_KEYS.ID],
     updateData: TCourseActivityUpdateData,
   ) => {
     if (!updateMutation) return;

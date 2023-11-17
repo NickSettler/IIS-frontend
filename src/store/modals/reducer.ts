@@ -4,7 +4,7 @@ import { findLastIndex } from 'lodash';
 import { TUserCreateData } from '../../api/user/user.service';
 import { E_ROLE } from '../../api/user/types';
 import { E_MODAL_MODE } from '../../utils/modal/base-modal';
-import { E_COURSE_ENTITY_KEYS, TPureCourse } from '../../api/course/types';
+import { E_COURSE_ENTITY_KEYS, TCourse } from '../../api/course/types';
 import { TCourseCreateData } from '../../api/course/course.service';
 import {
   TCourseActivityCreateData,
@@ -17,7 +17,7 @@ import {
 import { E_CLASS_ENTITY_KEYS, TClass } from '../../api/class/types';
 import {
   E_COURSE_ACTIVITY_ENTITY_KEYS,
-  TApiCourseActivity,
+  TCourseActivity,
 } from '../../api/course-activities/types';
 import {
   TTeacherRequirementCreateData,
@@ -58,13 +58,13 @@ export type TModalMetaMap = {
   [E_MODALS.COURSE_FORM]:
     | {
         mode: E_MODAL_MODE.CREATE;
-        initialData?: Partial<TPureCourse>;
+        initialData?: Partial<TCourse>;
         onSuccess(data: TCourseCreateData): void;
       }
     | {
         mode: E_MODAL_MODE.UPDATE;
-        initialData: Partial<TPureCourse> & {
-          [E_COURSE_ENTITY_KEYS.ID]: TPureCourse[E_COURSE_ENTITY_KEYS.ID];
+        initialData: Partial<TCourse> & {
+          [E_COURSE_ENTITY_KEYS.ID]: TCourse[E_COURSE_ENTITY_KEYS.ID];
         };
         onSuccess(id: string, data: TCourseCreateData): void;
       };
@@ -84,19 +84,19 @@ export type TModalMetaMap = {
   [E_MODALS.ADD_NEW_ACTIVITY]:
     | {
         mode: E_MODAL_MODE.CREATE;
-        initialData: Partial<TApiCourseActivity> & {
-          [E_COURSE_ACTIVITY_ENTITY_KEYS.COURSE]: TPureCourse[E_COURSE_ENTITY_KEYS.ID];
+        initialData: Partial<TCourseActivity> & {
+          [E_COURSE_ACTIVITY_ENTITY_KEYS.COURSE]: TCourse[E_COURSE_ENTITY_KEYS.ID];
         };
         onSuccess(data: TCourseActivityCreateData): void;
       }
     | {
         mode: E_MODAL_MODE.UPDATE;
-        initialData: Partial<TApiCourseActivity> & {
-          [E_COURSE_ACTIVITY_ENTITY_KEYS.ID]: TApiCourseActivity[E_COURSE_ACTIVITY_ENTITY_KEYS.ID];
-          [E_COURSE_ACTIVITY_ENTITY_KEYS.COURSE]: TPureCourse[E_COURSE_ENTITY_KEYS.ID];
+        initialData: Partial<TCourseActivity> & {
+          [E_COURSE_ACTIVITY_ENTITY_KEYS.ID]: TCourseActivity[E_COURSE_ACTIVITY_ENTITY_KEYS.ID];
+          [E_COURSE_ACTIVITY_ENTITY_KEYS.COURSE]: TCourse[E_COURSE_ENTITY_KEYS.ID];
         };
         onSuccess(
-          id: TApiCourseActivity[E_COURSE_ACTIVITY_ENTITY_KEYS.ID],
+          id: TCourseActivity[E_COURSE_ACTIVITY_ENTITY_KEYS.ID],
           data: TCourseActivityUpdateData,
         ): void;
       };
