@@ -1,4 +1,4 @@
-import { JSX, useEffect, useMemo, useState } from 'react';
+import React, { JSX, useEffect, useMemo, useState } from 'react';
 import {
   E_SCHEDULE_ITEM_ENTITY_KEYS,
   TScheduleItem,
@@ -173,8 +173,6 @@ export const ScheduleCalendar = ({
     });
   };
 
-  const Comp = () => <>asd</>;
-
   return (
     <Scheduler data={itemsState} firstDayOfWeek={1}>
       <ViewState
@@ -187,18 +185,20 @@ export const ScheduleCalendar = ({
         <EditRecurrenceMenu layoutComponent={SchedulerRecurrenceMenu} />
       )}
 
-      <WeekView startDayHour={6} endDayHour={23} />
+      <WeekView startDayHour={6} endDayHour={23} excludedDays={[0, 6]} />
 
       <Toolbar />
       <DateNavigator />
       <TodayButton />
 
-      <Appointments />
+      <Appointments
+      // appointmentContentComponent={ScheduleAppointmentContent}
+      // appointmentComponent={ScheduleAppointment}
+      />
       <AppointmentTooltip
         showCloseButton
         showOpenButton={canUpdate}
         showDeleteButton={canDelete}
-        headerComponent={Comp}
       />
       {canManage && (
         <AppointmentForm
