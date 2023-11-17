@@ -183,7 +183,9 @@ export const ScheduleCalendar = ({
       />
 
       {canManage && <EditingState onCommitChanges={handleCommitChanges} />}
-      {canManage && <EditRecurrenceMenu />}
+      {canManage && (
+        <EditRecurrenceMenu layoutComponent={SchedulerRecurrenceMenu} />
+      )}
 
       <WeekView startDayHour={6} endDayHour={23} />
 
