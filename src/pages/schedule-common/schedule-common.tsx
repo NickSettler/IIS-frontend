@@ -63,32 +63,10 @@ export const ScheduleCommon = (): JSX.Element => {
     });
   }, [data, filter]);
 
-  const { createMutation, updateMutation, deleteMutation } =
-    useScheduleItemMutations({
-      refetch,
-    });
-
-  const handleCreate = (variables: TScheduleItemCreateMutationVariables) => {
-    createMutation.mutate(variables);
-  };
-
-  const handleUpdate = (variables: TScheduleItemUpdateMutationVariables) => {
-    updateMutation.mutate(variables);
-  };
-
-  const handleDelete = (variables: TScheduleItemDeleteMutationVariables) => {
-    deleteMutation.mutate(variables);
-  };
-
   return (
     <Stack sx={{ height: '100%' }}>
       <ScheduleFilters onChange={handleFilterChange} />
-      <ScheduleCalendar
-        items={filteredData}
-        handleCreate={handleCreate}
-        handleUpdate={handleUpdate}
-        handleDelete={handleDelete}
-      />
+      <ScheduleCalendar items={filteredData} refetch={refetch} />
     </Stack>
   );
 };

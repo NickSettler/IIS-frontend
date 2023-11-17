@@ -26,11 +26,6 @@ import { useClassInstances } from '../../utils/hooks/class/useClassInstances';
 import { useCourseActivityInstances } from '../../utils/hooks/course-activities/useCourseActivityInstances';
 import { isAppointmentModel } from '../../utils/schedule/isAppointmentModel';
 import { generateScheduleItemID } from '../../utils/schedule/generateScheduleItemID';
-import {
-  TScheduleItemCreateMutationVariables,
-  TScheduleItemDeleteMutationVariables,
-  TScheduleItemUpdateMutationVariables,
-} from '../../api/schedule/schedule.service';
 import { useCurrentScheduleDate } from '../../utils/hooks/schedule/useCurrentScheduleDate';
 import {
   convertAppointmentToScheduleBody,
@@ -41,42 +36,23 @@ import { useTeacherInstances } from '../../utils/hooks/user/useTeacherInstances'
 import { toast } from 'react-hot-toast';
 import { ScheduleDateEditor } from './schedule-date-editor';
 import { ScheduleResourceEditor } from './schedule-resource-editor';
-
-// export enum E_SCHEDULE_CALENDAR_MODE {
-//   GENERAL = 'GENERAL',
-//   TEACHER = 'TEACHER',
-//   COURSE = 'COURSE',
-//   COURSE_ACTIVITY = 'COURSE_ACTIVITY',
-//   CLASS = 'CLASS',
-// }
-
-// export type TScheduleCalendarProps<
-//   Mode extends E_SCHEDULE_CALENDAR_MODE = E_SCHEDULE_CALENDAR_MODE,
-//   Entity extends Record<PropertyKey, any> = Record<PropertyKey, any>,
-//   PrimaryKey extends keyof Entity = keyof Entity,
-// > = Mode extends E_SCHEDULE_CALENDAR_MODE.GENERAL
-//   ? {
-//       mode: E_SCHEDULE_CALENDAR_MODE.GENERAL;
-//       id: never;
-//     }
-//   : {
-//       mode: Mode;
-//       id: Entity[PrimaryKey];
-//     };
+import { useScheduleItemMutations } from '../../utils/hooks/schedule/useScheduleItemMutations';
+import { SchedulerRecurrenceMenu } from './scheduler-recurrence-menu';
 
 export type TScheduleCalendarProps = {
   items: Array<TScheduleItem>;
-  handleCreate(variables: TScheduleItemCreateMutationVariables): void;
-  handleUpdate(variables: TScheduleItemUpdateMutationVariables): void;
-  handleDelete(variables: TScheduleItemDeleteMutationVariables): void;
+  refetch(): Promise<unknown>;
 };
 
 export const ScheduleCalendar = ({
   items,
-  handleCreate,
-  handleUpdate,
-  handleDelete,
+  refetch,
 }: TScheduleCalendarProps): JSX.Element => {
+  const { createMutation, updateMutation, deleteMutation } =
+    useScheduleItemMutations({
+      refetch,
+    });
+
   const { currentScheduleDate, handleCurrentScheduleDateChange } =
     useCurrentScheduleDate();
 
@@ -122,23 +98,14 @@ export const ScheduleCalendar = ({
     changed,
     deleted,
   }: ChangeSet) => {
-    if (added && isAppointmentModel(added)) {
-      const startingAddedId = generateScheduleItemID(itemsState);
+    if (deleted) {
+      await deleteMutation
+        .mutateAsync({
+          [E_SCHEDULE_ITEM_ENTITY_KEYS.ID]: `${deleted}`,
+        })
+        .catch(() => {});
 
-      const createData = await convertAppointmentToScheduleBody(
-        added,
-        'create',
-      ).catch((err: Error) => {
-        toast.error(err.message);
-      });
-
-      if (!createData) return;
-
-      handleCreate({
-        data: createData,
-      });
-
-      setItemsState([...itemsState, { id: startingAddedId, ...added }]);
+      setItemsState(itemsState.filter((item) => item.id !== deleted));
     }
 
     if (changed) {
@@ -154,10 +121,12 @@ export const ScheduleCalendar = ({
 
       if (!updateData) return;
 
-      handleUpdate({
-        [E_SCHEDULE_ITEM_ENTITY_KEYS.ID]: `${key}`,
-        data: updateData,
-      });
+      await updateMutation
+        .mutateAsync({
+          [E_SCHEDULE_ITEM_ENTITY_KEYS.ID]: `${key}`,
+          data: updateData,
+        })
+        .catch(() => {});
 
       const index = itemsState.findIndex((item) => item.id === key);
 
@@ -168,13 +137,28 @@ export const ScheduleCalendar = ({
       ]);
     }
 
-    if (deleted) {
-      handleDelete({
-        [E_SCHEDULE_ITEM_ENTITY_KEYS.ID]: `${deleted}`,
+    if (added && isAppointmentModel(added)) {
+      const startingAddedId = generateScheduleItemID(itemsState);
+
+      const createData = await convertAppointmentToScheduleBody(
+        added,
+        'create',
+      ).catch((err: Error) => {
+        toast.error(err.message);
       });
 
-      setItemsState(itemsState.filter((item) => item.id !== deleted));
+      if (!createData) return;
+
+      await createMutation
+        .mutateAsync({
+          data: createData,
+        })
+        .catch(() => {});
+
+      setItemsState([...itemsState, { id: startingAddedId, ...added }]);
     }
+
+    await refetch();
   };
 
   const canManage = useMemo(
