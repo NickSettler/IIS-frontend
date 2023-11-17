@@ -267,21 +267,25 @@ export const CourseInfo = (): JSX.Element => {
             </Paper>
           </Grid>
           <Grid container item xs={6} direction={'column'} rowGap={1}>
-            <Typography variant={'h6'}>Students</Typography>
-            <Paper variant={'outlined'}>
-              <List dense disablePadding>
-                {students.map((student) => (
-                  <ListItem key={student[E_USER_ENTITY_KEYS.ID]}>
-                    <ListItemText
-                      primary={`${student[E_USER_ENTITY_KEYS.FIRST_NAME]} ${
-                        student[E_USER_ENTITY_KEYS.LAST_NAME]
-                      }`}
-                      secondary={student[E_USER_ENTITY_KEYS.USERNAME]}
-                    />
-                  </ListItem>
-                ))}
-              </List>
-            </Paper>
+            {students.length > 0 && (
+              <>
+                <Typography variant={'h6'}>Students</Typography>
+                <Paper variant={'outlined'}>
+                  <List dense disablePadding>
+                    {students.map((student) => (
+                      <ListItem key={student[E_USER_ENTITY_KEYS.ID]}>
+                        <ListItemText
+                          primary={`${student[E_USER_ENTITY_KEYS.FIRST_NAME]} ${
+                            student[E_USER_ENTITY_KEYS.LAST_NAME]
+                          }`}
+                          secondary={student[E_USER_ENTITY_KEYS.USERNAME]}
+                        />
+                      </ListItem>
+                    ))}
+                  </List>
+                </Paper>
+              </>
+            )}
           </Grid>
           <Grid item xs={6}>
             <CourseActivityTable />
