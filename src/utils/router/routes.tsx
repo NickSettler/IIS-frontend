@@ -1,4 +1,4 @@
-import { RouteObject, Navigate } from 'react-router-dom';
+import { Navigate, RouteObject } from 'react-router-dom';
 import LogInPage from '../../pages/login';
 import SignUpPage from '../../pages/register';
 import { UsersDataTable } from '../../components/users/data-table';
@@ -33,6 +33,13 @@ export const appRoutes: Array<TAppRoute> = [
     path: '/schedule',
     label: 'Common Schedule',
     element: <ScheduleCommon />,
+    roles: [
+      E_ROLE.STUDENT,
+      E_ROLE.TEACHER,
+      E_ROLE.SCHEDULER,
+      E_ROLE.GUARANTOR,
+      E_ROLE.ADMIN,
+    ],
     noOverflow: true,
     noPadding: true,
   },
@@ -70,11 +77,6 @@ export const appRoutes: Array<TAppRoute> = [
     label: 'Classes',
     roles: [...classManageRoles],
     element: <ClassesDataTable />,
-  },
-  {
-    path: '/schedule/:mode/:id',
-    label: 'Schedule',
-    showInNav: false,
   },
   {
     path: '/profile',
