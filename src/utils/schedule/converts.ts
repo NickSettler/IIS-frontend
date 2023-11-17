@@ -67,7 +67,17 @@ export const convertAppointmentToScheduleBody = async <
     Mode extends 'create' ? TScheduleItemCreateData : TScheduleItemUpdateData
   >((resolve, reject) => {
     const startDate = dayjs(appointment.startDate);
-    const endDate = dayjs(appointment.endDate);
+    let endDate = dayjs(appointment.endDate);
+    const startUTCOffset = startDate.utcOffset();
+    const endUTCOffset = endDate.utcOffset();
+    const offsetDiff = Math.abs(startUTCOffset - endUTCOffset);
+    if (startUTCOffset > endUTCOffset) {
+      endDate = endDate.subtract(offsetDiff, 'minute');
+    }
+
+    if (endUTCOffset > startUTCOffset) {
+      endDate = endDate.add(offsetDiff, 'minute');
+    }
 
     let startDateString: string;
     try {
