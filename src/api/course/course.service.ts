@@ -1,6 +1,12 @@
 import { BaseService } from '../base/service';
 import Api from '../base/api';
-import { E_COURSE_ENTITY_KEYS, TCourseWithStudents, TCourse } from './types';
+import {
+  E_COURSE_ENTITY_KEYS,
+  TCourseWithStudents,
+  TCourse,
+  TCourseStudent,
+  E_COURSE_STUDENT_ENTITY_KEYS,
+} from './types';
 
 export type TCourseCreateData = Omit<
   TCourse,
@@ -31,6 +37,20 @@ export type TCourseUpdateMutationVariables = {
 
 export type TCourseDeleteMutationVariables = {
   [E_COURSE_ENTITY_KEYS.ID]: TCourse[E_COURSE_ENTITY_KEYS.ID];
+};
+
+export type TCourseStudentCreateData = {
+  [E_COURSE_STUDENT_ENTITY_KEYS.COURSE]: TCourseStudent[E_COURSE_STUDENT_ENTITY_KEYS.COURSE_ID];
+  [E_COURSE_STUDENT_ENTITY_KEYS.STUDENT]: TCourseStudent[E_COURSE_STUDENT_ENTITY_KEYS.STUDENT_ID];
+};
+
+export type TCourseStudentCreateMutationVariables = {
+  data: TCourseStudentCreateData;
+};
+
+export type TCourseStudentDeleteMutationVariables = {
+  [E_COURSE_STUDENT_ENTITY_KEYS.COURSE]: TCourseStudent[E_COURSE_STUDENT_ENTITY_KEYS.COURSE_ID];
+  [E_COURSE_STUDENT_ENTITY_KEYS.STUDENT]: TCourseStudent[E_COURSE_STUDENT_ENTITY_KEYS.STUDENT_ID];
 };
 
 export default class CourseService extends BaseService {
@@ -69,5 +89,27 @@ export default class CourseService extends BaseService {
     id: TCourse[E_COURSE_ENTITY_KEYS.ID],
   ): Promise<void> {
     await Api.instance.delete<void>(`${this.endpoint}/${id}`);
+  }
+
+  public static async getCourseStudents() {
+    return await Api.instance.get<Array<TCourseStudent>>('/course/students');
+  }
+
+  public static async createCourseStudent(
+    data: TCourseStudentCreateData,
+  ): Promise<TCourseStudent> {
+    return await Api.instance.post<TCourseStudentCreateData, TCourseStudent>(
+      '/course/students',
+      data,
+    );
+  }
+
+  public static async deleteCourseStudent(
+    courseID: TCourseStudent[E_COURSE_STUDENT_ENTITY_KEYS.COURSE_ID],
+    studentID: TCourseStudent[E_COURSE_STUDENT_ENTITY_KEYS.STUDENT_ID],
+  ): Promise<void> {
+    await Api.instance.delete<void>(
+      `/course/students/${studentID}/${courseID}`,
+    );
   }
 }

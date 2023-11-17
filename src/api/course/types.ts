@@ -24,3 +24,17 @@ export type TCourse = {
 export type TCourseWithStudents = TCourse & {
   [E_COURSE_ENTITY_KEYS.STUDENTS]: Array<TApiUser>;
 };
+
+export enum E_COURSE_STUDENT_ENTITY_KEYS {
+  COURSE_ID = 'course_id',
+  STUDENT_ID = 'student_id',
+  COURSE = 'course',
+  STUDENT = 'student',
+}
+
+export type TCourseStudent = {
+  [E_COURSE_STUDENT_ENTITY_KEYS.COURSE_ID]: string;
+  [E_COURSE_STUDENT_ENTITY_KEYS.STUDENT_ID]: string;
+  [E_COURSE_STUDENT_ENTITY_KEYS.COURSE]: TCourse;
+  [E_COURSE_STUDENT_ENTITY_KEYS.STUDENT]: TApiUser;
+};

@@ -14,6 +14,7 @@ import { useCourseModalHandlers } from '../../../utils/hooks/course/useCourseMod
 import { useCoursePermissions } from '../../../utils/hooks/course/useCoursePermissions';
 import { GenericDataGrid } from '../../data-grid/generic-datagrid';
 import { useCourses } from '../../../utils/hooks/course/useCourses';
+import { useCourseEnroll } from '../../../utils/hooks/course/useCourseEnroll';
 
 export const CoursesDataTable = (): JSX.Element => {
   const gridColumns: Array<GridColDef<TCourse>> = [
@@ -68,6 +69,8 @@ export const CoursesDataTable = (): JSX.Element => {
     },
   ];
 
+  const { customActions } = useCourseEnroll();
+
   return (
     <GenericDataGrid
       modalKey={E_MODALS.COURSE_FORM}
@@ -75,6 +78,7 @@ export const CoursesDataTable = (): JSX.Element => {
       columns={gridColumns}
       actions={['open-in-tab', 'duplicate', 'edit', 'delete']}
       caption={'Course'}
+      customActions={customActions}
       queryFunction={useCourses}
       permissionsFunction={useCoursePermissions}
       mutationsFunction={useCourseMutations}
