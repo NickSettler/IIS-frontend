@@ -11,17 +11,13 @@ import {
 } from '@mui/material';
 import { CopyAll, VisibilityOff } from '@mui/icons-material';
 import { toast } from 'react-hot-toast';
-import {
-  E_ROLE,
-  E_ROLE_ENTITY_KEYS,
-  E_USER_ENTITY_KEYS,
-  TApiUserWithRoles,
-} from '../../api/user/types';
+import { E_ROLE, TApiUserWithRoles } from '../../api/user/types';
 import Grid from '@mui/material/Grid';
 import { ProfileTeacherRequirements } from './teacher-requirements';
 import { some } from 'lodash';
 import { useLocalStorage } from 'usehooks-ts';
 import { E_LOCAL_STORAGE_KEYS } from '../../utils/local-storage';
+import { useLocalUserInfo } from '../../utils/hooks/local-storage/useLocalUserInfo';
 
 export const ProfileUserInfo = (): JSX.Element => {
   const { data, isLoading } = useMe();
@@ -35,19 +31,7 @@ export const ProfileUserInfo = (): JSX.Element => {
     if (data) setUser(data);
   }, [data, setUser]);
 
-  const id = useMemo(() => user?.[E_USER_ENTITY_KEYS.ID] ?? '', [user]);
-  const firstName = useMemo(
-    () => user?.[E_USER_ENTITY_KEYS.FIRST_NAME] ?? '',
-    [user],
-  );
-  const lastName = useMemo(
-    () => user?.[E_USER_ENTITY_KEYS.LAST_NAME] ?? '',
-    [user],
-  );
-  const username = useMemo(
-    () => user?.[E_USER_ENTITY_KEYS.USERNAME] ?? '',
-    [user],
-  );
+  const { id, firstName, lastName, username, roles } = useLocalUserInfo();
 
   const handleIDCopy = () => {
     navigator.clipboard
@@ -60,12 +44,10 @@ export const ProfileUserInfo = (): JSX.Element => {
       });
   };
 
-  const isTeacher = useMemo(() => {
-    return some(
-      user?.[E_USER_ENTITY_KEYS.ROLES],
-      (role) => role[E_ROLE_ENTITY_KEYS.NAME] === E_ROLE.TEACHER,
-    );
-  }, [user]);
+  const isTeacher = useMemo(
+    () => some(roles, (role) => role === E_ROLE.TEACHER),
+    [roles],
+  );
 
   if (!user) return <Navigate to={'/'} />;
 
