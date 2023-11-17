@@ -18,15 +18,17 @@ export type TUseCourseEnroll = {
 };
 
 export const useCourseEnroll = (): TUseCourseEnroll => {
-  const { data, refetch } = useCourseStudents();
+  const { id, roles } = useLocalUserInfo();
+
+  const isStudent = useMemo(() => roles.includes(E_ROLE.STUDENT), [roles]);
+
+  const { data, refetch } = useCourseStudents({
+    enabled: isStudent,
+  });
 
   const { createMutation, deleteMutation } = useCourseStudentMutations({
     refetch,
   });
-
-  const { id, roles } = useLocalUserInfo();
-
-  const isStudent = useMemo(() => roles.includes(E_ROLE.STUDENT), [roles]);
 
   const isVisibleMenuAction = useCallback(
     (courseID: string, action: 'enroll' | 'unroll') => {
