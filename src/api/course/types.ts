@@ -38,3 +38,8 @@ export type TCourseStudent = {
   [E_COURSE_STUDENT_ENTITY_KEYS.COURSE]: TCourse;
   [E_COURSE_STUDENT_ENTITY_KEYS.STUDENT]: TApiUser;
 };
+
+export type TPublicCourse = Omit<
+  TCourse,
+  E_COURSE_ENTITY_KEYS.GUARANTOR | E_COURSE_ENTITY_KEYS.TEACHERS
+>;

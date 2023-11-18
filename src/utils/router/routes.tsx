@@ -11,6 +11,7 @@ import { classManageRoles } from '../hooks/class/useClassPermissions';
 import { ProfileUserInfo } from '../../components/profile/user-info';
 import { MarkdownHelp } from '../../pages/help/markdown-help';
 import { ScheduleCommon } from '../../pages/schedule-common/schedule-common';
+import { PublicCoursesDataTable } from '../../components/courses/public-data-table';
 
 export type TAppRoute = RouteObject & {
   path: string;
@@ -52,6 +53,11 @@ export const appRoutes: Array<TAppRoute> = [
     path: '/register',
     label: 'Register',
     element: <SignUpPage />,
+  },
+  {
+    path: '/courses/public',
+    label: 'Courses',
+    element: <PublicCoursesDataTable />,
   },
   {
     path: '/users',
