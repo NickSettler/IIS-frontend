@@ -55,8 +55,11 @@ const App = (): ReactElement => {
           user
             ? userHasRoles(user, roles ?? null) &&
               path !== '/login' &&
-              path !== '/register'
-            : path === '/login' || path === '/register',
+              path !== '/register' &&
+              path !== '/courses/public'
+            : path === '/login' ||
+              path === '/register' ||
+              path === '/courses/public',
         ),
         ({ showInNav }) => showInNav ?? true,
       ),

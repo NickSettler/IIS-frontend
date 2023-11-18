@@ -6,6 +6,7 @@ import {
   TCourse,
   TCourseStudent,
   E_COURSE_STUDENT_ENTITY_KEYS,
+  TPublicCourse,
 } from './types';
 
 export type TCourseCreateData = Omit<
@@ -65,6 +66,12 @@ export default class CourseService extends BaseService {
   ): Promise<TCourseWithStudents> {
     return await Api.instance.get<TCourseWithStudents>(
       `${this.endpoint}/${id}`,
+    );
+  }
+
+  public static async getPublicCourses(): Promise<Array<TPublicCourse>> {
+    return await Api.instance.get<Array<TPublicCourse>>(
+      `${this.endpoint}/public`,
     );
   }
 
