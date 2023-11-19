@@ -34,6 +34,7 @@ import TextField from '@mui/material/TextField';
 import Scanner from '../../utils/qdl/scanner';
 import Parser from '../../utils/qdl/parser';
 import Executor from '../../utils/qdl/executor';
+import { NoRowsOverlay } from './no-rows-overlay';
 
 export type TGenericMutationsFunctionParams = {
   refetch(): Promise<unknown>;
@@ -348,7 +349,9 @@ export const GenericDataGrid = <
           onRowDoubleClick: (params) =>
             handleOpenInTabAction(params.row[primaryKey]),
         })}
+        sx={{ '--DataGrid-overlayHeight': '300px' }}
         slots={{
+          noRowsOverlay: NoRowsOverlay,
           loadingOverlay: LinearProgress,
           toolbar: () => (
             <GenericToolbar
