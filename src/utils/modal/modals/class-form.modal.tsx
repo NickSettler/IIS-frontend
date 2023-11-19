@@ -98,7 +98,7 @@ const ClassFormModal = ({
       const id = initialData[E_CLASS_ENTITY_KEYS.ID];
 
       onSuccess(id, {
-        ...data,
+        ...omit(data, E_CLASS_ENTITY_KEYS.ID),
         [E_CLASS_ENTITY_KEYS.CAPACITY]: parseInt(
           data[E_CLASS_ENTITY_KEYS.CAPACITY],
         ),
