@@ -6,14 +6,7 @@ import ListItemButton from '@mui/material/ListItemButton';
 import ListItemText from '@mui/material/ListItemText';
 import './App.css';
 import { appRoutes, TAppRoute } from './utils/router/routes';
-import {
-  AppBar,
-  CssBaseline,
-  Drawer,
-  ListItem,
-  Toolbar,
-  Typography,
-} from '@mui/material';
+import { CssBaseline, Drawer, ListItem, Toolbar } from '@mui/material';
 import { Link } from './utils/router/link';
 import { E_LOCAL_STORAGE_KEYS } from './utils/local-storage';
 import ProtectedRoute from './utils/router/protected-route';
@@ -23,6 +16,7 @@ import { filter } from 'lodash';
 import { userHasRoles } from './utils/auth/roles';
 import { toast, Toaster } from 'react-hot-toast';
 import { useCurrentRoute } from './utils/hooks/router/useCurrentRoute';
+import { AppBar } from './components/common/appbar';
 
 const App = (): ReactElement => {
   const [, setAccessToken] = useLocalStorage<string | null>(
@@ -81,23 +75,7 @@ const App = (): ReactElement => {
   return (
     <Box sx={{ display: 'flex' }}>
       <CssBaseline />
-      <AppBar
-        position='fixed'
-        sx={{ zIndex: (theme) => theme.zIndex.drawer + 1 }}
-      >
-        <Toolbar>
-          <Typography
-            component={Link}
-            to={'/'}
-            variant='h6'
-            noWrap
-            color={'inherit'}
-            style={{ textDecoration: 'none' }}
-          >
-            Schedule Planner {currentRoute ? `- ${currentRoute.label}` : ''}
-          </Typography>
-        </Toolbar>
-      </AppBar>
+      <AppBar />
       <Drawer
         variant='permanent'
         sx={{
