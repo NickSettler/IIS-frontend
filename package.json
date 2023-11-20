@@ -1,6 +1,6 @@
 {
   "name": "iis-frontend",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "private": true,
   "dependencies": {
     "@devexpress/dx-react-core": "^4.0.6",
