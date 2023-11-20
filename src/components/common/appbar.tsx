@@ -1,18 +1,20 @@
 import React, { ChangeEvent, JSX, useMemo, useState } from 'react';
 import {
-  Toolbar,
-  Typography,
-  AppBar as MUIAppBar,
-  styled,
   alpha,
+  AppBar as MUIAppBar,
+  IconButton,
   InputBase,
   Stack,
-  IconButton,
+  styled,
+  Toolbar,
+  Typography,
 } from '@mui/material';
 import { Link } from '../../utils/router/link';
 import { useCurrentRoute } from '../../utils/hooks/router/useCurrentRoute';
-import { Settings, Search as SearchIcon } from '@mui/icons-material';
+import { Search as SearchIcon, Settings } from '@mui/icons-material';
 import { debounce } from 'lodash';
+import { useModal } from '../../utils/hooks/modal/useModal';
+import { E_MODALS } from '../../store/modals';
 
 const Search = styled('div')(({ theme }) => ({
   position: 'relative',
@@ -57,6 +59,8 @@ const StyledInputBase = styled(InputBase)(({ theme }) => ({
 }));
 
 export const AppBar = (): JSX.Element => {
+  const { onOpen: openSettingsModal } = useModal(E_MODALS.SETTINGS);
+
   const currentRoute = useCurrentRoute();
 
   const [searchQuery, setSearchQuery] = useState<string>('');
@@ -70,6 +74,14 @@ export const AppBar = (): JSX.Element => {
 
   const handleSearchChange = (event: ChangeEvent<HTMLInputElement>) => {
     setSearchQuery(event.target.value);
+  };
+
+  const handleSettingsClick = () => {
+    openSettingsModal({
+      onSuccess() {
+        //
+      },
+    });
   };
 
   return (
@@ -108,7 +120,7 @@ export const AppBar = (): JSX.Element => {
           </Search>
         </Stack>
         <Stack direction={'row'} spacing={1}>
-          <IconButton color={'inherit'} onClick={() => {}}>
+          <IconButton color={'inherit'} onClick={handleSettingsClick}>
             <Settings />
           </IconButton>
         </Stack>

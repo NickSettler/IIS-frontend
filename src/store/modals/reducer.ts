@@ -35,6 +35,7 @@ export enum E_MODALS {
   CLASS_FORM = 'class-form.modal',
   ADD_NEW_ACTIVITY = 'add-new-activity.modal',
   TEACHER_REQUIREMENT_FORM = 'teacher-requirement-form.modal',
+  SETTINGS = 'settings.modal',
 }
 
 export type TModalMapItem = {
@@ -116,6 +117,9 @@ export type TModalMetaMap = {
           data: TTeacherRequirementUpdateData,
         ): void;
       };
+  [E_MODALS.SETTINGS]: {
+    onSuccess(): void;
+  };
 };
 
 export type TModalState = {
