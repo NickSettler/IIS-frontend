@@ -181,7 +181,11 @@ const ClassFormModal = ({
   return (
     <BaseModal
       show
-      title={mode === E_MODAL_MODE.CREATE ? 'Add new class' : 'Edit class'}
+      title={
+        mode === E_MODAL_MODE.CREATE
+          ? 'Add new requirement'
+          : 'Edit requirement'
+      }
       onClose={handleModalClose}
       onSubmit={handleSave}
       footer={footer()}
