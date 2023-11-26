@@ -10,7 +10,12 @@ import {
   Stack,
   TextField,
 } from '@mui/material';
-import { E_USER_ENTITY_KEYS, TApiUser } from '../../../api/user/types';
+import {
+  E_ROLE,
+  E_ROLE_ENTITY_KEYS,
+  E_USER_ENTITY_KEYS,
+  TApiUser,
+} from '../../../api/user/types';
 import {
   FormEvent,
   JSX,
@@ -53,6 +58,26 @@ const CourseFormModal = ({
     queryKey: ['getUsers'],
     queryFn: UserService.getUsers.bind(UserService),
   });
+
+  const guarantorData = useMemo(
+    () =>
+      filter(usersData, (user) =>
+        user[E_USER_ENTITY_KEYS.ROLES].some(
+          (role) => role[E_ROLE_ENTITY_KEYS.NAME] === E_ROLE.GUARANTOR,
+        ),
+      ),
+    [usersData],
+  );
+
+  const teachersData = useMemo(
+    () =>
+      filter(usersData, (user) =>
+        user[E_USER_ENTITY_KEYS.ROLES].some(
+          (role) => role[E_ROLE_ENTITY_KEYS.NAME] === E_ROLE.TEACHER,
+        ),
+      ),
+    [usersData],
+  );
 
   const [data, setData] = useState<TCourseFormModalData>({
     [E_COURSE_ENTITY_KEYS.ABBR]: '',
@@ -250,7 +275,7 @@ const CourseFormModal = ({
             value={data[E_COURSE_ENTITY_KEYS.GUARANTOR]}
             onChange={handleGuarantorChange}
           >
-            {usersData?.map((user) => (
+            {guarantorData.map((user) => (
               <MenuItem
                 key={user[E_USER_ENTITY_KEYS.ID]}
                 value={user[E_USER_ENTITY_KEYS.ID]}
@@ -283,7 +308,7 @@ const CourseFormModal = ({
           }
           disableCloseOnSelect
           filterOptions={filterFunc}
-          options={usersData ?? []}
+          options={teachersData}
           getOptionLabel={(option) =>
             `${option[E_USER_ENTITY_KEYS.FIRST_NAME]} ${
               option[E_USER_ENTITY_KEYS.LAST_NAME]
