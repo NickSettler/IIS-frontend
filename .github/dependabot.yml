@@ -7,8 +7,6 @@ updates:
     directory: "/"
     schedule:
       interval: "daily"
-    assignees:
-      - "NickSettler"
     labels:
       - "build"
     open-pull-requests-limit: 10
