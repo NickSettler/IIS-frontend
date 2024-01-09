@@ -7270,10 +7270,10 @@ ms@2.1.3, ms@^2.1.1:
   resolved "https://registry.yarnpkg.com/ms/-/ms-2.1.3.tgz#574c8138ce1d2b5861f0b44579dbadd60c6615b2"
   integrity sha512-6FlzubTLZG3J2a/NVCAleEhjzq5oxgHyaCU9yYXvcLsvoVaHJq/s5xXI6/XXP6tz7R9xAOtHnSO/tXtF3WRTlA==
 
-mui-markdown@^1.1.12:
-  version "1.1.12"
-  resolved "https://registry.yarnpkg.com/mui-markdown/-/mui-markdown-1.1.12.tgz#cf990f844e0e11cf7eaf47c8b96e89464339b126"
-  integrity sha512-Dlo2hj7j5IouKFnyIaRfFE4/gb76tGp7dZ2tsVGf17Ry+fq9Jd+GZROeysW0VMVygH91WfRZwOdL8hUYSugS/Q==
+mui-markdown@^1.1.13:
+  version "1.1.13"
+  resolved "https://registry.yarnpkg.com/mui-markdown/-/mui-markdown-1.1.13.tgz#749b3c77379924985c016c907dca1e5423bf9590"
+  integrity sha512-Hlfl89ZGclu1BupsL663ayz+mzEPVNwRf13z7vPWru10Q4IqC0F9K7ZBOkVhvQry1rjFpjr1er/etRqH7HYXuA==
   optionalDependencies:
     prism-react-renderer "^2.0.3"
 
