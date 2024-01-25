@@ -14,7 +14,7 @@
     "@mui/x-date-pickers": "^6.19.0",
     "@reduxjs/toolkit": "^2.1.0",
     "@tanstack/react-query": "^4.36.1",
-    "axios": "^1.6.5",
+    "axios": "^1.6.6",
     "dayjs": "^1.11.10",
     "lodash": "^4.17.21",
     "markdown-to-jsx": "^7.4.0",
