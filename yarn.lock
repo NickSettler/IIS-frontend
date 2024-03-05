@@ -1297,17 +1297,17 @@
     clsx "^1.0.4"
     prop-types "^15.7.2"
 
-"@devexpress/dx-react-scheduler@^4.0.7":
-  version "4.0.7"
-  resolved "https://registry.yarnpkg.com/@devexpress/dx-react-scheduler/-/dx-react-scheduler-4.0.7.tgz#a990b9bcbc317f99cfb3365b19763cf40259a370"
-  integrity sha512-RvpAxm+QjS26MA2/l7tU2sqDX11W28IoQLsaAWhuqMDiiHEtULb1EHp3zK1pUu0XXVYV9Ir2mx4HjMikmRf1Jg==
+"@devexpress/dx-react-scheduler@^4.0.8":
+  version "4.0.8"
+  resolved "https://registry.yarnpkg.com/@devexpress/dx-react-scheduler/-/dx-react-scheduler-4.0.8.tgz#00c3566c880378c900c114f02c30c1348a53f1d9"
+  integrity sha512-Pwx6LUZemkNOvnPGX5ozgxihEioPLJXIStqK3timImQE3dRxZWKoPX1n7oLNbHj9xDxWUxuRZoXMgHCsQ+B7eg==
   dependencies:
-    "@devexpress/dx-scheduler-core" "4.0.7"
+    "@devexpress/dx-scheduler-core" "4.0.8"
 
-"@devexpress/dx-scheduler-core@4.0.7":
-  version "4.0.7"
-  resolved "https://registry.yarnpkg.com/@devexpress/dx-scheduler-core/-/dx-scheduler-core-4.0.7.tgz#12450a137c7ca4bbb888d50f905c37fecbdfb21e"
-  integrity sha512-fnOj4tuuErguACVSXEeA1lwNSdIducaqLKQl712fzuGOEFIu/HQ5lUNWGiXysEVixqYXHE6Yzi6T4LxHp6aa6Q==
+"@devexpress/dx-scheduler-core@4.0.8":
+  version "4.0.8"
+  resolved "https://registry.yarnpkg.com/@devexpress/dx-scheduler-core/-/dx-scheduler-core-4.0.8.tgz#41331374c97fd5962209fff88dd4a038f33dd3ea"
+  integrity sha512-i5+g8jzipNCuZwnedoGjYkyIHX2lPuHrp/qSQRsRe0UyAvC5fHRUrdmv2oT9cJQybBC9Z+wWq/z1vYmTmcJODA==
   dependencies:
     moment "^2.24.0"
     rrule "2.7.1"
